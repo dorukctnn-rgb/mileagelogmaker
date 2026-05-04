@@ -6,28 +6,85 @@ const fs = require('fs');
 
 const BLOG_POSTS = require('./blog-posts.js');
 
-// Pro emails storage (Vercel için /tmp, local için file)
-const PRO_FILE = process.env.VERCEL ? '/tmp/pro-emails.json' : path.join(__dirname, 'pro-emails.json');
+// ===== PRO EMAILS STORAGE =====
+// On Vercel: use Vercel KV (persistent across requests)
+// Locally: use JSON file
+const USE_KV = !!process.env.KV_REST_API_URL;
+let kv = null;
 
-function loadProEmails(){
+if (USE_KV) {
+  try {
+    kv = require('@vercel/kv').kv;
+    console.log('Using Vercel KV for pro emails');
+  } catch (e) {
+    console.error('KV import failed, falling back to file:', e.message);
+  }
+}
+
+const PRO_FILE = path.join(__dirname, 'pro-emails.json');
+
+async function isPro(email){
+  if (!email) return false;
+  const normalized = email.toLowerCase().trim();
+
+  if (kv) {
+    try {
+      const val = await kv.get(`pro:${normalized}`);
+      return !!val;
+    } catch(e) {
+      console.error('KV read error:', e);
+      return false;
+    }
+  }
+
+  // Local fallback
   try {
     if (fs.existsSync(PRO_FILE)) {
-      return JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
+      const emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
+      return !!emails[normalized];
     }
-  } catch(e) { console.error('Pro file read error:', e); }
-  return {};
+  } catch(e) {}
+  return false;
 }
 
-function saveProEmails(emails){
+async function grantPro(email, data){
+  const normalized = email.toLowerCase().trim();
+
+  if (kv) {
+    try {
+      await kv.set(`pro:${normalized}`, { ...data, granted_at: new Date().toISOString() });
+      return true;
+    } catch(e) {
+      console.error('KV write error:', e);
+      return false;
+    }
+  }
+
+  // Local fallback
   try {
+    let emails = {};
+    if (fs.existsSync(PRO_FILE)) emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
+    emails[normalized] = { ...data, granted_at: new Date().toISOString() };
     fs.writeFileSync(PRO_FILE, JSON.stringify(emails, null, 2));
-  } catch(e) { console.error('Pro file write error:', e); }
+    return true;
+  } catch(e) { console.error('File write error:', e); return false; }
 }
 
-function isPro(email){
-  if (!email) return false;
-  const emails = loadProEmails();
-  return !!emails[email.toLowerCase().trim()];
+async function revokePro(email){
+  const normalized = email.toLowerCase().trim();
+
+  if (kv) {
+    try { await kv.del(`pro:${normalized}`); return true; } catch(e) { return false; }
+  }
+
+  try {
+    if (fs.existsSync(PRO_FILE)) {
+      const emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
+      delete emails[normalized];
+      fs.writeFileSync(PRO_FILE, JSON.stringify(emails, null, 2));
+    }
+    return true;
+  } catch(e) { return false; }
 }
 
 const app = express();
@@ -268,30 +325,20 @@ const NICHE_PAGES = {
 
 // === GUMROAD WEBHOOK ===
 // Gumroad sale notification: when a user purchases lifetime Pro
-app.post('/gumroad-webhook', (req, res) => {
+app.post('/gumroad-webhook', async (req, res) => {
   try {
     const { email, sale_id, product_id, refunded } = req.body;
 
     if (!email) return res.status(400).send('No email');
 
-    const emails = loadProEmails();
-    const normalizedEmail = email.toLowerCase().trim();
-
     if (refunded === 'true' || refunded === true) {
-      // Refund: remove pro access
-      delete emails[normalizedEmail];
-      console.log(`Refund processed for ${normalizedEmail}`);
+      await revokePro(email);
+      console.log(`Refund processed for ${email}`);
     } else {
-      // New sale: grant pro access
-      emails[normalizedEmail] = {
-        sale_id,
-        product_id,
-        granted_at: new Date().toISOString()
-      };
-      console.log(`Pro access granted to ${normalizedEmail}`);
+      await grantPro(email, { sale_id, product_id });
+      console.log(`Pro access granted to ${email}`);
     }
 
-    saveProEmails(emails);
     res.send('OK');
   } catch (err) {
     console.error('Webhook error:', err);
@@ -300,11 +347,11 @@ app.post('/gumroad-webhook', (req, res) => {
 });
 
 // === VERIFY LICENSE (user enters email to unlock) ===
-app.post('/verify-pro', (req, res) => {
+app.post('/verify-pro', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.json({ pro: false, error: 'No email provided' });
 
-  const pro = isPro(email);
+  const pro = await isPro(email);
   res.json({ pro, email: email.toLowerCase().trim() });
 });
 
@@ -320,7 +367,7 @@ app.get('/', (req, res) => {
 });
 
 // Generate PDF
-app.post('/generate-pdf', (req, res) => {
+app.post('/generate-pdf', async (req, res) => {
   try {
     const { trips, userInfo, year } = req.body;
 
@@ -329,6 +376,9 @@ app.post('/generate-pdf', (req, res) => {
     }
 
     const rates = year === '2024' ? IRS_RATES_2024 : (year === '2025' ? IRS_RATES_2025 : IRS_RATES_2026);
+
+    // Pro check (server-side, async)
+    const userIsPro = userInfo && userInfo.email && await isPro(userInfo.email);
 
     const doc = new PDFDocument({ margin: 40, size: 'A4', bufferPages: true });
     const chunks = [];
@@ -427,8 +477,7 @@ app.post('/generate-pdf', (req, res) => {
     const totalDeduction = (totals.business * rates.business) + (totals.medical * rates.medical) + (totals.charity * rates.charity);
     doc.fontSize(13).fillColor('#0a2540').text(`Total Deduction: $${totalDeduction.toFixed(2)}`, 40, y);
 
-    // Footer (free version footer note) — server-side Pro check
-    const userIsPro = userInfo && userInfo.email && isPro(userInfo.email);
+    // Footer (free version footer note) — uses userIsPro from above
 
     // === DIAGONAL CENTER WATERMARK ON EVERY PAGE (free users) ===
     if (!userIsPro) {
