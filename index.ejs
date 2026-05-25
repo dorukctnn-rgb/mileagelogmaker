@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<meta name="description" content="<%= description %>">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:image" content="https://mileagelogmaker.com/og-image.png">
+<meta property="og:url" content="https://mileagelogmaker.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mileagelogmaker.com/og-image.png">
+<meta name="google-site-verification" content="lTAZNAqExJcgGVTl7hfH3sdplbLhtLtfScgj18hkzO4" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://mileagelogmaker.com/">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f9fc;color:#0a2540;line-height:1.5}
+.nav{background:#fff;border-bottom:1px solid #e6ebf1;padding:14px 0}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:18px;font-weight:700;color:#0a2540;text-decoration:none}
+.nav-links a{color:#425466;text-decoration:none;margin-left:20px;font-size:14px}
+.nav-links a:hover{color:#0a2540}
+.hero{padding:60px 20px 40px;text-align:center;background:linear-gradient(180deg,#fff 0%,#f7f9fc 100%)}
+.hero h1{font-size:42px;font-weight:800;margin-bottom:16px;letter-spacing:-1px}
+.hero p{font-size:18px;color:#425466;max-width:680px;margin:0 auto 12px}
+.hero .badge{display:inline-block;background:#e0f7e9;color:#0d8043;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:20px}
+.rates{display:flex;justify-content:center;gap:24px;margin:24px 0;flex-wrap:wrap}
+.rate-card{background:#fff;border:1px solid #e6ebf1;padding:14px 20px;border-radius:8px;font-size:14px}
+.rate-card strong{color:#0a2540;font-size:18px;display:block}
+.rate-card span{color:#635bff;font-weight:600}
+
+.tool{max-width:1200px;margin:30px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:900px){.tool{grid-template-columns:1fr}}
+
+.panel{background:#fff;border:1px solid #e6ebf1;border-radius:12px;padding:24px}
+.panel h2{font-size:18px;margin-bottom:16px;font-weight:700}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:#425466;margin-bottom:6px;font-weight:500}
+.field input,.field select{width:100%;padding:10px 12px;border:1px solid #e6ebf1;border-radius:6px;font-size:14px;font-family:inherit}
+.field input:focus,.field select:focus{outline:none;border-color:#635bff;box-shadow:0 0 0 3px rgba(99,91,255,.1)}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{background:#635bff;color:#fff;border:none;padding:11px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#5048e5}
+.btn-secondary{background:#fff;color:#635bff;border:1px solid #635bff}
+.btn-secondary:hover{background:#f5f4ff}
+.btn-danger{background:#fff;color:#d13438;border:1px solid #fadbdb;padding:6px 10px;font-size:12px}
+
+.trip-list{margin-top:16px;max-height:400px;overflow-y:auto}
+.trip-item{background:#f7f9fc;padding:12px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.trip-item .info{flex:1}
+.trip-item .info strong{display:block;color:#0a2540}
+.trip-item .info span{color:#425466;font-size:12px}
+.trip-item .miles{color:#635bff;font-weight:700;margin:0 12px}
+
+.summary{background:#0a2540;color:#fff;padding:24px;border-radius:12px;margin-top:24px}
+.summary h3{font-size:16px;margin-bottom:14px;font-weight:600;opacity:.8}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px}
+.summary-row:last-child{border:none;font-size:18px;font-weight:700;padding-top:14px;margin-top:6px;border-top:2px solid rgba(255,255,255,.2)}
+
+.empty{text-align:center;color:#8898aa;padding:40px 20px;font-size:14px}
+
+/* Pro modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,37,64,.7);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:440px;width:100%;padding:32px;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:24px;color:#8898aa;cursor:pointer;width:32px;height:32px;border-radius:50%}
+.modal-close:hover{background:#f7f9fc}
+.modal h2{font-size:24px;margin-bottom:8px;font-weight:700}
+.modal .modal-sub{color:#425466;font-size:14px;margin-bottom:24px}
+.modal .price{display:flex;align-items:baseline;gap:8px;margin:18px 0}
+.modal .price .amt{font-size:42px;font-weight:800;color:#0a2540}
+.modal .price .desc{color:#635bff;font-weight:600;font-size:14px}
+.modal .features{list-style:none;margin:18px 0 24px}
+.modal .features li{padding:8px 0 8px 28px;position:relative;color:#0a2540;font-size:14px}
+.modal .features li:before{content:"✓";position:absolute;left:0;top:8px;color:#0d8043;font-weight:700;font-size:16px}
+.modal-btn{display:block;width:100%;background:#635bff;color:#fff;text-align:center;padding:14px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;border:none;cursor:pointer;font-family:inherit}
+.modal-btn:hover{background:#5048e5}
+.modal .or{text-align:center;color:#8898aa;margin:18px 0;font-size:13px}
+.modal input[type="email"]{width:100%;padding:12px;border:1px solid #e6ebf1;border-radius:6px;font-size:14px;font-family:inherit;margin-bottom:8px}
+.modal input[type="email"]:focus{outline:none;border-color:#635bff}
+.modal-status{font-size:13px;margin-top:8px;text-align:center}
+.modal-status.error{color:#d13438}
+.modal-status.success{color:#0d8043}
+
+.pro-badge{display:inline-block;background:linear-gradient(135deg,#FFD700,#FFA500);color:#0a2540;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px;vertical-align:middle}
+.pro-only-link{color:#635bff;cursor:pointer;text-decoration:underline;font-size:13px}
+.pro-only-link:hover{color:#5048e5}
+
+.section{max-width:900px;margin:60px auto;padding:0 20px}
+.section h2{font-size:28px;margin-bottom:16px;font-weight:700}
+.section p{color:#425466;margin-bottom:14px;font-size:16px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
+@media(max-width:700px){.feature-grid{grid-template-columns:1fr}}
+.feature{background:#fff;padding:24px;border-radius:8px;border:1px solid #e6ebf1}
+.feature h3{font-size:16px;margin-bottom:8px}
+.feature p{font-size:14px;color:#425466;margin:0}
+
+.niche-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+@media(max-width:700px){.niche-grid{grid-template-columns:1fr}}
+.niche-card{background:#fff;border:1px solid #e6ebf1;padding:16px;border-radius:8px;text-decoration:none;color:#0a2540;transition:all .15s}
+.niche-card:hover{border-color:#635bff;box-shadow:0 4px 12px rgba(99,91,255,.1)}
+.niche-card strong{display:block;margin-bottom:4px;font-size:14px}
+.niche-card span{font-size:12px;color:#8898aa}
+
+footer{background:#0a2540;color:#a3b1cc;padding:30px 20px;text-align:center;margin-top:60px;font-size:13px}
+footer a{color:#fff;text-decoration:none;margin:0 10px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">📍 MileageLogMaker</a>
+    <div class="nav-links">
+      <a href="/free-mileage-log-template">Template</a>
+      <a href="/irs-mileage-log-requirements">IRS Rules</a>
+      <a href="/mileage-log-2026-irs-rate">2026 Rates</a>
+      <a href="javascript:void(0)" onclick="openProModal()" id="navProBtn" style="background:#635bff;color:#fff;padding:6px 14px;border-radius:6px;margin-left:14px">Get Pro $9</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <span class="badge">✓ 2026 IRS Rates  ✓ No Signup  ✓ Free PDF</span>
+  <h1>Free IRS Mileage Log Generator</h1>
+  <p>Track business, medical, and charity miles. Generate an IRS-ready PDF in under 3 minutes.</p>
+  <div class="rates">
+    <div class="rate-card"><strong>$<%= rates.business %></strong><span>per business mile</span></div>
+    <div class="rate-card"><strong>$<%= rates.medical %></strong><span>per medical mile</span></div>
+    <div class="rate-card"><strong>$<%= rates.charity %></strong><span>per charity mile</span></div>
+  </div>
+</section>
+
+<div class="tool">
+  <!-- Input panel -->
+  <div class="panel">
+    <h2>Add Trip</h2>
+
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="tripDate">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Start Location</label>
+        <input type="text" id="tripStart" placeholder="123 Main St">
+      </div>
+      <div class="field">
+        <label>End Location</label>
+        <input type="text" id="tripEnd" placeholder="Client Office">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Purpose</label>
+      <input type="text" id="tripPurpose" placeholder="Client meeting, delivery, etc.">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Miles</label>
+        <input type="number" id="tripMiles" placeholder="12.5" step="0.1">
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select id="tripType">
+          <option value="business">Business</option>
+          <option value="medical">Medical</option>
+          <option value="charity">Charity</option>
+          <option value="personal">Personal</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn" onclick="addTrip()">+ Add Trip</button>
+
+    <hr style="margin:24px 0;border:none;border-top:1px solid #e6ebf1">
+
+    <h2>Your Info (Optional)</h2>
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="userName" placeholder="John Doe">
+    </div>
+    <div class="field">
+      <label>Vehicle</label>
+      <input type="text" id="userVehicle" placeholder="2022 Toyota Camry">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Starting Odometer</label>
+        <input type="number" id="startOdo" placeholder="45000">
+      </div>
+      <div class="field">
+        <label>Ending Odometer</label>
+        <input type="number" id="endOdo" placeholder="58500">
+      </div>
+    </div>
+    <div class="field">
+      <label>Tax Year</label>
+      <select id="taxYear">
+        <option value="2026">2026 (72.5¢/mi)</option>
+        <option value="2025">2025 (70¢/mi)</option>
+        <option value="2024">2024 (67¢/mi)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Trip list + summary -->
+  <div>
+    <div class="panel">
+      <h2>Trips (<span id="tripCount">0</span>)</h2>
+      <div class="trip-list" id="tripList">
+        <div class="empty">No trips added yet. Add your first trip on the left.</div>
+      </div>
+      <button class="btn" id="generateBtn" onclick="generatePDF()" style="margin-top:16px;width:100%">Generate IRS-Ready PDF</button>
+    </div>
+
+    <div class="summary">
+      <h3>Tax Deduction Summary</h3>
+      <div class="summary-row"><span>Business miles</span><span id="sumBusiness">0.0 mi</span></div>
+      <div class="summary-row"><span>Medical miles</span><span id="sumMedical">0.0 mi</span></div>
+      <div class="summary-row"><span>Charity miles</span><span id="sumCharity">0.0 mi</span></div>
+      <div class="summary-row"><span>Total Deduction</span><span id="sumTotal">$0.00</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <h2>Why use a mileage log?</h2>
+  <p>The IRS requires self-employed individuals, freelancers, and rideshare drivers to keep a "contemporaneous" record of every business mile to claim the standard mileage deduction. In 2026, that deduction is $0.70 per business mile — meaning every 1,000 miles tracked is $700 in tax savings.</p>
+  <p>This generator captures everything the IRS asks for: date, destination, business purpose, and miles driven. Your data never leaves your browser. The PDF is generated server-side and downloaded directly — no account, no email, no payment.</p>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <h3>🔒 Private</h3>
+      <p>Your trip data stays in your browser. No accounts, no tracking.</p>
+    </div>
+    <div class="feature">
+      <h3>📄 IRS-Ready</h3>
+      <p>PDF includes date, locations, purpose, miles, and type — exactly what the IRS requires.</p>
+    </div>
+    <div class="feature">
+      <h3>⚡ 3 Minutes</h3>
+      <p>Add trips, click generate, download. No setup, no learning curve.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>For your profession</h2>
+  <p>Mileage logs vary by industry. Pick yours for tailored guidance:</p>
+  <div class="niche-grid">
+    <a href="/mileage-log-uber-drivers" class="niche-card"><strong>🚗 Uber & Lyft</strong><span>Rideshare drivers</span></a>
+    <a href="/mileage-log-doordash-drivers" class="niche-card"><strong>🍔 DoorDash & Delivery</strong><span>Food & package delivery</span></a>
+    <a href="/mileage-log-real-estate-agents" class="niche-card"><strong>🏠 Real Estate</strong><span>Agents & brokers</span></a>
+    <a href="/mileage-log-self-employed" class="niche-card"><strong>💼 Self-Employed</strong><span>Freelancers & consultants</span></a>
+    <a href="/mileage-log-2026-irs-rate" class="niche-card"><strong>📊 2026 IRS Rates</strong><span>Latest rates explained</span></a>
+    <a href="/mileage-log-uk" class="niche-card"><strong>🇬🇧 UK (HMRC)</strong><span>UK 45p/mile rules</span></a>
+  </div>
+</section>
+
+<!-- PRO UPGRADE MODAL -->
+<div class="modal-overlay" id="proModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProModal()">×</button>
+    <h2>MileageLogMaker Pro</h2>
+    <p class="modal-sub">One payment. Lifetime access. No subscription.</p>
+
+    <div class="price">
+      <span class="amt">$9</span>
+      <span class="desc">one-time, forever</span>
+    </div>
+
+    <ul class="features">
+      <li>No watermark on PDFs</li>
+      <li>Unlimited trips</li>
+      <li>Excel/CSV export</li>
+      <li>Custom logo on PDFs</li>
+      <li>Priority email support</li>
+      <li>All future updates included</li>
+    </ul>
+
+    <a href="https://dorukctn.gumroad.com/l/agbyxg" target="_blank" class="modal-btn">Get Pro for $9 →</a>
+
+    <div class="or">— or —</div>
+
+    <p style="font-size:13px;color:#425466;margin-bottom:8px;text-align:center">Already purchased? Enter your email:</p>
+    <input type="email" id="licenseEmail" placeholder="your@email.com">
+    <button class="modal-btn" onclick="verifyLicense()" style="background:#0a2540">Unlock Pro</button>
+    <div class="modal-status" id="licenseStatus"></div>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <a href="/free-mileage-log-template">Template</a>
+    <a href="/irs-mileage-log-requirements">IRS Rules</a>
+    <a href="/mileage-log-uk">UK</a>
+    <a href="/mileage-log-canada">Canada</a>
+  </div>
+  <div style="margin-top:16px">© 2026 MileageLogMaker — Free IRS-compliant mileage tracking</div>
+</footer>
+
+<script>
+const RATES_2026 = { business: <%= rates.business %>, medical: <%= rates.medical %>, charity: <%= rates.charity %>, personal: 0 };
+const RATES_2025 = { business: 0.70, medical: 0.21, charity: 0.14, personal: 0 };
+const RATES_2024 = { business: 0.67, medical: 0.21, charity: 0.14, personal: 0 };
+
+let trips = JSON.parse(localStorage.getItem('mileage_trips') || '[]');
+let proEmail = localStorage.getItem('pro_email') || '';
+
+function isProUser(){ return !!proEmail; }
+
+function openProModal(){ document.getElementById('proModal').classList.add('active'); }
+function closeProModal(){ document.getElementById('proModal').classList.remove('active'); document.getElementById('licenseStatus').textContent = ''; }
+
+document.getElementById('proModal').addEventListener('click', function(e){
+  if(e.target === this) closeProModal();
+});
+
+async function verifyLicense(){
+  const email = document.getElementById('licenseEmail').value.trim();
+  const status = document.getElementById('licenseStatus');
+  if(!email){ status.textContent = 'Please enter your email'; status.className = 'modal-status error'; return; }
+
+  status.textContent = 'Checking...'; status.className = 'modal-status';
+  try{
+    const res = await fetch('/verify-pro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if(data.pro){
+      proEmail = data.email;
+      localStorage.setItem('pro_email', proEmail);
+      status.textContent = '✓ Pro unlocked! Refreshing...';
+      status.className = 'modal-status success';
+      setTimeout(()=>location.reload(), 1000);
+    } else {
+      status.textContent = 'Email not found. If you purchased recently, wait a minute and retry.';
+      status.className = 'modal-status error';
+    }
+  } catch(e){
+    status.textContent = 'Connection error. Try again.';
+    status.className = 'modal-status error';
+  }
+}
+
+function updateProUI(){
+  if(isProUser()){
+    const btn = document.getElementById('navProBtn');
+    if(btn){ btn.innerHTML = '✓ Pro'; btn.style.background = '#0d8043'; btn.onclick = function(){ if(confirm('Sign out of Pro on this device?')){ localStorage.removeItem('pro_email'); proEmail=''; location.reload(); } }; }
+  }
+}
+
+function save(){ localStorage.setItem('mileage_trips', JSON.stringify(trips)); }
+
+function addTrip(){
+  const t = {
+    date: document.getElementById('tripDate').value,
+    start: document.getElementById('tripStart').value,
+    end: document.getElementById('tripEnd').value,
+    purpose: document.getElementById('tripPurpose').value,
+    miles: parseFloat(document.getElementById('tripMiles').value) || 0,
+    type: document.getElementById('tripType').value
+  };
+
+  if(!t.date || !t.miles){
+    alert('Please enter at least a date and miles.');
+    return;
+  }
+
+  trips.push(t);
+  save();
+  render();
+
+  // Reset
+  document.getElementById('tripStart').value = '';
+  document.getElementById('tripEnd').value = '';
+  document.getElementById('tripPurpose').value = '';
+  document.getElementById('tripMiles').value = '';
+}
+
+function removeTrip(i){
+  trips.splice(i, 1);
+  save();
+  render();
+}
+
+function render(){
+  const list = document.getElementById('tripList');
+  document.getElementById('tripCount').textContent = trips.length;
+
+  if(trips.length === 0){
+    list.innerHTML = '<div class="empty">No trips added yet. Add your first trip on the left.</div>';
+  } else {
+    list.innerHTML = trips.map((t,i) => `
+      <div class="trip-item">
+        <div class="info">
+          <strong>${t.date}: ${t.start || '?'} → ${t.end || '?'}</strong>
+          <span>${t.purpose || 'No purpose'} • ${t.type}</span>
+        </div>
+        <div class="miles">${t.miles} mi</div>
+        <button class="btn-danger" onclick="removeTrip(${i})">×</button>
+      </div>
+    `).join('');
+  }
+
+  // Summary
+  const year = document.getElementById('taxYear').value;
+  const rates = year === '2024' ? RATES_2024 : (year === '2025' ? RATES_2025 : RATES_2026);
+  const totals = { business: 0, medical: 0, charity: 0, personal: 0 };
+  trips.forEach(t => { if(totals[t.type] !== undefined) totals[t.type] += t.miles; });
+
+  document.getElementById('sumBusiness').textContent = `${totals.business.toFixed(1)} mi ($${(totals.business * rates.business).toFixed(2)})`;
+  document.getElementById('sumMedical').textContent = `${totals.medical.toFixed(1)} mi ($${(totals.medical * rates.medical).toFixed(2)})`;
+  document.getElementById('sumCharity').textContent = `${totals.charity.toFixed(1)} mi ($${(totals.charity * rates.charity).toFixed(2)})`;
+  const total = totals.business * rates.business + totals.medical * rates.medical + totals.charity * rates.charity;
+  document.getElementById('sumTotal').textContent = `$${total.toFixed(2)}`;
+}
+
+document.getElementById('taxYear').addEventListener('change', render);
+
+async function generatePDF(){
+  // KRİTİK: Trip yoksa kullanıcıyı uyar ve Add Trip'e yönlendir
+  if(trips.length === 0){
+    showNoTripsWarning();
+    return;
+  }
+
+  const userInfo = {
+    name: document.getElementById('userName').value,
+    vehicle: document.getElementById('userVehicle').value,
+    startOdometer: document.getElementById('startOdo').value,
+    endOdometer: document.getElementById('endOdo').value,
+    email: proEmail
+  };
+  const year = document.getElementById('taxYear').value;
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  try{
+    const res = await fetch('/generate-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trips, userInfo, year })
+    });
+
+    if(!res.ok) throw new Error('PDF failed');
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mileage-log-${year}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Pro upgrade nudge after 5+ trips
+    if(!isProUser() && trips.length >= 5){
+      setTimeout(()=>openProModal(), 1200);
+    }
+  } catch(e){
+    alert('Could not generate PDF. Try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Generate IRS-Ready PDF';
+}
+
+// Show friendly warning when user clicks Generate without adding trips
+function showNoTripsWarning(){
+  // Scroll to Add Trip form
+  const addTripSection = document.querySelector('.panel');
+  if(addTripSection){
+    addTripSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Highlight the Add Trip form temporarily
+  const firstPanel = document.querySelectorAll('.panel')[0];
+  if(firstPanel){
+    firstPanel.style.boxShadow = '0 0 0 4px #ffcc00, 0 8px 24px rgba(255,204,0,0.4)';
+    firstPanel.style.transition = 'box-shadow 0.3s';
+    setTimeout(()=>{
+      firstPanel.style.boxShadow = '';
+    }, 3000);
+  }
+
+  // Show warning modal
+  const existing = document.getElementById('noTripsModal');
+  if(existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'noTripsModal';
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s">
+      <div style="background:#fff;max-width:440px;width:100%;padding:32px 28px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;animation:slideUp 0.3s">
+        <div style="font-size:56px;margin-bottom:12px">⚠️</div>
+        <h3 style="margin:0 0 12px;font-size:22px;color:#1a1a1a;font-weight:700">Add a trip first!</h3>
+        <p style="margin:0 0 24px;color:#555;line-height:1.5;font-size:15px">
+          You need to add at least <strong>one trip</strong> before generating your PDF mileage log.
+        </p>
+        <div style="background:#fff8e1;border:2px solid #ffcc00;border-radius:10px;padding:14px;margin-bottom:20px;text-align:left">
+          <strong style="color:#856404;display:block;margin-bottom:6px;font-size:14px">📝 How to add a trip:</strong>
+          <ol style="margin:0;padding-left:20px;color:#555;font-size:14px;line-height:1.6">
+            <li>Fill in the <strong>"Add Trip"</strong> form on the left</li>
+            <li>Enter date, locations, miles, and type</li>
+            <li>Click <strong>"+ Add Trip"</strong> button</li>
+            <li>Then come back here and generate PDF</li>
+          </ol>
+        </div>
+        <button onclick="closeNoTripsWarning()" style="background:#0066ff;color:#fff;border:none;padding:13px 32px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;width:100%">
+          Got it, let's add a trip →
+        </button>
+      </div>
+    </div>
+    <style>
+      @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+      @keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+    </style>
+  `;
+  document.body.appendChild(modal);
+}
+
+function closeNoTripsWarning(){
+  const modal = document.getElementById('noTripsModal');
+  if(modal) modal.remove();
+  // Focus on first trip input
+  const startInput = document.getElementById('tripStart') || document.getElementById('tripDate');
+  if(startInput) startInput.focus();
+}
+
+// Init
+document.getElementById('tripDate').valueAsDate = new Date();
+updateProUI();
+render();
+</script>
+
+</body>
+</html>

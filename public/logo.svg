@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066ff"/>
+      <stop offset="100%" stop-color="#0044cc"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="110" ry="110" fill="url(#bg)"/>
+
+  <!-- White inner card with car icon -->
+  <g filter="url(#shadow)">
+    <!-- Road/dashed line under car -->
+    <rect x="80" y="370" width="352" height="14" rx="7" fill="#ffffff" opacity="0.3"/>
+    <rect x="100" y="370" width="40" height="14" rx="2" fill="#ffd700"/>
+    <rect x="180" y="370" width="40" height="14" rx="2" fill="#ffd700"/>
+    <rect x="260" y="370" width="40" height="14" rx="2" fill="#ffd700"/>
+    <rect x="340" y="370" width="40" height="14" rx="2" fill="#ffd700"/>
+
+    <!-- Car body (top) -->
+    <path d="M 130 230 L 165 165 Q 175 150 195 150 L 317 150 Q 337 150 347 165 L 382 230 Z" fill="#ffffff"/>
+
+    <!-- Car body (bottom) -->
+    <rect x="110" y="225" width="292" height="100" rx="20" fill="#ffffff"/>
+
+    <!-- Windows -->
+    <path d="M 175 175 L 200 215 L 245 215 L 245 175 Z" fill="#0066ff"/>
+    <path d="M 267 175 L 267 215 L 312 215 L 337 175 Z" fill="#0066ff"/>
+
+    <!-- Headlights -->
+    <circle cx="135" cy="280" r="10" fill="#ffd700"/>
+    <circle cx="377" cy="280" r="10" fill="#ffd700"/>
+
+    <!-- Door handle -->
+    <rect x="230" y="265" width="50" height="6" rx="3" fill="#0066ff" opacity="0.3"/>
+
+    <!-- Wheels -->
+    <circle cx="170" cy="340" r="38" fill="#1a1a1a"/>
+    <circle cx="170" cy="340" r="20" fill="#ffffff"/>
+    <circle cx="170" cy="340" r="8" fill="#1a1a1a"/>
+
+    <circle cx="342" cy="340" r="38" fill="#1a1a1a"/>
+    <circle cx="342" cy="340" r="20" fill="#ffffff"/>
+    <circle cx="342" cy="340" r="8" fill="#1a1a1a"/>
+  </g>
+
+  <!-- Checkmark badge top-right (IRS-approved feel) -->
+  <g transform="translate(380, 100)">
+    <circle r="42" fill="#22c55e" stroke="#ffffff" stroke-width="6"/>
+    <path d="M -18 0 L -6 14 L 18 -14" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
