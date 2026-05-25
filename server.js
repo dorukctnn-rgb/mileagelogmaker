@@ -225,16 +225,37 @@ const NICHE_PAGES = {
     ]
   },
   'mileage-log-canada': {
-    title: 'Canada Mileage Log Generator — CRA Approved Rates 2026',
-    h1: 'Canada Mileage Log (CRA Rates)',
-    description: 'Free Canadian mileage log generator using CRA-approved rates. Track business kilometres for T2125 self-employed tax filing.',
-    keyword: 'canada mileage log',
-    intro: 'The CRA allows Canadian self-employed individuals to deduct vehicle expenses based on business kilometres driven. The 2026 CRA reasonable per-kilometre allowance is $0.72/km for the first 5,000 km and $0.66/km after. Generate your CRA-compliant log here for free.',
+    title: 'CRA Mileage Log 2026 — Free Generator (T2125 Compliant)',
+    h1: 'CRA Mileage Log Generator (2026 Rates)',
+    description: 'Free CRA-compliant mileage log generator. 2026 rates: $0.73/km first 5,000 km, $0.67/km after. T2125 and T777 ready. Generate audit-proof PDF in 3 minutes.',
+    keyword: 'cra mileage log',
+    intro: 'The 2026 CRA mileage rate is $0.73/km for the first 5,000 business kilometres and $0.67/km after that ($0.77/$0.71 in Yukon, NWT, and Nunavut). Generate a CRA-compliant logbook for T2125 self-employment or T777 employment expense claims. Free, no signup, audit-proof PDF in under 3 minutes.',
     tips: [
-      'CRA rate: $0.72/km for first 5,000 km, $0.66/km after',
-      'Quebec, Yukon, NWT, and Nunavut: add $0.04/km',
-      'Track every business trip in kilometres',
-      'Keep records for 6 years from the end of the tax year'
+      '2026 CRA rate: $0.73/km for first 5,000 km, $0.67/km after (provinces)',
+      'Territories (Yukon, NWT, Nunavut): $0.77/km first 5,000, $0.71/km after',
+      'Required fields per trip: date, destination, business purpose, kilometres',
+      'Self-employed (T2125): deduct actual vehicle expenses × business-use %',
+      'Employees (T777): use signed T2200 from employer to claim',
+      'Simplified method: keep full 12-month base year + 3-month sample years',
+      'Keep all records 6 years from the end of the tax year (CRA rule)',
+      'Record odometer at January 1 and December 31 each year'
+    ]
+  },
+  'cra-mileage-log-template': {
+    title: 'Free CRA Mileage Log Template 2026 — Printable PDF Logbook',
+    h1: 'CRA Mileage Log Template (2026)',
+    description: 'Free printable CRA mileage log template. 2026 rates included. Add trips online and generate a CRA-compliant PDF logbook for T2125 or T777 tax filing.',
+    keyword: 'cra mileage log template',
+    intro: 'A proper CRA mileage log template must capture date, destination, business purpose, and kilometres driven for every business trip — plus odometer readings at the start and end of the tax year. This free generator builds an audit-proof PDF logbook using the 2026 CRA rates ($0.73/km first 5,000 km, $0.67/km after). Use it for T2125 self-employment income or T777 employment expenses. No signup, no spreadsheet, no app to install.',
+    tips: [
+      'Required columns: Date | Start | End | Purpose | Kilometres | Type',
+      '2026 rate auto-calculated: $0.73/km × first 5,000 + $0.67/km × rest',
+      'Add odometer readings (Jan 1 and Dec 31) at the top of the page',
+      'Logs must be contemporaneous — record trips the same day or week',
+      'Acceptable formats: PDF, spreadsheet, CSV, or paper logbook',
+      'Reconstructed logs are usually rejected during a CRA audit',
+      'Keep the logbook + supporting docs (fuel, insurance) for 6 years',
+      'Add notes for trips over 100 km or unusual destinations'
     ]
   },
   'forgot-to-track-mileage': {

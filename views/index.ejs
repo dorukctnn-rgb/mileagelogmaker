@@ -213,7 +213,7 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
       <div class="trip-list" id="tripList">
         <div class="empty">No trips added yet. Add your first trip on the left.</div>
       </div>
-      <button class="btn" id="generateBtn" onclick="generatePDF()" style="margin-top:16px;width:100%" disabled>Generate IRS-Ready PDF</button>
+      <button class="btn" id="generateBtn" onclick="generatePDF()" style="margin-top:16px;width:100%">Generate IRS-Ready PDF</button>
     </div>
 
     <div class="summary">
@@ -392,7 +392,6 @@ function removeTrip(i){
 function render(){
   const list = document.getElementById('tripList');
   document.getElementById('tripCount').textContent = trips.length;
-  document.getElementById('generateBtn').disabled = trips.length === 0;
 
   if(trips.length === 0){
     list.innerHTML = '<div class="empty">No trips added yet. Add your first trip on the left.</div>';
@@ -425,6 +424,12 @@ function render(){
 document.getElementById('taxYear').addEventListener('change', render);
 
 async function generatePDF(){
+  // KRİTİK: Trip yoksa kullanıcıyı uyar ve Add Trip'e yönlendir
+  if(trips.length === 0){
+    showNoTripsWarning();
+    return;
+  }
+
   const userInfo = {
     name: document.getElementById('userName').value,
     vehicle: document.getElementById('userVehicle').value,
@@ -467,6 +472,68 @@ async function generatePDF(){
 
   btn.disabled = false;
   btn.textContent = 'Generate IRS-Ready PDF';
+}
+
+// Show friendly warning when user clicks Generate without adding trips
+function showNoTripsWarning(){
+  // Scroll to Add Trip form
+  const addTripSection = document.querySelector('.panel');
+  if(addTripSection){
+    addTripSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Highlight the Add Trip form temporarily
+  const firstPanel = document.querySelectorAll('.panel')[0];
+  if(firstPanel){
+    firstPanel.style.boxShadow = '0 0 0 4px #ffcc00, 0 8px 24px rgba(255,204,0,0.4)';
+    firstPanel.style.transition = 'box-shadow 0.3s';
+    setTimeout(()=>{
+      firstPanel.style.boxShadow = '';
+    }, 3000);
+  }
+
+  // Show warning modal
+  const existing = document.getElementById('noTripsModal');
+  if(existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'noTripsModal';
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s">
+      <div style="background:#fff;max-width:440px;width:100%;padding:32px 28px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;animation:slideUp 0.3s">
+        <div style="font-size:56px;margin-bottom:12px">⚠️</div>
+        <h3 style="margin:0 0 12px;font-size:22px;color:#1a1a1a;font-weight:700">Add a trip first!</h3>
+        <p style="margin:0 0 24px;color:#555;line-height:1.5;font-size:15px">
+          You need to add at least <strong>one trip</strong> before generating your PDF mileage log.
+        </p>
+        <div style="background:#fff8e1;border:2px solid #ffcc00;border-radius:10px;padding:14px;margin-bottom:20px;text-align:left">
+          <strong style="color:#856404;display:block;margin-bottom:6px;font-size:14px">📝 How to add a trip:</strong>
+          <ol style="margin:0;padding-left:20px;color:#555;font-size:14px;line-height:1.6">
+            <li>Fill in the <strong>"Add Trip"</strong> form on the left</li>
+            <li>Enter date, locations, miles, and type</li>
+            <li>Click <strong>"+ Add Trip"</strong> button</li>
+            <li>Then come back here and generate PDF</li>
+          </ol>
+        </div>
+        <button onclick="closeNoTripsWarning()" style="background:#0066ff;color:#fff;border:none;padding:13px 32px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;width:100%">
+          Got it, let's add a trip →
+        </button>
+      </div>
+    </div>
+    <style>
+      @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+      @keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+    </style>
+  `;
+  document.body.appendChild(modal);
+}
+
+function closeNoTripsWarning(){
+  const modal = document.getElementById('noTripsModal');
+  if(modal) modal.remove();
+  // Focus on first trip input
+  const startInput = document.getElementById('tripStart') || document.getElementById('tripDate');
+  if(startInput) startInput.focus();
 }
 
 // Init
