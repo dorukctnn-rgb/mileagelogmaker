@@ -147,16 +147,20 @@ const NICHE_PAGES = {
     ]
   },
   'mileage-log-real-estate-agents': {
-    title: 'Mileage Log for Real Estate Agents — Free IRS PDF Generator',
+    title: 'Mileage Log for Real Estate Agents 2026 — Free IRS PDF Generator',
     h1: 'Mileage Log for Real Estate Agents',
-    description: 'Free mileage log generator built for real estate agents. Track property showings, client meetings, and open houses for maximum tax deductions.',
+    description: 'Free mileage log generator built for real estate agents and realtors. Track showings, client meetings, and open houses. 2026 IRS rate 72.5¢/mile. Deduct $13,000+ per year.',
     keyword: 'real estate agent mileage log',
-    intro: 'Real estate agents drive an average of 18,000 business miles per year. At the 2026 IRS rate of $0.725/mile, that is over $13,000 in deductions. Track every property tour, client meeting, and open house with this free IRS-ready generator.',
+    intro: 'Real estate agents drive an average of 18,000+ business miles per year showing properties, meeting clients, and attending closings. At the 2026 IRS rate of 72.5¢/mile, that is over $13,000 in potential tax deductions. As a 1099 independent contractor, nearly every mile you drive for your business is deductible — but only if you keep a proper log. This free IRS-ready generator was built specifically for realtors to capture every property tour, client meeting, and open house.',
     tips: [
-      'Every property showing counts — log address-to-address',
-      'Client lunches, broker open houses, and MLS tours all qualify',
-      'Drives to the title company, inspector, or closing all count',
-      'Add the property address in the purpose field for audit safety'
+      'Every property showing counts — log address-to-address mileage',
+      'Client lunches, broker open houses, and MLS caravan tours all qualify',
+      'Drives to the title company, inspector, appraiser, or closing all count',
+      'Add the property MLS number or address in the purpose field for audit safety',
+      'Home office to first showing is deductible if you claim a home office (Form 8829)',
+      'Real estate agents are 1099 contractors — deductions go on Schedule C',
+      '2026 rate is 72.5¢/mile — just 18,000 miles equals $13,050 deducted',
+      'Keep your log contemporaneous — update it weekly, not at tax time'
     ]
   },
   'mileage-log-self-employed': {
@@ -199,16 +203,20 @@ const NICHE_PAGES = {
     ]
   },
   'irs-mileage-log-requirements': {
-    title: 'IRS Mileage Log Requirements 2026 — What You Must Track',
-    h1: 'IRS Mileage Log Requirements',
-    description: 'IRS mileage log requirements for 2026: what data you must track, how to keep records, and how to survive an audit. Free generator included.',
+    title: 'IRS Mileage Log Requirements 2026 — Complete Audit-Proof Guide',
+    h1: 'IRS Mileage Log Requirements (2026)',
+    description: 'Complete IRS mileage log requirements for 2026: the 4 required fields, Publication 463 rules, contemporaneous recordkeeping, and how to survive an audit. Free generator included.',
     keyword: 'irs mileage log requirements',
-    intro: 'The IRS requires four pieces of information for every business trip: date, destination, business purpose, and miles driven. You must also record your odometer reading at the start and end of the year. This free generator captures all of it in an IRS-ready format.',
+    intro: 'The IRS requires four pieces of information for every business trip: the date, your destination, the business purpose, and the miles driven. Under IRS Publication 463, your records must be "contemporaneous" — created at or near the time of each trip, not reconstructed months later from memory. You must also log your odometer reading at the start and end of the tax year. The 2026 standard mileage rate is 72.5¢/mile. This free generator captures every required field in an IRS-ready PDF format that holds up under audit.',
     tips: [
-      'Required: date, destination, purpose, miles driven',
-      'Recommended: starting and ending odometer for the year',
-      'Records must be "contemporaneous" — kept at or near the time of the trip',
-      'Keep records for 3 years from the date you filed your tax return'
+      'Four required fields per trip: date, destination, business purpose, miles driven',
+      'Record odometer reading on January 1 and December 31 each year',
+      'Records must be contemporaneous (kept at or near the time of each trip)',
+      'IRS Publication 463 governs vehicle expense recordkeeping rules',
+      'Reconstructed or estimated logs are commonly rejected during audits',
+      'Keep records 3 years from filing date (6 years if income under-reported)',
+      'You cannot deduct commuting miles (home to regular workplace)',
+      'Standard mileage (72.5¢) vs actual expenses — pick one method per vehicle'
     ]
   },
   'mileage-log-uk': {
@@ -340,6 +348,81 @@ const NICHE_PAGES = {
       '2022 (Jan-Jun): 58.5¢ business',
       '2021: 56¢ business, 16¢ medical, 14¢ charity',
       '2020: 57.5¢ business, 17¢ medical, 14¢ charity'
+    ]
+  },
+  'mileage-log-generator': {
+    title: 'Free Mileage Log Generator — Create IRS-Ready PDF in 3 Minutes',
+    h1: 'Mileage Log Generator',
+    description: 'Free online mileage log generator. Create an IRS-compliant mileage log PDF in 3 minutes. No signup, no spreadsheet, no app. Just add trips and download.',
+    keyword: 'mileage log generator',
+    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip — date, start and end location, miles, and purpose — and the tool builds a professional logbook with your deduction auto-calculated at the 2026 IRS rate of 72.5¢/mile. No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
+    tips: [
+      'Add unlimited trips — the tool totals your miles and deduction automatically',
+      '2026 IRS rate (72.5¢/mile) is applied to every business mile',
+      'Generated PDF includes date, locations, purpose, and odometer columns',
+      'No account needed — your data stays in your browser until you download',
+      'Print the PDF or keep it digital — both are IRS-acceptable',
+      'Works for any tax year — change the year before generating'
+    ]
+  },
+  'mileage-log-2026': {
+    title: 'Mileage Log 2026 — Free IRS Template & Generator (72.5¢/mile)',
+    h1: 'Mileage Log 2026 (Updated IRS Rate)',
+    description: 'Free 2026 mileage log generator using the new 72.5¢/mile IRS rate. Create a compliant PDF logbook for your 2026 tax return. No signup.',
+    keyword: 'mileage log 2026',
+    intro: 'The 2026 IRS standard mileage rate is 72.5¢ per mile for business driving — the highest rate in history and a 2.5¢ increase over 2025. This free generator builds a 2026-ready mileage log PDF with the new rate applied automatically. Whether you are self-employed, a gig worker, or claiming employee business expenses, generate your audit-proof 2026 logbook here in minutes.',
+    tips: [
+      '2026 business rate: 72.5¢/mile (up from 70¢ in 2025)',
+      '2026 medical/moving rate: 20.5¢/mile',
+      '2026 charity rate: 14¢/mile (set by statute, unchanged)',
+      'Record odometer readings on January 1 and December 31, 2026',
+      'Log trips contemporaneously — same day or same week',
+      'Keep your 2026 records until at least 2030 (IRS 3-year audit window, 6 for some cases)'
+    ]
+  },
+  'mileage-log-grubhub-drivers': {
+    title: 'Free Mileage Log for Grubhub Drivers — Tax Deduction Tracker',
+    h1: 'Mileage Log for Grubhub Drivers',
+    description: 'Free IRS mileage log generator for Grubhub delivery drivers. Track every delivery mile and maximize your 1099 tax deductions with a compliant PDF.',
+    keyword: 'grubhub mileage log',
+    intro: 'Grubhub drivers are independent contractors (1099), which means every business mile is deductible at the 2026 IRS rate of 72.5¢/mile. Most Grubhub drivers leave hundreds of dollars on the table by not tracking miles properly. Just 30 miles of deliveries per shift equals about $21.75 in deductions — that adds up to thousands per year. Generate your IRS-ready Grubhub mileage log here for free.',
+    tips: [
+      'Track miles from when you start driving toward your first pickup',
+      'Log miles between deliveries, not just restaurant-to-customer',
+      'Include miles driven while waiting and repositioning for orders',
+      'Grubhub does not track all your deductible miles — keep your own log',
+      'Screenshot your Grubhub daily earnings summary as backup',
+      'Standard mileage method usually beats actual expenses for delivery drivers'
+    ]
+  },
+  'mileage-log-amazon-flex': {
+    title: 'Free Mileage Log for Amazon Flex Drivers — Tax Deduction PDF',
+    h1: 'Mileage Log for Amazon Flex Drivers',
+    description: 'Free IRS mileage log generator for Amazon Flex delivery drivers. Track package delivery miles and maximize your 1099 tax deductions.',
+    keyword: 'amazon flex mileage log',
+    intro: 'Amazon Flex drivers are 1099 independent contractors who can deduct every business mile at the 2026 IRS rate of 72.5¢/mile. A typical 4-hour Flex block covers 40-60 miles — that is roughly $30-45 in deductions per block. Over a year of regular blocks, that can mean $3,000-$8,000 in vehicle deductions. Amazon does not track your miles for you, so a personal log is essential. Generate your IRS-ready Amazon Flex mileage log here for free.',
+    tips: [
+      'Track miles from home to the delivery station if you start your route there',
+      'Log all miles during your delivery block, including between stops',
+      'Include miles driven back home after completing your block',
+      'Amazon Flex app shows route miles but not all deductible miles — keep your own',
+      'Save your block confirmation screenshots as supporting evidence',
+      'Standard mileage (72.5¢) usually beats tracking actual gas and maintenance'
+    ]
+  },
+  'mileage-log-therapists': {
+    title: 'Free Mileage Log for Therapists & Counselors — IRS Tax Deduction',
+    h1: 'Mileage Log for Therapists & Counselors',
+    description: 'Free IRS mileage log generator for therapists, counselors, and home-visit clinicians. Track client-visit miles for your private practice tax deductions.',
+    keyword: 'therapist mileage log',
+    intro: 'Therapists, counselors, and clinicians who travel between offices, see clients in their homes, or visit care facilities can deduct those business miles at the 2026 IRS rate of 72.5¢/mile. Mobile and in-home therapists often drive 100-200 business miles per week — that is $75-$145 in weekly deductions, or $4,000-$7,500 per year. This free generator builds an IRS-compliant mileage log for your private practice in minutes.',
+    tips: [
+      'Deduct miles between your office and client homes or facilities',
+      'Travel between two work locations is deductible (office to client site)',
+      'Commuting from home to your main office is NOT deductible',
+      'If you work from a home office, trips to clients ARE deductible',
+      'Record the client visit purpose (e.g. "home session - client A")',
+      'Keep records 3 years minimum (6 if you under-report income)'
     ]
   }
 };
