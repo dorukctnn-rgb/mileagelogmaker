@@ -8,8 +8,7 @@
 <meta property="og:title" content="<%= page.title %>">
 <meta property="og:description" content="<%= page.description %>">
 <meta name="google-site-verification" content="lTAZNAqExJcgGVTl7hfH3sdplbLhtLtfScgj18hkzO4" />
-<link rel="canonical" href="https://mileagelogmaker.com/<%= slug %>">
-<script type="application/ld+json">
+<link rel="canonical" href="https://mileagelogmaker.com/<%= slug %>"><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -19,6 +18,23 @@
   "operatingSystem": "Any"
 }
 </script>
+<% if (page.faq && page.faq.length) { %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    <% page.faq.forEach(function(item, i){ %>
+    {
+      "@type": "Question",
+      "name": <%- JSON.stringify(item.q) %>,
+      "acceptedAnswer": { "@type": "Answer", "text": <%- JSON.stringify(item.a.replace(/<[^>]*>/g, '')) %> }
+    }<%= i < page.faq.length - 1 ? ',' : '' %>
+    <% }); %>
+  ]
+}
+</script>
+<% } %>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f9fc;color:#0a2540;line-height:1.6}
@@ -79,6 +95,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .related-card{background:#fff;border:1px solid #e6ebf1;padding:18px;border-radius:8px;text-decoration:none;color:#0a2540;transition:all .15s}
 .related-card:hover{border-color:#635bff;box-shadow:0 4px 12px rgba(99,91,255,.1)}
 .related-card strong{display:block;font-size:14px}
+
+.faq-section{max-width:760px;margin:50px auto;padding:0 20px}
+.faq-section h2{font-size:24px;margin-bottom:20px;font-weight:700}
+.faq-item{background:#fff;border:1px solid #e6ebf1;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.faq-q{padding:16px 20px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#0a2540;font-size:15px}
+.faq-q:hover{background:#f6f9fc}
+.faq-arrow{transition:transform .2s;color:#635bff}
+.faq-q.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:all .25s;color:#425466;line-height:1.6}
+.faq-a.open{max-height:600px;padding:0 20px 18px 20px}
+.faq-a p{margin:0;font-size:15px}
 
 footer{background:#0a2540;color:#a3b1cc;padding:30px 20px;text-align:center;margin-top:60px;font-size:13px}
 footer a{color:#fff;text-decoration:none;margin:0 10px}
@@ -166,12 +193,36 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
     </ul>
   </div>
 
+  <% if (page.sections && page.sections.length) { %>
+    <% page.sections.forEach(function(sec){ %>
+      <h2><%= sec.h %></h2>
+      <% sec.p.forEach(function(para){ %>
+        <p><%- para %></p>
+      <% }); %>
+    <% }); %>
+  <% } %>
+
   <h2>How this generator helps</h2>
   <p>Most mileage trackers force you to download an app, create an account, or pay a subscription. This generator does none of that. Enter your trips above, click "Generate IRS-Ready PDF," and download a properly formatted log in seconds. Your data stays in your browser between sessions, so you can come back and add more trips throughout the year.</p>
 
   <h2>What goes in the PDF</h2>
   <p>The generated PDF includes everything the IRS requires: date, start location, end location, purpose, miles driven, and trip type. It also includes your odometer readings (if entered), a calculated tax deduction summary, and a clean header showing your name and vehicle. Print it, email it to your CPA, or upload it to TurboTax — it is ready for tax filing as-is.</p>
 </article>
+
+<% if (page.faq && page.faq.length) { %>
+<section class="faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <% page.faq.forEach(function(item){ %>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span><%= item.q %></span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a"><p><%- item.a %></p></div>
+    </div>
+  <% }); %>
+</section>
+<% } %>
 
 <section class="related">
   <h2>Related guides</h2>
@@ -193,6 +244,12 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
 </footer>
 
 <script>
+function toggleFAQ(el){
+  el.classList.toggle('open');
+  const a = el.nextElementSibling;
+  a.classList.toggle('open');
+}
+
 const RATES_2026 = { business: <%= rates.business %>, medical: <%= rates.medical %>, charity: <%= rates.charity %>, personal: 0 };
 const RATES_2025 = { business: 0.70, medical: 0.21, charity: 0.14, personal: 0 };
 const RATES_2024 = { business: 0.67, medical: 0.21, charity: 0.14, personal: 0 };

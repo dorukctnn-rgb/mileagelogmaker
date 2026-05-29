@@ -217,6 +217,66 @@ const NICHE_PAGES = {
       'Keep records 3 years from filing date (6 years if income under-reported)',
       'You cannot deduct commuting miles (home to regular workplace)',
       'Standard mileage (72.5¢) vs actual expenses — pick one method per vehicle'
+    ],
+    sections: [
+      {
+        h: 'The Four Fields the IRS Requires',
+        p: [
+          'Every entry in your mileage log must contain four specific data points, and missing any one of them can invalidate the deduction for that trip. These are: <strong>the date of the trip</strong>, <strong>your destination</strong> (where you drove), <strong>the business purpose</strong> (why the trip was necessary for your work), and <strong>the number of miles driven</strong>.',
+          'The business purpose is the field most people get wrong. "Work" or "business" is not specific enough. The IRS wants to see something like "client meeting at 123 Main St" or "property showing for buyer" or "delivery route - downtown zone." The purpose should make clear that the trip was ordinary and necessary for your trade or business.',
+          'Beyond the per-trip data, you must also record your vehicle\'s odometer reading on the first and last day of the tax year. This establishes your total annual mileage, which the IRS uses to verify your business-use percentage. Without start and end odometer readings, an auditor cannot confirm what fraction of your driving was for business.'
+        ]
+      },
+      {
+        h: 'What "Contemporaneous" Really Means',
+        p: [
+          'The single most important rule in IRS Publication 463 is that your records must be contemporaneous. This means you record each trip at or near the time it happens — the same day, or at worst within the same week. A log you build from memory or from calendar reconstruction at tax time is far weaker evidence and is frequently thrown out during audits.',
+          'The IRS allows what it calls "adequate records" or "sufficient evidence to support your own statement." A contemporaneous mileage log is the gold standard for adequate records. If you wait until April to recreate a year of driving, you no longer have a contemporaneous record, and the burden of proof shifts heavily against you.',
+          'This is exactly why a simple tool you can open daily matters. Logging three or four trips at the end of each workday takes two minutes and produces an unimpeachable record. Trying to remember 600 trips in April produces a guess.'
+        ]
+      },
+      {
+        h: 'Standard Mileage Rate vs Actual Expenses',
+        p: [
+          'The IRS gives you two methods to deduct vehicle costs. The <strong>standard mileage method</strong> multiplies your business miles by a fixed rate (72.5¢ for 2026), and that single number covers gas, maintenance, insurance, and depreciation. The <strong>actual expense method</strong> requires you to track every receipt — fuel, repairs, insurance premiums, lease payments — and deduct the business-use percentage.',
+          'For most self-employed people and gig workers, the standard mileage method wins. It is simpler, requires only a mileage log instead of a shoebox of receipts, and often produces a larger deduction for fuel-efficient vehicles. The actual expense method tends to win only for expensive vehicles with high operating costs.',
+          'Important: if you want to use the standard mileage rate, you must choose it in the first year you use the car for business. You can switch to actual expenses later, but if you start with actual expenses (and claim accelerated depreciation), you are generally locked out of the standard rate for that vehicle.'
+        ]
+      },
+      {
+        h: 'Surviving a Mileage Audit',
+        p: [
+          'Vehicle deductions are one of the most commonly audited items on Schedule C because they are easy to inflate. If the IRS questions your mileage, they will ask for your log. A complete, contemporaneous log with all four required fields plus odometer readings almost always satisfies the examiner.',
+          'Supporting evidence strengthens your position further: appointment calendars, client invoices, delivery platform earnings summaries, and gas receipts that corroborate your driving patterns. If you drive for DoorDash or Uber, your platform trip history is excellent backup. If you are a realtor, your MLS showing records line up with your log.',
+          'The trips that draw scrutiny are the round-number estimates ("about 10,000 miles") and the suspiciously consistent entries ("exactly 50 miles every single day"). Real driving is irregular. A log that reflects genuine day-to-day variation is far more credible than one that looks manufactured.'
+        ]
+      }
+    ],
+    faq: [
+      {
+        q: 'Does the IRS require a specific mileage log format?',
+        a: 'No. The IRS does not mandate a specific form or app. It requires that your records contain the four key data points (date, destination, purpose, miles) and be contemporaneous. A paper logbook, a spreadsheet, or a generated PDF are all acceptable as long as they contain the required information.'
+      },
+      {
+        q: 'Can I use Google Maps timeline as my mileage log?',
+        a: 'Google Maps timeline can serve as supporting evidence, but on its own it usually is not sufficient because it does not record the business purpose of each trip. You can use it to reconstruct distances, but you still need to add the purpose and confirm which trips were for business.'
+      },
+      {
+        q: 'What happens if I forgot to track my mileage all year?',
+        a: 'You can attempt to reconstruct a log from calendars, appointment records, and map data, but a reconstructed log is weaker evidence than a contemporaneous one and may be challenged in an audit. Going forward, the safest approach is to log trips daily or weekly. The IRS expects records kept at or near the time of travel.'
+      },
+      {
+        q: 'How long do I need to keep my mileage log?',
+        a: 'Keep your mileage log for at least 3 years from the date you filed the return, which matches the standard IRS audit window. If you substantially under-reported income, the IRS can look back 6 years, so many tax professionals recommend keeping records for 6 years to be safe.'
+      },
+      {
+        q: 'Can I deduct my commute to work?',
+        a: 'No. Commuting miles between your home and your regular place of business are considered personal and are never deductible. However, if you have a qualifying home office as your principal place of business, trips from your home office to clients or job sites can be deductible.'
+      },
+      {
+        q: 'What is the 2026 IRS standard mileage rate?',
+        a: 'The 2026 IRS standard mileage rate is 72.5 cents per mile for business use, 20.5 cents per mile for medical or moving purposes, and 14 cents per mile for charitable driving. The business rate is the highest in history.'
+      }
     ]
   },
   'mileage-log-uk': {
