@@ -161,6 +161,66 @@ const NICHE_PAGES = {
       'Real estate agents are 1099 contractors — deductions go on Schedule C',
       '2026 rate is 72.5¢/mile — just 18,000 miles equals $13,050 deducted',
       'Keep your log contemporaneous — update it weekly, not at tax time'
+    ],
+    sections: [
+      {
+        h: 'How Many Miles Do Real Estate Agents Drive?',
+        p: [
+          'The average real estate agent drives between <strong>15,000 and 25,000 business miles per year</strong>. Between property showings, listing appointments, open houses, client meetings, inspections, and closings, a working agent can easily put 300-500 business miles on their car every week. Top-producing agents in spread-out markets often exceed 30,000 miles annually.',
+          'At the 2026 IRS standard mileage rate of 72.5¢ per mile, 20,000 business miles translates to a <strong>$14,500 tax deduction</strong>. That is money most agents simply forget to claim because they never kept a proper log. For a self-employed realtor in the 24% federal bracket, that deduction is worth roughly $3,480 in actual tax savings — every single year.',
+          'The catch: the IRS will not take your word for it. You cannot estimate "about 20,000 miles" at tax time. You need a contemporaneous log showing the date, destination, purpose, and miles for each business trip. That is exactly what this generator produces.'
+        ]
+      },
+      {
+        h: 'What Driving Is Deductible for Realtors?',
+        p: [
+          'As a 1099 independent contractor, nearly all of your work-related driving is deductible. This includes: driving to <strong>property showings</strong> with buyers, traveling to <strong>listing appointments</strong>, hosting and setting up <strong>open houses</strong>, attending <strong>broker tours and MLS caravans</strong>, meeting clients for coffee or lunch, driving to <strong>inspections, appraisals, and closings</strong>, trips to the title company or attorney, and runs to pick up signage, lockboxes, or marketing materials.',
+          'There is one important exception: <strong>commuting</strong>. Driving from your home to your broker office (your regular workplace) is considered a personal commute and is not deductible. However, here is the key for agents: if you qualify for and claim a <strong>home office</strong> as your principal place of business (Form 8829), then trips from your home office to showings, listings, and appointments become fully deductible business miles. Most agents who work primarily from home qualify for this.',
+          'Driving between two business locations is always deductible — so a trip from one showing to the next, or from the office to a closing, counts regardless of your home office status.'
+        ]
+      },
+      {
+        h: 'Mileage App vs Printable Log for Agents',
+        p: [
+          'Many agents try GPS mileage apps like MileIQ or Everlance, then get frustrated: the apps drain phone battery, misclassify personal trips as business (or vice versa), require constant swiping, and charge $5-12 per month. Worse, an app that auto-logs everything still requires you to add the <strong>business purpose</strong> for each trip — which the IRS requires and which no GPS can guess.',
+          'A structured log you fill in weekly is often more defensible in an audit because every entry has a deliberate, specific purpose ("showing - 123 Oak St with the Johnsons") rather than an auto-generated guess. This free generator gives you that structure without the subscription, the battery drain, or the privacy concerns of constant location tracking.',
+          'The workflow most agents prefer: keep a running note of showings on your phone during the week, then spend five minutes every Friday entering them here and downloading the updated PDF. Contemporaneous, accurate, and audit-proof — for free.'
+        ]
+      },
+      {
+        h: 'Filing Your Real Estate Mileage Deduction',
+        p: [
+          'Real estate agents report income and expenses on <strong>Schedule C</strong> (Profit or Loss from Business) as part of their personal 1040 return. Your total business mileage deduction goes on Line 9 (Car and truck expenses) of Schedule C.',
+          'You will choose between the <strong>standard mileage method</strong> (multiply business miles by 72.5¢) and the <strong>actual expense method</strong> (track and deduct the business-use percentage of gas, insurance, repairs, lease, and depreciation). For most agents driving a normal car, the standard mileage method produces a larger deduction and requires far less paperwork — just the mileage log. If you drive an expensive SUV with high operating costs, run both calculations and compare.',
+          'Whichever method you choose, keep your mileage log and supporting records (closing statements, showing confirmations, calendar entries) for at least three years after filing. The generated PDF from this tool serves as your primary record; your MLS showing history and calendar are excellent corroborating evidence if you are ever questioned.'
+        ]
+      }
+    ],
+    faq: [
+      {
+        q: 'How many miles does the average real estate agent drive per year?',
+        a: 'Most working real estate agents drive 15,000 to 25,000 business miles per year, with busy agents in spread-out markets often exceeding 30,000. At the 2026 IRS rate of 72.5¢/mile, 20,000 business miles equals a $14,500 deduction.'
+      },
+      {
+        q: 'Can real estate agents deduct mileage on taxes?',
+        a: 'Yes. Real estate agents are typically 1099 independent contractors, so business driving — showings, listing appointments, open houses, closings, and client meetings — is deductible on Schedule C. You must keep a contemporaneous mileage log recording the date, destination, purpose, and miles for each trip.'
+      },
+      {
+        q: 'Is driving to showings tax deductible for realtors?',
+        a: 'Yes. Driving to property showings, between showings, and from showings to other business stops is deductible. If you claim a home office as your principal place of business, trips from home to showings are also fully deductible. Only the commute to a regular broker office (without a home office) is non-deductible.'
+      },
+      {
+        q: 'What is the best mileage tracker for real estate agents?',
+        a: 'The best tracker is whatever you will actually keep current. GPS apps auto-record trips but still require you to add a business purpose and charge a monthly fee. Many agents prefer a structured log they update weekly, which produces clear, purpose-labeled entries that hold up well in an audit. This free generator creates an IRS-ready PDF with no subscription.'
+      },
+      {
+        q: 'Do I need to track personal miles too?',
+        a: 'If you use the standard mileage method, you only deduct business miles, but you should record your total annual mileage (odometer on January 1 and December 31) so you can show your business-use percentage if asked. If you use the actual expense method, tracking the business-use percentage of total miles is required.'
+      },
+      {
+        q: 'What form do real estate agents use to deduct mileage?',
+        a: 'Real estate agents report car and truck expenses on Line 9 of Schedule C (Form 1040). If you claim a home office that makes home-to-showing trips deductible, you file Form 8829 for the home office deduction. Keep your mileage log as supporting documentation.'
+      }
     ]
   },
   'mileage-log-self-employed': {
@@ -324,6 +384,54 @@ const NICHE_PAGES = {
       'Reconstructed logs are usually rejected during a CRA audit',
       'Keep the logbook + supporting docs (fuel, insurance) for 6 years',
       'Add notes for trips over 100 km or unusual destinations'
+    ],
+    sections: [
+      {
+        h: 'What the CRA Requires in a Mileage Log',
+        p: [
+          'The Canada Revenue Agency requires a logbook that records, for each business trip, the <strong>date</strong>, the <strong>destination</strong>, the <strong>purpose</strong> of the trip, and the <strong>number of kilometres driven</strong>. You must also record your vehicle\'s odometer reading at the <strong>beginning and end of the fiscal period</strong> (typically January 1 and December 31).',
+          'These four data points plus the annual odometer readings let the CRA calculate your <strong>business-use percentage</strong> — the portion of your total driving that was for business. This percentage determines how much of your vehicle expenses you can deduct, whether you use the full logbook method or claim the per-kilometre allowance.',
+          'For 2026, the CRA reasonable per-kilometre rate is <strong>73¢ for the first 5,000 business kilometres and 67¢ thereafter</strong> (77¢/71¢ in Yukon, Northwest Territories, and Nunavut). This generator applies the correct rate automatically as you add trips.'
+        ]
+      },
+      {
+        h: 'Full Logbook vs Simplified Logbook Method',
+        p: [
+          'The CRA accepts two approaches. The <strong>full logbook method</strong> requires you to record every business trip for the entire year. This is the gold standard and the safest option, especially in your first year of claiming vehicle expenses.',
+          'The <strong>simplified logbook method</strong> lets established businesses keep a full logbook for one complete <em>base year</em>, then maintain a representative <em>three-month sample</em> in later years. The CRA uses the sample, compared against the base year, to estimate your annual business-use percentage. To use this method you must have a base year on file and your usage pattern must stay reasonably consistent.',
+          'For most self-employed Canadians and gig drivers, the full logbook method is simplest to defend. Recording trips as they happen — which takes a couple of minutes a day with this tool — removes any guesswork and gives you a complete, audit-ready record.'
+        ]
+      },
+      {
+        h: 'T2125 vs T777 — Which Form Do You Use?',
+        p: [
+          'If you are <strong>self-employed</strong> (a sole proprietor, gig worker, or independent contractor), you report vehicle expenses on <strong>Form T2125, Statement of Business or Professional Activities</strong>, which is filed with your T1 personal return. You deduct your business-use percentage of total vehicle costs, or apply the per-kilometre method.',
+          'If you are an <strong>employee</strong> who is required to use your own vehicle for work, you claim motor vehicle expenses on <strong>Form T777, Statement of Employment Expenses</strong>. To do this, your employer must complete and sign <strong>Form T2200, Declaration of Conditions of Employment</strong>, confirming you were required to pay your own vehicle costs. Keep the signed T2200 in your records — you do not file it, but the CRA can request it.',
+          'In both cases, the mileage logbook is the foundation of your claim. Without it, the CRA can deny the deduction entirely.'
+        ]
+      }
+    ],
+    faq: [
+      {
+        q: 'What is the CRA mileage rate for 2026?',
+        a: 'The 2026 CRA reasonable per-kilometre rate is 73 cents for the first 5,000 business kilometres and 67 cents for each kilometre after that. In Yukon, the Northwest Territories, and Nunavut, the rates are 77 cents and 71 cents respectively.'
+      },
+      {
+        q: 'What does the CRA require in a mileage logbook?',
+        a: 'The CRA requires the date, destination, purpose, and kilometres for each business trip, plus odometer readings at the start and end of the fiscal year. These establish your business-use percentage, which determines your deductible vehicle expenses.'
+      },
+      {
+        q: 'How long do I need to keep my CRA mileage log?',
+        a: 'The CRA requires you to keep your logbook and supporting documents for six years from the end of the tax year to which they relate. This is longer than the IRS requirement, so Canadian filers should retain records well beyond filing.'
+      },
+      {
+        q: 'Can I use a simplified logbook for the CRA?',
+        a: 'Yes, if you have kept a full logbook for one complete base year. After that, you can maintain a three-month sample period in subsequent years, and the CRA will estimate annual business use by comparing the sample to your base year, provided your driving pattern stays consistent.'
+      },
+      {
+        q: 'Do I use T2125 or T777 for vehicle expenses?',
+        a: 'Self-employed individuals use Form T2125 (Statement of Business or Professional Activities). Employees required to use their own vehicle use Form T777 (Statement of Employment Expenses) and need a signed Form T2200 from their employer. Both rely on your mileage logbook.'
+      }
     ]
   },
   'forgot-to-track-mileage': {
