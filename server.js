@@ -96,13 +96,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
-// 2026 IRS Standard Mileage Rates (Notice 2026-10, effective Jan 1, 2026)
-const IRS_RATES_2026 = {
-  business: 0.725,
-  medical: 0.205,
-  charity: 0.14,
-  moving: 0.205
-};
+// 2026 IRS standard mileage rates changed mid-year:
+//   Jan 1 - Jun 30: Notice 2026-10
+//   from Jul 1:     IRB 2026-29 (business 76¢, medical/moving 23.5¢; charity fixed by statute)
+const IRS_RATES_2026_H1 = { business: 0.725, medical: 0.205, charity: 0.14, moving: 0.205 };
+const IRS_RATES_2026_H2 = { business: 0.76, medical: 0.235, charity: 0.14, moving: 0.235 };
+const IRS_RATES_2026 = IRS_RATES_2026_H2; // current rates, used for display
+const RATE_CHANGE_2026 = '2026-07-01';
 
 const IRS_RATES_2025 = {
   business: 0.70,
@@ -118,6 +118,13 @@ const IRS_RATES_2024 = {
   moving: 0.21
 };
 
+// Rate table for a trip, based on the tax year and (for 2026) the trip date.
+function ratesFor(year, date) {
+  if (year === '2024') return IRS_RATES_2024;
+  if (year === '2025') return IRS_RATES_2025;
+  return String(date || '') >= RATE_CHANGE_2026 ? IRS_RATES_2026_H2 : IRS_RATES_2026_H1;
+}
+
 // SEO niche pages config
 const NICHE_PAGES = {
   'mileage-log-uber-drivers': {
@@ -125,7 +132,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Uber Drivers',
     description: 'Free IRS-compliant mileage log generator for Uber, Lyft, and rideshare drivers. Track every business mile and maximize your tax deductions.',
     keyword: 'uber mileage log',
-    intro: 'Every mile you drive between rides counts as a business expense. As an Uber or Lyft driver, you can deduct $0.725 per mile in 2026 — that is roughly $7,250 in tax deductions for every 10,000 business miles. This free generator creates an IRS-ready PDF in under 3 minutes. No signup, no credit card.',
+    intro: 'Every mile you drive between rides counts as a business expense. As an Uber or Lyft driver, you can deduct 76¢ per mile for miles driven from July 1, 2026 (72.5¢ before that), roughly $7,600 in deductions for every 10,000 business miles at the current rate. This free generator creates an IRS-ready PDF in under 3 minutes. No signup, no credit card.',
     tips: [
       'Log online time, between-ride time, and all rides as business miles',
       'Track miles to gas stations, car washes, and rideshare-related errands',
@@ -138,7 +145,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for DoorDash & Delivery Drivers',
     description: 'Free IRS mileage log generator for DoorDash, UberEats, Grubhub, and Instacart drivers. Generate compliant PDFs to maximize your delivery driver tax deductions.',
     keyword: 'doordash mileage log',
-    intro: 'DoorDash, UberEats, and Grubhub drivers can deduct every mile from the moment they accept a delivery to the moment they finish. With the 2026 IRS rate of $0.725/mile, just 100 miles of deliveries means $72.50 in deductions. Generate your IRS-ready log here for free.',
+    intro: 'DoorDash, UberEats, and Grubhub drivers can deduct every mile from the moment they accept a delivery to the moment they finish. At the current 2026 IRS rate of 76¢/mile (72.5¢ for January to June), just 100 miles of deliveries means $76 in deductions. Generate your IRS-ready log here for free.',
     tips: [
       'Log miles from your home to the first restaurant if you drive there to start dashing',
       'Track miles between deliveries, not just delivery to customer',
@@ -149,9 +156,9 @@ const NICHE_PAGES = {
   'mileage-log-real-estate-agents': {
     title: 'Mileage Log for Real Estate Agents 2026 — Free IRS PDF Generator',
     h1: 'Mileage Log for Real Estate Agents',
-    description: 'Free mileage log generator built for real estate agents and realtors. Track showings, client meetings, and open houses. 2026 IRS rate 72.5¢/mile. Deduct $13,000+ per year.',
+    description: 'Free mileage log generator built for real estate agents and realtors. Track showings, client meetings, and open houses. Uses the 2026 IRS rates: 72.5¢/mile January to June, 76¢ from July 1.',
     keyword: 'real estate agent mileage log',
-    intro: 'Real estate agents drive an average of 18,000+ business miles per year showing properties, meeting clients, and attending closings. At the 2026 IRS rate of 72.5¢/mile, that is over $13,000 in potential tax deductions. As a 1099 independent contractor, nearly every mile you drive for your business is deductible — but only if you keep a proper log. This free IRS-ready generator was built specifically for realtors to capture every property tour, client meeting, and open house.',
+    intro: 'Real estate agents drive an average of 18,000+ business miles per year showing properties, meeting clients, and attending closings. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), that is roughly $13,000 to $13,700 in potential tax deductions. As a 1099 independent contractor, nearly every mile you drive for your business is deductible — but only if you keep a proper log. This free IRS-ready generator was built specifically for realtors to capture every property tour, client meeting, and open house.',
     tips: [
       'Every property showing counts — log address-to-address mileage',
       'Client lunches, broker open houses, and MLS caravan tours all qualify',
@@ -159,7 +166,7 @@ const NICHE_PAGES = {
       'Add the property MLS number or address in the purpose field for audit safety',
       'Home office to first showing is deductible if you claim a home office (Form 8829)',
       'Real estate agents are 1099 contractors — deductions go on Schedule C',
-      '2026 rate is 72.5¢/mile — just 18,000 miles equals $13,050 deducted',
+      '2026 rate is 72.5¢/mile through June 30 and 76¢ from July 1: 18,000 miles spread evenly over the year is about $13,365 deducted',
       'Keep your log contemporaneous — update it weekly, not at tax time'
     ],
     sections: [
@@ -167,7 +174,7 @@ const NICHE_PAGES = {
         h: 'How Many Miles Do Real Estate Agents Drive?',
         p: [
           'The average real estate agent drives between <strong>15,000 and 25,000 business miles per year</strong>. Between property showings, listing appointments, open houses, client meetings, inspections, and closings, a working agent can easily put 300-500 business miles on their car every week. Top-producing agents in spread-out markets often exceed 30,000 miles annually.',
-          'At the 2026 IRS standard mileage rate of 72.5¢ per mile, 20,000 business miles translates to a <strong>$14,500 tax deduction</strong>. That is money most agents simply forget to claim because they never kept a proper log. For a self-employed realtor in the 24% federal bracket, that deduction is worth roughly $3,480 in actual tax savings — every single year.',
+          'With the 2026 IRS standard mileage rates (72.5¢ per mile through June 30, 76¢ from July 1), 20,000 business miles spread evenly over the year translates to a <strong>$14,850 tax deduction</strong>. That is money most agents simply forget to claim because they never kept a proper log. For a self-employed realtor in the 24% federal bracket, that deduction is worth roughly $3,480 in actual tax savings — every single year.',
           'The catch: the IRS will not take your word for it. You cannot estimate "about 20,000 miles" at tax time. You need a contemporaneous log showing the date, destination, purpose, and miles for each business trip. That is exactly what this generator produces.'
         ]
       },
@@ -191,7 +198,7 @@ const NICHE_PAGES = {
         h: 'Filing Your Real Estate Mileage Deduction',
         p: [
           'Real estate agents report income and expenses on <strong>Schedule C</strong> (Profit or Loss from Business) as part of their personal 1040 return. Your total business mileage deduction goes on Line 9 (Car and truck expenses) of Schedule C.',
-          'You will choose between the <strong>standard mileage method</strong> (multiply business miles by 72.5¢) and the <strong>actual expense method</strong> (track and deduct the business-use percentage of gas, insurance, repairs, lease, and depreciation). For most agents driving a normal car, the standard mileage method produces a larger deduction and requires far less paperwork — just the mileage log. If you drive an expensive SUV with high operating costs, run both calculations and compare.',
+          'You will choose between the <strong>standard mileage method</strong> (multiply business miles by the IRS rate: 72.5¢ through June 2026, 76¢ from July 1) and the <strong>actual expense method</strong> (track and deduct the business-use percentage of gas, insurance, repairs, lease, and depreciation). For most agents driving a normal car, the standard mileage method produces a larger deduction and requires far less paperwork — just the mileage log. If you drive an expensive SUV with high operating costs, run both calculations and compare.',
           'Whichever method you choose, keep your mileage log and supporting records (closing statements, showing confirmations, calendar entries) for at least three years after filing. The generated PDF from this tool serves as your primary record; your MLS showing history and calendar are excellent corroborating evidence if you are ever questioned.'
         ]
       }
@@ -199,7 +206,7 @@ const NICHE_PAGES = {
     faq: [
       {
         q: 'How many miles does the average real estate agent drive per year?',
-        a: 'Most working real estate agents drive 15,000 to 25,000 business miles per year, with busy agents in spread-out markets often exceeding 30,000. At the 2026 IRS rate of 72.5¢/mile, 20,000 business miles equals a $14,500 deduction.'
+        a: 'Most working real estate agents drive 15,000 to 25,000 business miles per year, with busy agents in spread-out markets often exceeding 30,000. At the 2026 IRS rates (72.5¢ through June 30, 76¢ from July 1), 20,000 business miles spread evenly across the year equals about a $14,850 deduction.'
       },
       {
         q: 'Can real estate agents deduct mileage on taxes?',
@@ -228,7 +235,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Self-Employed & Freelancers',
     description: 'Free IRS-ready mileage log generator for self-employed individuals and freelancers. Generate Schedule C-compliant PDFs for tax filing.',
     keyword: 'self employed mileage log',
-    intro: 'If you are self-employed, every business mile is a tax deduction worth $0.725 in 2026. Whether you are a freelancer driving to client meetings, a consultant visiting offices, or a contractor moving between job sites, this free generator creates the IRS-ready log you need for Schedule C.',
+    intro: 'If you are self-employed, every business mile is a tax deduction: 72.5¢ for miles driven January to June 2026 and 76¢ from July 1. Whether you are a freelancer driving to client meetings, a consultant visiting offices, or a contractor moving between job sites, this free generator creates the IRS-ready log you need for Schedule C.',
     tips: [
       'Track miles to client meetings, networking events, and conferences',
       'Drives to the post office, bank, or office supply store count',
@@ -237,16 +244,40 @@ const NICHE_PAGES = {
     ]
   },
   'mileage-log-2026-irs-rate': {
-    title: '2026 IRS Mileage Rate: 72.5 cents/mile — Free Mileage Log Generator',
-    h1: '2026 IRS Standard Mileage Rate',
-    description: 'The 2026 IRS standard mileage rate is 72.5 cents per business mile. Generate a free IRS-compliant mileage log PDF using the latest 2026 rates.',
+    title: '2026 IRS Mileage Rate: 76¢ From July 1 (72.5¢ Before) — Free Log Generator',
+    h1: '2026 IRS Mileage Rate: 72.5¢, Then 76¢ From July 1',
+    description: 'The 2026 IRS mileage rate is 76 cents per business mile from July 1, 2026, up from 72.5 cents for January to June. Medical is 23.5¢, charity 14¢. Free log generator applies the right rate per trip.',
     keyword: '2026 irs mileage rate',
-    intro: 'The IRS announced the 2026 standard mileage rates in Notice 2026-10: 72.5 cents per business mile (up 2.5 cents from 70 cents in 2025), 20.5 cents per medical or moving mile (down half a cent), and 14 cents per charity mile (unchanged by statute). Use this free generator to log your miles using the latest 2026 rates and generate an IRS-ready PDF.',
+    intro: 'The IRS changed the 2026 standard mileage rate in the middle of the year. Miles driven from January 1 to June 30, 2026 use Notice 2026-10: 72.5 cents per business mile and 20.5 cents per medical or moving mile. For miles driven on or after July 1, 2026, Internal Revenue Bulletin 2026-29 raised the business rate to 76 cents and the medical and moving rate to 23.5 cents. The charity rate stays at 14 cents. This generator applies the correct rate to each trip based on its date.',
     tips: [
-      'Business: 72.5¢/mile (up 2.5 cents from 2025)',
-      'Medical: 20.5¢/mile (down 0.5 cents from 2025)',
-      'Charity: 14¢/mile (set by statute, unchanged since 1998)',
-      'Moving: 20.5¢/mile (active military and intelligence community only)'
+      'Business: 72.5¢/mile Jan 1 to Jun 30, 76¢/mile from Jul 1, 2026',
+      'Medical and moving: 20.5¢/mile Jan 1 to Jun 30, 23.5¢/mile from Jul 1',
+      'Charity: 14¢/mile all year (set by statute, unchanged since 1998)',
+      'Moving applies only to active-duty military and eligible intelligence community members',
+      'Split your 2026 log at July 1 so each trip gets the right rate'
+    ],
+    sections: [
+      {
+        h: 'Why the IRS changed the rate mid-year',
+        p: [
+          'The business rate is based on the fixed and variable costs of running a car. The medical and moving rate uses only variable costs such as fuel. When fuel costs rise sharply, the IRS can issue a mid-year update, as it did in July 2022. The July 2026 increase is the second mid-year change in five years.',
+          'Mid-year changes only affect miles driven after the effective date. Trips from the first half of 2026 keep the 72.5¢ rate; you do not recalculate them.'
+        ]
+      },
+      {
+        h: 'How to calculate a 2026 deduction with two rates',
+        p: [
+          'Total your business miles for January 1 to June 30 and multiply by $0.725. Total your business miles from July 1 onward and multiply by $0.76. Add the two results. Example: 6,000 miles before July 1 = $4,350, plus 7,000 miles after = $5,320, for a total deduction of <strong>$9,670</strong>.',
+          'Medical miles work the same way at 20.5¢ and 23.5¢. Charity miles are 14¢ for the whole year.',
+          'Employers reimbursing at the IRS rate typically switch to 76¢ for travel on or after July 1. Reimbursements up to the IRS rate are generally tax-free under an accountable plan.'
+        ]
+      }
+    ],
+    faq: [
+      { q: 'What is the IRS mileage rate for 2026?', a: 'For business driving, 72.5 cents per mile from January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026. Medical and moving: 20.5 cents, then 23.5 cents from July 1. Charitable: 14 cents all year.' },
+      { q: 'Does the 76 cent rate apply to the whole of 2026?', a: 'No. It applies only to miles driven on or after July 1, 2026. Miles driven earlier in 2026 use 72.5 cents.' },
+      { q: 'Where did the IRS announce the July 2026 change?', a: 'The midyear rates were published in Internal Revenue Bulletin 2026-29 (July 13, 2026). The original 2026 rates came from Notice 2026-10.' },
+      { q: 'Did the charity mileage rate change?', a: 'No. The charitable rate is set by law at 14 cents per mile and did not change.' }
     ]
   },
   'free-mileage-log-template': {
@@ -267,7 +298,7 @@ const NICHE_PAGES = {
     h1: 'IRS Mileage Log Requirements (2026)',
     description: 'Complete IRS mileage log requirements for 2026: the 4 required fields, Publication 463 rules, contemporaneous recordkeeping, and how to survive an audit. Free generator included.',
     keyword: 'irs mileage log requirements',
-    intro: 'The IRS requires four pieces of information for every business trip: the date, your destination, the business purpose, and the miles driven. Under IRS Publication 463, your records must be "contemporaneous" — created at or near the time of each trip, not reconstructed months later from memory. You must also log your odometer reading at the start and end of the tax year. The 2026 standard mileage rate is 72.5¢/mile. This free generator captures every required field in an IRS-ready PDF format that holds up under audit.',
+    intro: 'The IRS requires four pieces of information for every business trip: the date, your destination, the business purpose, and the miles driven. Under IRS Publication 463, your records must be "contemporaneous" — created at or near the time of each trip, not reconstructed months later from memory. You must also log your odometer reading at the start and end of the tax year. The 2026 standard mileage rate is 72.5¢/mile through June 30 and 76¢/mile from July 1. This free generator captures every required field in an IRS-ready PDF format that holds up under audit.',
     tips: [
       'Four required fields per trip: date, destination, business purpose, miles driven',
       'Record odometer reading on January 1 and December 31 each year',
@@ -276,7 +307,7 @@ const NICHE_PAGES = {
       'Reconstructed or estimated logs are commonly rejected during audits',
       'Keep records 3 years from filing date (6 years if income under-reported)',
       'You cannot deduct commuting miles (home to regular workplace)',
-      'Standard mileage (72.5¢) vs actual expenses — pick one method per vehicle'
+      'Standard mileage (76¢ from July 2026) vs actual expenses: pick one method per vehicle'
     ],
     sections: [
       {
@@ -298,7 +329,7 @@ const NICHE_PAGES = {
       {
         h: 'Standard Mileage Rate vs Actual Expenses',
         p: [
-          'The IRS gives you two methods to deduct vehicle costs. The <strong>standard mileage method</strong> multiplies your business miles by a fixed rate (72.5¢ for 2026), and that single number covers gas, maintenance, insurance, and depreciation. The <strong>actual expense method</strong> requires you to track every receipt — fuel, repairs, insurance premiums, lease payments — and deduct the business-use percentage.',
+          'The IRS gives you two methods to deduct vehicle costs. The <strong>standard mileage method</strong> multiplies your business miles by a fixed rate (72.5¢ through June 2026, 76¢ from July 1), and that single number covers gas, maintenance, insurance, and depreciation. The <strong>actual expense method</strong> requires you to track every receipt — fuel, repairs, insurance premiums, lease payments — and deduct the business-use percentage.',
           'For most self-employed people and gig workers, the standard mileage method wins. It is simpler, requires only a mileage log instead of a shoebox of receipts, and often produces a larger deduction for fuel-efficient vehicles. The actual expense method tends to win only for expensive vehicles with high operating costs.',
           'Important: if you want to use the standard mileage rate, you must choose it in the first year you use the car for business. You can switch to actual expenses later, but if you start with actual expenses (and claim accelerated depreciation), you are generally locked out of the standard rate for that vehicle.'
         ]
@@ -335,7 +366,7 @@ const NICHE_PAGES = {
       },
       {
         q: 'What is the 2026 IRS standard mileage rate?',
-        a: 'The 2026 IRS standard mileage rate is 72.5 cents per mile for business use, 20.5 cents per mile for medical or moving purposes, and 14 cents per mile for charitable driving. The business rate is the highest in history.'
+        a: 'For 2026 the business rate is 72.5 cents per mile for January to June and 76 cents per mile from July 1. Medical and moving is 20.5 cents, then 23.5 cents from July 1. Charitable driving is 14 cents all year. The 76 cent business rate is the highest the IRS has set.'
       }
     ]
   },
@@ -454,7 +485,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Instacart & Shipt Shoppers',
     description: 'Free IRS mileage log generator for Instacart, Shipt, and grocery delivery shoppers. Maximize your 1099 tax deductions with a compliant PDF.',
     keyword: 'instacart mileage log',
-    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones — every mile counts. At the 2026 IRS rate of 72.5¢/mile, a typical shopper logging 12,000 business miles per year claims an $8,700 deduction. Generate your IRS-ready log here for free.',
+    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones — every mile counts. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), a shopper logging 12,000 business miles evenly across the year claims about $8,910. Generate your IRS-ready log here for free.',
     tips: [
       'Track miles from your home to the first store of the shift',
       'Log between-store and store-to-customer miles separately',
@@ -480,7 +511,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Nurses & Home Health Workers',
     description: 'Free mileage log generator for travel nurses, home health aides, and in-home care providers. Track patient visits and generate IRS-compliant PDFs.',
     keyword: 'nurse mileage log',
-    intro: 'Home health nurses, hospice workers, and travel nurses drive between patient homes all day. The miles between patient visits are fully deductible at the 2026 IRS rate of 72.5¢/mile. A nurse logging 15,000 business miles claims a $10,875 deduction. Generate your IRS-ready log here for free.',
+    intro: 'Home health nurses, hospice workers, and travel nurses drive between patient homes all day. The miles between patient visits are fully deductible at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A nurse logging 15,000 business miles evenly across the year claims about $11,140. Generate your IRS-ready log here for free.',
     tips: [
       'Patient-to-patient drives are deductible (not commute to first patient)',
       'Drives to the pharmacy or supply pickup count as business',
@@ -493,7 +524,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Construction & Trades',
     description: 'Free IRS mileage log generator for construction contractors, plumbers, electricians, and HVAC technicians. Track job site visits and supply runs.',
     keyword: 'contractor mileage log',
-    intro: 'Construction contractors, electricians, plumbers, and HVAC techs drive between job sites, supply houses, and client meetings. Every mile is a tax deduction at the 2026 IRS rate of 72.5¢/mile. A contractor logging 20,000 business miles claims a $14,500 deduction. Generate your log here for free.',
+    intro: 'Construction contractors, electricians, plumbers, and HVAC techs drive between job sites, supply houses, and client meetings. Every mile is a tax deduction at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A contractor logging 20,000 business miles evenly across the year claims about $14,850. Generate your log here for free.',
     tips: [
       'Job-to-job drives are deductible — even short ones',
       'Trips to Home Depot, Lowe\'s, or supply houses count',
@@ -506,9 +537,10 @@ const NICHE_PAGES = {
     h1: 'IRS Mileage Rate History',
     description: 'Complete history of IRS standard mileage rates from 1994 to 2026. Includes business, medical, and charity rates for every year.',
     keyword: 'irs mileage rate history',
-    intro: 'The IRS standard mileage rate has more than doubled since 1994, when it was 29¢/mile. The 2026 rate of 72.5¢/mile is the highest in history. This page lists every business, medical, and charity rate going back three decades — useful when amending old returns or reconstructing past mileage logs.',
+    intro: 'The IRS standard mileage rate has more than doubled since 1994, when it was 29¢/mile. In 2026 it changed twice: 72.5¢ from January 1 and 76¢ from July 1, the highest rate on record. This page lists every business, medical, and charity rate going back three decades — useful when amending old returns or reconstructing past mileage logs.',
     tips: [
-      '2026: 72.5¢ business, 20.5¢ medical, 14¢ charity',
+      '2026 (from Jul 1): 76¢ business, 23.5¢ medical, 14¢ charity (mid-year increase)',
+      '2026 (Jan-Jun): 72.5¢ business, 20.5¢ medical, 14¢ charity',
       '2025: 70¢ business, 21¢ medical, 14¢ charity',
       '2024: 67¢ business, 21¢ medical, 14¢ charity',
       '2023: 65.5¢ business, 22¢ medical, 14¢ charity',
@@ -523,10 +555,10 @@ const NICHE_PAGES = {
     h1: 'Mileage Log Generator',
     description: 'Free online mileage log generator. Create an IRS-compliant mileage log PDF in 3 minutes. No signup, no spreadsheet, no app. Just add trips and download.',
     keyword: 'mileage log generator',
-    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip — date, start and end location, miles, and purpose — and the tool builds a professional logbook with your deduction auto-calculated at the 2026 IRS rate of 72.5¢/mile. No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
+    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip — date, start and end location, miles, and purpose — and the tool builds a professional logbook with your deduction auto-calculated at the IRS rate for each trip date (72.5¢/mile before July 1, 2026, 76¢ from July 1). No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
     tips: [
       'Add unlimited trips — the tool totals your miles and deduction automatically',
-      '2026 IRS rate (72.5¢/mile) is applied to every business mile',
+      'The correct 2026 IRS rate is applied per trip date: 72.5¢ before July 1, 76¢ from July 1',
       'Generated PDF includes date, locations, purpose, and odometer columns',
       'No account needed — your data stays in your browser until you download',
       'Print the PDF or keep it digital — both are IRS-acceptable',
@@ -534,14 +566,14 @@ const NICHE_PAGES = {
     ]
   },
   'mileage-log-2026': {
-    title: 'Mileage Log 2026 — Free IRS Template & Generator (72.5¢/mile)',
-    h1: 'Mileage Log 2026 (Updated IRS Rate)',
-    description: 'Free 2026 mileage log generator using the new 72.5¢/mile IRS rate. Create a compliant PDF logbook for your 2026 tax return. No signup.',
+    title: 'Mileage Log 2026 — Free IRS Template & Generator (76¢ From July 1)',
+    h1: 'Mileage Log 2026 (Updated for the July Rate Change)',
+    description: 'Free 2026 mileage log generator that applies the right IRS rate per trip: 72.5¢/mile January to June, 76¢ from July 1. Compliant PDF logbook, no signup.',
     keyword: 'mileage log 2026',
-    intro: 'The 2026 IRS standard mileage rate is 72.5¢ per mile for business driving — the highest rate in history and a 2.5¢ increase over 2025. This free generator builds a 2026-ready mileage log PDF with the new rate applied automatically. Whether you are self-employed, a gig worker, or claiming employee business expenses, generate your audit-proof 2026 logbook here in minutes.',
+    intro: 'The 2026 IRS standard mileage rate is 72.5¢ per business mile for January to June and 76¢ from July 1, after a mid-year increase. This free generator builds a 2026 mileage log PDF and applies the right rate to each trip by date. Whether you are self-employed, a gig worker, or claiming employee business expenses, generate your audit-proof 2026 logbook here in minutes.',
     tips: [
-      '2026 business rate: 72.5¢/mile (up from 70¢ in 2025)',
-      '2026 medical/moving rate: 20.5¢/mile',
+      '2026 business rate: 72.5¢/mile Jan to Jun, 76¢/mile from Jul 1 (70¢ in 2025)',
+      '2026 medical/moving rate: 20.5¢/mile Jan to Jun, 23.5¢/mile from Jul 1',
       '2026 charity rate: 14¢/mile (set by statute, unchanged)',
       'Record odometer readings on January 1 and December 31, 2026',
       'Log trips contemporaneously — same day or same week',
@@ -553,7 +585,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Grubhub Drivers',
     description: 'Free IRS mileage log generator for Grubhub delivery drivers. Track every delivery mile and maximize your 1099 tax deductions with a compliant PDF.',
     keyword: 'grubhub mileage log',
-    intro: 'Grubhub drivers are independent contractors (1099), which means every business mile is deductible at the 2026 IRS rate of 72.5¢/mile. Most Grubhub drivers leave hundreds of dollars on the table by not tracking miles properly. Just 30 miles of deliveries per shift equals about $21.75 in deductions — that adds up to thousands per year. Generate your IRS-ready Grubhub mileage log here for free.',
+    intro: 'Grubhub drivers are independent contractors (1099), which means every business mile is deductible at the 2026 IRS rate (72.5¢/mile January to June, 76¢ from July 1). Most Grubhub drivers leave hundreds of dollars on the table by not tracking miles properly. Just 30 miles of deliveries per shift equals about $22.80 in deductions at the current rate — that adds up to thousands per year. Generate your IRS-ready Grubhub mileage log here for free.',
     tips: [
       'Track miles from when you start driving toward your first pickup',
       'Log miles between deliveries, not just restaurant-to-customer',
@@ -568,14 +600,14 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Amazon Flex Drivers',
     description: 'Free IRS mileage log generator for Amazon Flex delivery drivers. Track package delivery miles and maximize your 1099 tax deductions.',
     keyword: 'amazon flex mileage log',
-    intro: 'Amazon Flex drivers are 1099 independent contractors who can deduct every business mile at the 2026 IRS rate of 72.5¢/mile. A typical 4-hour Flex block covers 40-60 miles — that is roughly $30-45 in deductions per block. Over a year of regular blocks, that can mean $3,000-$8,000 in vehicle deductions. Amazon does not track your miles for you, so a personal log is essential. Generate your IRS-ready Amazon Flex mileage log here for free.',
+    intro: 'Amazon Flex drivers are 1099 independent contractors who can deduct every business mile at the 2026 IRS rate (72.5¢/mile January to June, 76¢ from July 1). A typical 4-hour Flex block covers 40-60 miles, roughly $30-46 in deductions per block at the current rate. Over a year of regular blocks, that can mean $3,000-$8,000 in vehicle deductions. Amazon does not track your miles for you, so a personal log is essential. Generate your IRS-ready Amazon Flex mileage log here for free.',
     tips: [
       'Track miles from home to the delivery station if you start your route there',
       'Log all miles during your delivery block, including between stops',
       'Include miles driven back home after completing your block',
       'Amazon Flex app shows route miles but not all deductible miles — keep your own',
       'Save your block confirmation screenshots as supporting evidence',
-      'Standard mileage (72.5¢) usually beats tracking actual gas and maintenance'
+      'Standard mileage (76¢ from July 2026) usually beats tracking actual gas and maintenance'
     ]
   },
   'mileage-log-therapists': {
@@ -583,7 +615,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Therapists & Counselors',
     description: 'Free IRS mileage log generator for therapists, counselors, and home-visit clinicians. Track client-visit miles for your private practice tax deductions.',
     keyword: 'therapist mileage log',
-    intro: 'Therapists, counselors, and clinicians who travel between offices, see clients in their homes, or visit care facilities can deduct those business miles at the 2026 IRS rate of 72.5¢/mile. Mobile and in-home therapists often drive 100-200 business miles per week — that is $75-$145 in weekly deductions, or $4,000-$7,500 per year. This free generator builds an IRS-compliant mileage log for your private practice in minutes.',
+    intro: 'Therapists, counselors, and clinicians who travel between offices, see clients in their homes, or visit care facilities can deduct those business miles at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). Mobile and in-home therapists often drive 100-200 business miles per week, which is $76-$152 in weekly deductions at the current rate, or roughly $4,000-$7,500 per year. This free generator builds an IRS-compliant mileage log for your private practice in minutes.',
     tips: [
       'Deduct miles between your office and client homes or facilities',
       'Travel between two work locations is deductible (office to client site)',
@@ -753,7 +785,7 @@ app.post('/generate-pdf', async (req, res) => {
       return res.status(400).json({ error: 'No trips provided' });
     }
 
-    const rates = year === '2024' ? IRS_RATES_2024 : (year === '2025' ? IRS_RATES_2025 : IRS_RATES_2026);
+    const taxYear = year === '2024' || year === '2025' ? year : '2026';
 
     // Pro check (server-side, async)
     const userIsPro = userInfo && userInfo.email && await isPro(userInfo.email);
@@ -764,13 +796,13 @@ app.post('/generate-pdf', async (req, res) => {
     doc.on('end', () => {
       const pdfData = Buffer.concat(chunks);
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="mileage-log-${year || 2026}.pdf"`);
+      res.setHeader('Content-Disposition', `attachment; filename="mileage-log-${taxYear}.pdf"`);
       res.send(pdfData);
     });
 
     // Header
     doc.fontSize(20).fillColor('#0a2540').text('Mileage Log', { align: 'left' });
-    doc.fontSize(10).fillColor('#666').text(`Tax Year ${year || 2026}  •  IRS Standard Mileage Rates`, { align: 'left' });
+    doc.fontSize(10).fillColor('#666').text(`Tax Year ${taxYear}  •  IRS Standard Mileage Rates`, { align: 'left' });
     doc.moveDown(0.5);
 
     if (userInfo && userInfo.name) {
@@ -802,6 +834,9 @@ app.post('/generate-pdf', async (req, res) => {
 
     let y = startY + 22;
     let totals = { business: 0, medical: 0, charity: 0, personal: 0 };
+    // Deduction per type, and 2026 miles split at the July 1 rate change.
+    const deduction = { business: 0, medical: 0, charity: 0 };
+    const split = { business: [0, 0], medical: [0, 0] };
 
     trips.forEach((trip, idx) => {
       if (y > 750) {
@@ -831,6 +866,8 @@ app.post('/generate-pdf', async (req, res) => {
       const miles = parseFloat(trip.miles) || 0;
       const type = trip.type || 'business';
       if (totals[type] !== undefined) totals[type] += miles;
+      if (deduction[type] !== undefined) deduction[type] += miles * ratesFor(taxYear, trip.date)[type];
+      if (taxYear === '2026' && split[type]) split[type][String(trip.date || '') >= RATE_CHANGE_2026 ? 1 : 0] += miles;
 
       y += 18;
     });
@@ -843,17 +880,28 @@ app.post('/generate-pdf', async (req, res) => {
     y += 20;
 
     doc.fontSize(10).fillColor('#0a2540');
-    doc.text(`Business Miles:   ${totals.business.toFixed(1)} mi  ×  $${rates.business}/mi  =  $${(totals.business * rates.business).toFixed(2)}`, 40, y);
+    const line = (label, type) => {
+      if (taxYear === '2026') {
+        const [h1, h2] = split[type];
+        const r1 = IRS_RATES_2026_H1[type], r2 = IRS_RATES_2026_H2[type];
+        return `${label} ${totals[type].toFixed(1)} mi  (${h1.toFixed(1)} × $${r1} before Jul 1 + ${h2.toFixed(1)} × $${r2} from Jul 1)  =  $${deduction[type].toFixed(2)}`;
+      }
+      return `${label} ${totals[type].toFixed(1)} mi  ×  $${ratesFor(taxYear)[type]}/mi  =  $${deduction[type].toFixed(2)}`;
+    };
+    doc.text(line('Business Miles:', 'business'), 40, y, { width: 520 });
     y += 16;
-    doc.text(`Medical Miles:    ${totals.medical.toFixed(1)} mi  ×  $${rates.medical}/mi  =  $${(totals.medical * rates.medical).toFixed(2)}`, 40, y);
+    doc.text(line('Medical Miles: ', 'medical'), 40, y, { width: 520 });
     y += 16;
-    doc.text(`Charity Miles:    ${totals.charity.toFixed(1)} mi  ×  $${rates.charity}/mi  =  $${(totals.charity * rates.charity).toFixed(2)}`, 40, y);
+    doc.text(`Charity Miles:    ${totals.charity.toFixed(1)} mi  ×  $0.14/mi  =  $${deduction.charity.toFixed(2)}`, 40, y);
     y += 16;
     doc.text(`Personal Miles:   ${totals.personal.toFixed(1)} mi  (not deductible)`, 40, y);
     y += 24;
 
-    const totalDeduction = (totals.business * rates.business) + (totals.medical * rates.medical) + (totals.charity * rates.charity);
+    const totalDeduction = deduction.business + deduction.medical + deduction.charity;
     doc.fontSize(13).fillColor('#0a2540').text(`Total Deduction: $${totalDeduction.toFixed(2)}`, 40, y);
+    if (taxYear === '2026') {
+      doc.fontSize(8).fillColor('#666').text('2026 IRS rates: 72.5¢ business / 20.5¢ medical (Jan 1 - Jun 30, Notice 2026-10); 76¢ / 23.5¢ from Jul 1 (IRB 2026-29); charity 14¢.', 40, y + 20, { width: 520 });
+    }
 
     // Footer (free version footer note) — uses userIsPro from above
 
@@ -877,7 +925,7 @@ app.post('/generate-pdf', async (req, res) => {
         doc.fontSize(90)
            .fillColor('#ff0000')
            .opacity(0.35)
-           .text('SAMPLE — NOT VALID', -350, -45, { width: 700, align: 'center' });
+           .text('FREE VERSION', -350, -45, { width: 700, align: 'center' });
         doc.restore();
         doc.opacity(1);
 
@@ -888,7 +936,7 @@ app.post('/generate-pdf', async (req, res) => {
         doc.fontSize(20)
            .fillColor('#ff0000')
            .opacity(0.5)
-           .text('FREE VERSION — IRS WILL REJECT', -350, 50, { width: 700, align: 'center' });
+           .text('Watermark removed with Pro', -350, 50, { width: 700, align: 'center' });
         doc.restore();
         doc.opacity(1);
 
@@ -908,7 +956,7 @@ app.post('/generate-pdf', async (req, res) => {
            .fillColor('#cc0000')
            .opacity(1)
            .text(
-             '⚠ FREE VERSION — Not IRS-compliant. Remove watermark for $9 at mileagelogmaker.com',
+             'Free version. Remove the watermark with Pro ($9) at mileagelogmaker.com',
              40, 815,
              { align: 'center', width: 520 }
            );

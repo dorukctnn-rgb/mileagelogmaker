@@ -12,7 +12,7 @@ const BLOG_POSTS = {
   content: [
     {
       type: 'p',
-      text: 'If you drive your personal vehicle for work — whether you are self-employed, a freelancer, an Uber driver, or a real estate agent — you are likely leaving thousands of dollars on the table every year by not deducting your mileage correctly. The IRS allows you to deduct 72.5 cents for every business mile driven in 2026, which means even a modest 10,000 business miles per year is worth $7,250 in deductions. This guide walks you through exactly how to claim it.'
+      text: 'If you drive your personal vehicle for work — whether you are self-employed, a freelancer, an Uber driver, or a real estate agent — you are likely leaving thousands of dollars on the table every year by not deducting your mileage correctly. For 2026 the IRS allows 72.5 cents for every business mile driven January to June and 76 cents from July 1, which means even a modest 10,000 business miles is worth roughly $7,250 to $7,600 in deductions. This guide walks you through exactly how to claim it.'
     },
     {
       type: 'h2',
@@ -28,7 +28,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The IRS gives you two ways to calculate your vehicle deduction. The standard mileage rate method multiplies your business miles by the IRS rate (72.5 cents in 2026). The actual expenses method tracks every dollar you spend on the vehicle — gas, insurance, maintenance, depreciation, lease payments — and deducts the business-use percentage. For most people, the standard mileage rate is simpler and produces a similar or larger deduction. But if you drive an expensive vehicle with high actual costs, the actual expenses method may save more. You must choose the standard mileage rate in the first year you use the vehicle for business; otherwise you are locked into actual expenses for the life of that vehicle.'
+      text: 'The IRS gives you two ways to calculate your vehicle deduction. The standard mileage rate method multiplies your business miles by the IRS rate (72.5 cents through June 2026, 76 cents from July 1). The actual expenses method tracks every dollar you spend on the vehicle — gas, insurance, maintenance, depreciation, lease payments — and deducts the business-use percentage. For most people, the standard mileage rate is simpler and produces a similar or larger deduction. But if you drive an expensive vehicle with high actual costs, the actual expenses method may save more. You must choose the standard mileage rate in the first year you use the vehicle for business; otherwise you are locked into actual expenses for the life of that vehicle.'
     },
     {
       type: 'h2',
@@ -52,7 +52,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'If you are self-employed, you report your mileage deduction on Schedule C, line 9 ("Car and truck expenses"). Multiply your business miles by the 2026 IRS rate of 72.5 cents. For example, 12,500 business miles × $0.725 = $9,062.50. Add any parking fees and tolls (these are deductible separately on top of the mileage rate). You will also need to fill out Part IV of Schedule C, which asks for the total miles driven during the year, business miles, and personal miles. If you used more than one vehicle, attach a statement with the same information for each.'
+      text: 'If you are self-employed, you report your mileage deduction on Schedule C, line 9 ("Car and truck expenses"). Multiply your business miles by the 2026 IRS rate for when they were driven: 72.5 cents January to June, 76 cents from July 1. For example, 6,000 miles before July × $0.725 = $4,350, plus 6,500 miles after × $0.76 = $4,940, for a $9,290 deduction. Add any parking fees and tolls (these are deductible separately on top of the mileage rate). You will also need to fill out Part IV of Schedule C, which asks for the total miles driven during the year, business miles, and personal miles. If you used more than one vehicle, attach a statement with the same information for each.'
     },
     {
       type: 'h2',
@@ -74,31 +74,39 @@ const BLOG_POSTS = {
 },
 
 'irs-mileage-rate-2026-explained': {
-  title: '2026 IRS Mileage Rate Explained: 72.5¢ Per Mile and What It Means for You',
-  description: 'The 2026 IRS standard mileage rate is 72.5 cents per business mile, up 2.5¢ from 2025. Here is what changed, why it changed, and how to maximize your deduction.',
+  title: '2026 IRS Mileage Rate Explained: 72.5¢, Then 76¢ From July 1',
+  description: 'The IRS set 2026 at 72.5¢ per business mile, then raised it to 76¢ for miles driven from July 1, 2026. What changed, which rate applies to which trips, and how to log it.',
   keyword: '2026 irs mileage rate explained',
-  date: 'May 2026',
+  date: 'Updated September 2026',
   read: '6 min',
   content: [
     {
       type: 'p',
-      text: 'On December 29, 2025, the IRS announced the 2026 standard mileage rates in Notice 2026-10. The headline number: 72.5 cents per business mile, up 2.5 cents from the 2025 rate of 70 cents. This is the highest business mileage rate in IRS history. Medical and moving rates dropped half a cent to 20.5¢/mile. The charity rate stayed at 14¢/mile, where it has been since 1998 because it is set by statute and not adjusted for inflation.'
+      text: 'The IRS changed the 2026 standard mileage rate twice. Notice 2026-10, released on December 29, 2025, set 72.5 cents per business mile from January 1, 2026. Then, in a rare mid-year update published in Internal Revenue Bulletin 2026-29, the IRS raised the business rate to 76 cents per mile and the medical and moving rate to 23.5 cents per mile for driving on or after July 1, 2026. The charitable rate stays at 14 cents per mile because it is fixed by statute.'
     },
     {
       type: 'h2',
-      text: 'Why the 2026 rate increased'
+      text: 'The 2026 rates at a glance'
     },
     {
       type: 'p',
-      text: 'The IRS calculates the business mileage rate based on an annual study of fixed and variable vehicle ownership costs. The 2.5-cent increase reflects rising vehicle prices, higher insurance premiums, and continued maintenance cost inflation. Of the 72.5-cent rate, 35 cents represents depreciation expense (up from 33 cents in 2025). Medical and moving rates dropped slightly because they only factor in variable costs (fuel, oil), and gas prices stabilized through 2025.'
+      text: 'Business: 72.5¢ per mile from January 1 to June 30, 2026, and 76¢ per mile from July 1, 2026. Medical and moving: 20.5¢, then 23.5¢ from July 1. Charitable: 14¢ for the whole year. For comparison, the 2025 business rate was 70¢ and the 2024 rate was 67¢.'
     },
     {
       type: 'h2',
-      text: 'What this means for your deduction'
+      text: 'Why the rate went up in July'
     },
     {
       type: 'p',
-      text: 'For every 1,000 business miles you drive in 2026, you can deduct $725. That is $25 more per thousand miles than 2025. A real estate agent driving 18,000 business miles deducts $13,050 in 2026 (up from $12,600 in 2025). An Uber driver logging 25,000 miles deducts $18,125 (up from $17,500). For most independent contractors, the increase translates to a few hundred extra dollars in tax savings, depending on tax bracket.'
+      text: 'The business rate reflects the fixed and variable costs of owning and running a car, from depreciation and insurance to fuel. The medical and moving rate reflects only variable costs such as fuel. When those costs move sharply during the year, the IRS can issue a mid-year adjustment. It last did so in July 2022, when rising fuel prices pushed the business rate from 58.5¢ to 62.5¢.'
+    },
+    {
+      type: 'h2',
+      text: 'How to calculate your 2026 deduction'
+    },
+    {
+      type: 'p',
+      text: 'Split your 2026 business miles at July 1. Multiply miles driven January to June by $0.725 and miles driven from July 1 by $0.76, then add the results. A real estate agent with 9,000 business miles in each half of the year deducts $6,525 plus $6,840, or $13,365. An Uber driver with 12,500 miles in each half deducts $9,062.50 plus $9,500, or $18,562.50. Medical miles follow the same split at 20.5¢ and 23.5¢.'
     },
     {
       type: 'h2',
@@ -106,37 +114,37 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The standard mileage rate applies to fully-electric, hybrid, gasoline, and diesel-powered cars, vans, pickups, and panel trucks. There is one critical timing rule: if you own the vehicle, you must elect the standard mileage rate in the first year you use it for business. In later years you can switch between standard mileage and actual expenses. For leased vehicles, once you choose the standard mileage rate, you must use it for the entire lease — including any renewals.'
+      text: 'The standard mileage rate applies to fully-electric, hybrid, gasoline, and diesel-powered cars, vans, pickups, and panel trucks. If you own the vehicle, you must choose the standard mileage rate in the first year you use it for business; in later years you can switch between standard mileage and actual expenses. For a leased vehicle, once you choose the standard mileage rate you must use it for the entire lease, including renewals.'
     },
     {
       type: 'h2',
-      text: 'New for 2026: intelligence community moving expenses'
+      text: 'Moving expenses in 2026'
     },
     {
       type: 'p',
-      text: 'Under the One, Big, Beautiful Bill Act (OBBBA), certain members of the intelligence community can now deduct moving expenses at the 20.5¢/mile rate, joining active-duty Armed Forces members. This expanded the moving deduction beyond what existed in previous years. For everyone else, moving expense deductions remain unavailable through 2025 under the Tax Cuts and Jobs Act.'
+      text: 'The moving rate is only available to active-duty members of the Armed Forces moving under military orders and, under the One, Big, Beautiful Bill Act, eligible members of the intelligence community. For them, the moving rate is 20.5¢ per mile before July 1, 2026 and 23.5¢ from July 1. Other taxpayers cannot deduct moving expenses.'
     },
     {
       type: 'h2',
-      text: 'How to apply the new rate'
+      text: 'Keeping your log ready for two rates'
     },
     {
       type: 'p',
-      text: 'The 72.5¢ rate applies to miles driven on or after January 1, 2026. If your tax year straddles 2025 and 2026 (rare but possible for some fiscal-year filers), you apply each year\'s rate to the miles driven in that year. For most calendar-year filers, all 2026 miles get the new rate. Keep your log organized by date so you can apply rates correctly.'
+      text: 'Because the rate depends on the trip date, a dated, contemporaneous log matters more than ever in 2026. Record the date, destination, business purpose and miles for every trip. Our free generator applies 72.5¢ or 76¢ to each 2026 trip automatically based on the date you enter, and shows both subtotals in the PDF.'
     }
   ]
 },
 
 'mileage-deduction-vs-actual-expenses': {
   title: 'Standard Mileage Rate vs. Actual Expenses: Which Saves More on Taxes?',
-  description: 'Compare the IRS standard mileage rate ($0.725/mile in 2026) to the actual expenses method. Calculate which deduction method puts more money in your pocket.',
+  description: 'Compare the IRS standard mileage rate (76¢/mile from July 2026, 72.5¢ before) to the actual expenses method. Calculate which deduction method puts more money in your pocket.',
   keyword: 'standard mileage vs actual expenses',
   date: 'May 2026',
   read: '7 min',
   content: [
     {
       type: 'p',
-      text: 'The IRS lets you deduct vehicle expenses one of two ways: the standard mileage rate (72.5¢/business mile in 2026) or the actual expenses method (every receipt, prorated by business use). One method takes 30 seconds to calculate. The other can take hours but sometimes saves thousands. Here is how to decide which is right for you.'
+      text: 'The IRS lets you deduct vehicle expenses one of two ways: the standard mileage rate (72.5¢ per business mile January to June 2026, 76¢ from July 1) or the actual expenses method (every receipt, prorated by business use). One method takes 30 seconds to calculate. The other can take hours but sometimes saves thousands. Here is how to decide which is right for you.'
     },
     {
       type: 'h2',
@@ -144,7 +152,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'You multiply your business miles by 72.5¢ for 2026. That is your deduction. Period. You can also add parking fees and tolls on top. You do not deduct gas, insurance, maintenance, or depreciation separately because the standard rate already bakes those in. The math: 12,000 business miles × $0.725 = $8,700 deduction.'
+      text: 'You multiply your business miles by the IRS rate: 72.5¢ for 2026 miles through June 30, 76¢ from July 1. That is your deduction. You can also add parking fees and tolls on top. You do not deduct gas, insurance, maintenance, or depreciation separately because the standard rate already bakes those in. The math at the current rate: 12,000 business miles × $0.76 = $9,120 deduction.'
     },
     {
       type: 'h2',
@@ -160,7 +168,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Standard mileage usually wins for fuel-efficient vehicles, older paid-off cars, and high-mileage drivers. The 72.5¢ rate is generous for cars that cost under 50¢/mile to actually operate. A Honda Civic owner driving 15,000 business miles per year almost always comes out ahead with standard mileage. Rideshare and delivery drivers, freelancers using older vehicles, and anyone who drives a lot of miles in a cheap car should default to standard mileage.'
+      text: 'Standard mileage usually wins for fuel-efficient vehicles, older paid-off cars, and high-mileage drivers. The 2026 rates (72.5¢, then 76¢ from July) are generous for cars that cost under 50¢/mile to actually operate. A Honda Civic owner driving 15,000 business miles per year almost always comes out ahead with standard mileage. Rideshare and delivery drivers, freelancers using older vehicles, and anyone who drives a lot of miles in a cheap car should default to standard mileage.'
     },
     {
       type: 'h2',
@@ -300,7 +308,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'At 72.5¢ per business mile in 2026, mileage is usually 60-80% of a rideshare driver\'s total deductions. Track every mile from going online to going offline, including drives to busy zones, between trips, to gas stations, and to car washes. A driver logging 30,000 business miles deducts $21,750 — often the difference between owing taxes and getting a refund.'
+      text: 'At 76¢ per business mile (from July 1, 2026; 72.5¢ before), mileage is usually 60-80% of a rideshare driver\'s total deductions. Track every mile from going online to going offline, including drives to busy zones, between trips, to gas stations, and to car washes. A driver logging 30,000 business miles evenly across 2026 deducts about $22,275 — often the difference between owing taxes and getting a refund.'
     },
     {
       type: 'h2',
