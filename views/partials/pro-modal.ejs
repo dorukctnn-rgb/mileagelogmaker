@@ -1,0 +1,21 @@
+<div class="modal-overlay" id="proModal" role="dialog" aria-modal="true" aria-labelledby="proTitle">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="MLM.closePro()" aria-label="Close">&times;</button>
+    <h2 id="proTitle">MileageLogMaker Pro</h2>
+    <p class="modal-sub">One payment through Gumroad. No subscription.</p>
+    <div class="price"><span class="amt">$9</span><span class="desc">one-time</span></div>
+    <ul>
+      <li>PDF logs without the "Free version" watermark</li>
+      <li>Export your trips to Excel (.xlsx) and CSV</li>
+      <li>Your business logo on the PDF</li>
+      <li>Works for IRS, CRA and HMRC logs</li>
+    </ul>
+    <a href="<%= GUMROAD_URL %>" target="_blank" rel="noopener" class="btn">Buy Pro on Gumroad, $9</a>
+    <p class="fine">The free generator stays free: unlimited trips, all rates and the PDF are included without paying.</p>
+    <div class="or">Already bought Pro?</div>
+    <label for="licenseKey" style="font-size:13px;color:#425466;display:block;margin-bottom:6px">Enter the license key from your Gumroad receipt</label>
+    <input type="text" id="licenseKey" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" autocomplete="off" spellcheck="false">
+    <button type="button" class="btn btn-dark" onclick="MLM.verifyLicense()">Activate Pro</button>
+    <div class="modal-status" id="licenseStatus"></div>
+  </div>
+</div>

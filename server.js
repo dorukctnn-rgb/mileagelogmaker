@@ -1,1041 +1,180 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const PDFDocument = require('pdfkit');
 const path = require('path');
-const fs = require('fs');
 
 const BLOG_POSTS = require('./blog-posts.js');
+const NICHE_PAGES = require('./content/niche-pages.js');
+const R = require('./lib/rates.js');
+const MLMCalc = require('./public/calc.js');
+const { verifyLicense } = require('./lib/license.js');
+const { buildLogPdf } = require('./lib/pdf.js');
+const { buildCsv, buildXlsx } = require('./lib/export.js');
 
-// ===== PRO EMAILS STORAGE =====
-// On Vercel: use Vercel KV (persistent across requests)
-// Locally: use JSON file
-const USE_KV = !!process.env.KV_REST_API_URL;
-let kv = null;
-
-if (USE_KV) {
-  try {
-    kv = require('@vercel/kv').kv;
-    console.log('Using Vercel KV for pro emails');
-  } catch (e) {
-    console.error('KV import failed, falling back to file:', e.message);
-  }
-}
-
-const PRO_FILE = path.join(__dirname, 'pro-emails.json');
-
-async function isPro(email){
-  if (!email) return false;
-  const normalized = email.toLowerCase().trim();
-
-  if (kv) {
-    try {
-      const val = await kv.get(`pro:${normalized}`);
-      return !!val;
-    } catch(e) {
-      console.error('KV read error:', e);
-      return false;
-    }
-  }
-
-  // Local fallback
-  try {
-    if (fs.existsSync(PRO_FILE)) {
-      const emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
-      return !!emails[normalized];
-    }
-  } catch(e) {}
-  return false;
-}
-
-async function grantPro(email, data){
-  const normalized = email.toLowerCase().trim();
-
-  if (kv) {
-    try {
-      await kv.set(`pro:${normalized}`, { ...data, granted_at: new Date().toISOString() });
-      return true;
-    } catch(e) {
-      console.error('KV write error:', e);
-      return false;
-    }
-  }
-
-  // Local fallback
-  try {
-    let emails = {};
-    if (fs.existsSync(PRO_FILE)) emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
-    emails[normalized] = { ...data, granted_at: new Date().toISOString() };
-    fs.writeFileSync(PRO_FILE, JSON.stringify(emails, null, 2));
-    return true;
-  } catch(e) { console.error('File write error:', e); return false; }
-}
-
-async function revokePro(email){
-  const normalized = email.toLowerCase().trim();
-
-  if (kv) {
-    try { await kv.del(`pro:${normalized}`); return true; } catch(e) { return false; }
-  }
-
-  try {
-    if (fs.existsSync(PRO_FILE)) {
-      const emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
-      delete emails[normalized];
-      fs.writeFileSync(PRO_FILE, JSON.stringify(emails, null, 2));
-    }
-    return true;
-  } catch(e) { return false; }
-}
+// The live host is www (the apex redirects there). Canonicals, og:url, JSON-LD and the sitemap all use it.
+const SITE = 'https://www.mileagelogmaker.com';
+const SITE_UPDATED = '2026-10-07';
+const GUMROAD_URL = 'https://dorukctn.gumroad.com/l/agbyxg';
+const INDEXNOW_KEY = 'aa6a5d532ea7f04d9077914e370757fd';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.disable('x-powered-by');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1h' }));
+app.use(express.json({ limit: '2mb' }));
 
-// 2026 IRS standard mileage rates changed mid-year:
-//   Jan 1 - Jun 30: Notice 2026-10
-//   from Jul 1:     IRB 2026-29 (business 76¢, medical/moving 23.5¢; charity fixed by statute)
-const IRS_RATES_2026_H1 = { business: 0.725, medical: 0.205, charity: 0.14, moving: 0.205 };
-const IRS_RATES_2026_H2 = { business: 0.76, medical: 0.235, charity: 0.14, moving: 0.235 };
-const IRS_RATES_2026 = IRS_RATES_2026_H2; // current rates, used for display
-const RATE_CHANGE_2026 = '2026-07-01';
+app.locals.SITE = SITE;
+app.locals.GUMROAD_URL = GUMROAD_URL;
+app.locals.R = R;
+app.locals.CLIENT_RATES = JSON.stringify(R.clientRates());
 
-const IRS_RATES_2025 = {
-  business: 0.70,
-  medical: 0.21,
-  charity: 0.14,
-  moving: 0.21
-};
-
-const IRS_RATES_2024 = {
-  business: 0.67,
-  medical: 0.21,
-  charity: 0.14,
-  moving: 0.21
-};
-
-// Rate table for a trip, based on the tax year and (for 2026) the trip date.
-function ratesFor(year, date) {
-  if (year === '2024') return IRS_RATES_2024;
-  if (year === '2025') return IRS_RATES_2025;
-  return String(date || '') >= RATE_CHANGE_2026 ? IRS_RATES_2026_H2 : IRS_RATES_2026_H1;
+// ===== Input cleaning =====
+function str(v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').slice(0, max); }
+function cleanTrips(trips) {
+  if (!Array.isArray(trips)) return [];
+  return trips.slice(0, 5000).map(t => ({
+    date: /^\d{4}-\d{2}-\d{2}$/.test(String(t && t.date)) ? t.date : '',
+    start: str(t && t.start, 120),
+    end: str(t && t.end, 120),
+    purpose: str(t && t.purpose, 200),
+    miles: Math.max(0, Math.min(100000, parseFloat(t && t.miles) || 0)),
+    type: ['business', 'medical', 'charity', 'personal'].includes(t && t.type) ? t.type : 'business'
+  }));
+}
+function cleanRequest(body) {
+  const b = body || {};
+  const region = ['us', 'ca', 'uk'].includes(b.region) ? b.region : 'us';
+  const trips = cleanTrips(b.trips).map(t => (region !== 'us' && (t.type === 'medical' || t.type === 'charity') ? { ...t, type: 'business' } : t));
+  const u = b.userInfo || {};
+  const userInfo = { name: str(u.name, 80), vehicle: str(u.vehicle, 80), startOdometer: str(u.startOdometer, 12), endOdometer: str(u.endOdometer, 12) };
+  const year = region === 'ca' ? (R.CRA_YEARS.includes(String(b.year)) ? String(b.year) : '2026') : (R.IRS_YEARS.includes(String(b.year)) ? String(b.year) : '2026');
+  const zone = b.zone === 'territories' ? 'territories' : 'provinces';
+  const vehicle = ['car', 'motorcycle', 'bicycle'].includes(b.vehicle) ? b.vehicle : 'car';
+  const summary = MLMCalc.summarize({ region, trips, year, zone, vehicle, startOdo: userInfo.startOdometer, endOdo: userInfo.endOdometer }, R.clientRates());
+  return { region, trips, userInfo, year, zone, vehicle, summary, license: b.license, logo: b.logo };
 }
 
-// SEO niche pages config
-const NICHE_PAGES = {
-  'mileage-log-uber-drivers': {
-    title: 'Free Mileage Log for Uber Drivers — IRS-Ready PDF Generator',
-    h1: 'Mileage Log for Uber Drivers',
-    description: 'Free IRS-compliant mileage log generator for Uber, Lyft, and rideshare drivers. Track every business mile and maximize your tax deductions.',
-    keyword: 'uber mileage log',
-    intro: 'Every mile you drive between rides counts as a business expense. As an Uber or Lyft driver, you can deduct 76¢ per mile for miles driven from July 1, 2026 (72.5¢ before that), roughly $7,600 in deductions for every 10,000 business miles at the current rate. This free generator creates an IRS-ready PDF in under 3 minutes. No signup, no credit card.',
-    tips: [
-      'Log online time, between-ride time, and all rides as business miles',
-      'Track miles to gas stations, car washes, and rideshare-related errands',
-      'Keep your odometer reading at the start and end of each year',
-      'Save bank statements showing rideshare deposits as backup'
-    ]
-  },
-  'mileage-log-doordash-drivers': {
-    title: 'Free Mileage Log for DoorDash Drivers — Tax Deduction Tracker',
-    h1: 'Mileage Log for DoorDash & Delivery Drivers',
-    description: 'Free IRS mileage log generator for DoorDash, UberEats, Grubhub, and Instacart drivers. Generate compliant PDFs to maximize your delivery driver tax deductions.',
-    keyword: 'doordash mileage log',
-    intro: 'DoorDash, UberEats, and Grubhub drivers can deduct every mile from the moment they accept a delivery to the moment they finish. At the current 2026 IRS rate of 76¢/mile (72.5¢ for January to June), just 100 miles of deliveries means $76 in deductions. Generate your IRS-ready log here for free.',
-    tips: [
-      'Log miles from your home to the first restaurant if you drive there to start dashing',
-      'Track miles between deliveries, not just delivery to customer',
-      'Include miles to fast food spots when waiting for orders',
-      'Screenshot DoorDash daily summaries as backup proof'
-    ]
-  },
-  'mileage-log-real-estate-agents': {
-    title: 'Mileage Log for Real Estate Agents 2026 — Free IRS PDF Generator',
-    h1: 'Mileage Log for Real Estate Agents',
-    description: 'Free mileage log generator built for real estate agents and realtors. Track showings, client meetings, and open houses. Uses the 2026 IRS rates: 72.5¢/mile January to June, 76¢ from July 1.',
-    keyword: 'real estate agent mileage log',
-    intro: 'Real estate agents drive an average of 18,000+ business miles per year showing properties, meeting clients, and attending closings. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), that is roughly $13,000 to $13,700 in potential tax deductions. As a 1099 independent contractor, nearly every mile you drive for your business is deductible — but only if you keep a proper log. This free IRS-ready generator was built specifically for realtors to capture every property tour, client meeting, and open house.',
-    tips: [
-      'Every property showing counts — log address-to-address mileage',
-      'Client lunches, broker open houses, and MLS caravan tours all qualify',
-      'Drives to the title company, inspector, appraiser, or closing all count',
-      'Add the property MLS number or address in the purpose field for audit safety',
-      'Home office to first showing is deductible if you claim a home office (Form 8829)',
-      'Real estate agents are 1099 contractors — deductions go on Schedule C',
-      '2026 rate is 72.5¢/mile through June 30 and 76¢ from July 1: 18,000 miles spread evenly over the year is about $13,365 deducted',
-      'Keep your log contemporaneous — update it weekly, not at tax time'
-    ],
-    sections: [
-      {
-        h: 'How Many Miles Do Real Estate Agents Drive?',
-        p: [
-          'The average real estate agent drives between <strong>15,000 and 25,000 business miles per year</strong>. Between property showings, listing appointments, open houses, client meetings, inspections, and closings, a working agent can easily put 300-500 business miles on their car every week. Top-producing agents in spread-out markets often exceed 30,000 miles annually.',
-          'With the 2026 IRS standard mileage rates (72.5¢ per mile through June 30, 76¢ from July 1), 20,000 business miles spread evenly over the year translates to a <strong>$14,850 tax deduction</strong>. That is money most agents simply forget to claim because they never kept a proper log. For a self-employed realtor in the 24% federal bracket, that deduction is worth roughly $3,480 in actual tax savings — every single year.',
-          'The catch: the IRS will not take your word for it. You cannot estimate "about 20,000 miles" at tax time. You need a contemporaneous log showing the date, destination, purpose, and miles for each business trip. That is exactly what this generator produces.'
-        ]
-      },
-      {
-        h: 'What Driving Is Deductible for Realtors?',
-        p: [
-          'As a 1099 independent contractor, nearly all of your work-related driving is deductible. This includes: driving to <strong>property showings</strong> with buyers, traveling to <strong>listing appointments</strong>, hosting and setting up <strong>open houses</strong>, attending <strong>broker tours and MLS caravans</strong>, meeting clients for coffee or lunch, driving to <strong>inspections, appraisals, and closings</strong>, trips to the title company or attorney, and runs to pick up signage, lockboxes, or marketing materials.',
-          'There is one important exception: <strong>commuting</strong>. Driving from your home to your broker office (your regular workplace) is considered a personal commute and is not deductible. However, here is the key for agents: if you qualify for and claim a <strong>home office</strong> as your principal place of business (Form 8829), then trips from your home office to showings, listings, and appointments become fully deductible business miles. Most agents who work primarily from home qualify for this.',
-          'Driving between two business locations is always deductible — so a trip from one showing to the next, or from the office to a closing, counts regardless of your home office status.'
-        ]
-      },
-      {
-        h: 'Mileage App vs Printable Log for Agents',
-        p: [
-          'Many agents try GPS mileage apps like MileIQ or Everlance, then get frustrated: the apps drain phone battery, misclassify personal trips as business (or vice versa), require constant swiping, and charge $5-12 per month. Worse, an app that auto-logs everything still requires you to add the <strong>business purpose</strong> for each trip — which the IRS requires and which no GPS can guess.',
-          'A structured log you fill in weekly is often more defensible in an audit because every entry has a deliberate, specific purpose ("showing - 123 Oak St with the Johnsons") rather than an auto-generated guess. This free generator gives you that structure without the subscription, the battery drain, or the privacy concerns of constant location tracking.',
-          'The workflow most agents prefer: keep a running note of showings on your phone during the week, then spend five minutes every Friday entering them here and downloading the updated PDF. Contemporaneous, accurate, and audit-proof — for free.'
-        ]
-      },
-      {
-        h: 'Filing Your Real Estate Mileage Deduction',
-        p: [
-          'Real estate agents report income and expenses on <strong>Schedule C</strong> (Profit or Loss from Business) as part of their personal 1040 return. Your total business mileage deduction goes on Line 9 (Car and truck expenses) of Schedule C.',
-          'You will choose between the <strong>standard mileage method</strong> (multiply business miles by the IRS rate: 72.5¢ through June 2026, 76¢ from July 1) and the <strong>actual expense method</strong> (track and deduct the business-use percentage of gas, insurance, repairs, lease, and depreciation). For most agents driving a normal car, the standard mileage method produces a larger deduction and requires far less paperwork — just the mileage log. If you drive an expensive SUV with high operating costs, run both calculations and compare.',
-          'Whichever method you choose, keep your mileage log and supporting records (closing statements, showing confirmations, calendar entries) for at least three years after filing. The generated PDF from this tool serves as your primary record; your MLS showing history and calendar are excellent corroborating evidence if you are ever questioned.'
-        ]
-      }
-    ],
-    faq: [
-      {
-        q: 'How many miles does the average real estate agent drive per year?',
-        a: 'Most working real estate agents drive 15,000 to 25,000 business miles per year, with busy agents in spread-out markets often exceeding 30,000. At the 2026 IRS rates (72.5¢ through June 30, 76¢ from July 1), 20,000 business miles spread evenly across the year equals about a $14,850 deduction.'
-      },
-      {
-        q: 'Can real estate agents deduct mileage on taxes?',
-        a: 'Yes. Real estate agents are typically 1099 independent contractors, so business driving — showings, listing appointments, open houses, closings, and client meetings — is deductible on Schedule C. You must keep a contemporaneous mileage log recording the date, destination, purpose, and miles for each trip.'
-      },
-      {
-        q: 'Is driving to showings tax deductible for realtors?',
-        a: 'Yes. Driving to property showings, between showings, and from showings to other business stops is deductible. If you claim a home office as your principal place of business, trips from home to showings are also fully deductible. Only the commute to a regular broker office (without a home office) is non-deductible.'
-      },
-      {
-        q: 'What is the best mileage tracker for real estate agents?',
-        a: 'The best tracker is whatever you will actually keep current. GPS apps auto-record trips but still require you to add a business purpose and charge a monthly fee. Many agents prefer a structured log they update weekly, which produces clear, purpose-labeled entries that hold up well in an audit. This free generator creates an IRS-ready PDF with no subscription.'
-      },
-      {
-        q: 'Do I need to track personal miles too?',
-        a: 'If you use the standard mileage method, you only deduct business miles, but you should record your total annual mileage (odometer on January 1 and December 31) so you can show your business-use percentage if asked. If you use the actual expense method, tracking the business-use percentage of total miles is required.'
-      },
-      {
-        q: 'What form do real estate agents use to deduct mileage?',
-        a: 'Real estate agents report car and truck expenses on Line 9 of Schedule C (Form 1040). If you claim a home office that makes home-to-showing trips deductible, you file Form 8829 for the home office deduction. Keep your mileage log as supporting documentation.'
-      }
-    ]
-  },
-  'mileage-log-self-employed': {
-    title: 'Free Mileage Log for Self-Employed — IRS Schedule C Generator',
-    h1: 'Mileage Log for Self-Employed & Freelancers',
-    description: 'Free IRS-ready mileage log generator for self-employed individuals and freelancers. Generate Schedule C-compliant PDFs for tax filing.',
-    keyword: 'self employed mileage log',
-    intro: 'If you are self-employed, every business mile is a tax deduction: 72.5¢ for miles driven January to June 2026 and 76¢ from July 1. Whether you are a freelancer driving to client meetings, a consultant visiting offices, or a contractor moving between job sites, this free generator creates the IRS-ready log you need for Schedule C.',
-    tips: [
-      'Track miles to client meetings, networking events, and conferences',
-      'Drives to the post office, bank, or office supply store count',
-      'Coffee meetings with clients qualify if business is discussed',
-      'Keep the log updated weekly — reconstruction is risky in an audit'
-    ]
-  },
-  'mileage-log-2026-irs-rate': {
-    title: '2026 IRS Mileage Rate: 76¢ From July 1 (72.5¢ Before) — Free Log Generator',
-    h1: '2026 IRS Mileage Rate: 72.5¢, Then 76¢ From July 1',
-    description: 'The 2026 IRS mileage rate is 76 cents per business mile from July 1, 2026, up from 72.5 cents for January to June. Medical is 23.5¢, charity 14¢. Free log generator applies the right rate per trip.',
-    keyword: '2026 irs mileage rate',
-    intro: 'The IRS changed the 2026 standard mileage rate in the middle of the year. Miles driven from January 1 to June 30, 2026 use Notice 2026-10: 72.5 cents per business mile and 20.5 cents per medical or moving mile. For miles driven on or after July 1, 2026, Internal Revenue Bulletin 2026-29 raised the business rate to 76 cents and the medical and moving rate to 23.5 cents. The charity rate stays at 14 cents. This generator applies the correct rate to each trip based on its date.',
-    tips: [
-      'Business: 72.5¢/mile Jan 1 to Jun 30, 76¢/mile from Jul 1, 2026',
-      'Medical and moving: 20.5¢/mile Jan 1 to Jun 30, 23.5¢/mile from Jul 1',
-      'Charity: 14¢/mile all year (set by statute, unchanged since 1998)',
-      'Moving applies only to active-duty military and eligible intelligence community members',
-      'Split your 2026 log at July 1 so each trip gets the right rate'
-    ],
-    sections: [
-      {
-        h: 'Why the IRS changed the rate mid-year',
-        p: [
-          'The business rate is based on the fixed and variable costs of running a car. The medical and moving rate uses only variable costs such as fuel. When fuel costs rise sharply, the IRS can issue a mid-year update, as it did in July 2022. The July 2026 increase is the second mid-year change in five years.',
-          'Mid-year changes only affect miles driven after the effective date. Trips from the first half of 2026 keep the 72.5¢ rate; you do not recalculate them.'
-        ]
-      },
-      {
-        h: 'How to calculate a 2026 deduction with two rates',
-        p: [
-          'Total your business miles for January 1 to June 30 and multiply by $0.725. Total your business miles from July 1 onward and multiply by $0.76. Add the two results. Example: 6,000 miles before July 1 = $4,350, plus 7,000 miles after = $5,320, for a total deduction of <strong>$9,670</strong>.',
-          'Medical miles work the same way at 20.5¢ and 23.5¢. Charity miles are 14¢ for the whole year.',
-          'Employers reimbursing at the IRS rate typically switch to 76¢ for travel on or after July 1. Reimbursements up to the IRS rate are generally tax-free under an accountable plan.'
-        ]
-      }
-    ],
-    faq: [
-      { q: 'What is the IRS mileage rate for 2026?', a: 'For business driving, 72.5 cents per mile from January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026. Medical and moving: 20.5 cents, then 23.5 cents from July 1. Charitable: 14 cents all year.' },
-      { q: 'Does the 76 cent rate apply to the whole of 2026?', a: 'No. It applies only to miles driven on or after July 1, 2026. Miles driven earlier in 2026 use 72.5 cents.' },
-      { q: 'Where did the IRS announce the July 2026 change?', a: 'The midyear rates were published in Internal Revenue Bulletin 2026-29 (July 13, 2026). The original 2026 rates came from Notice 2026-10.' },
-      { q: 'Did the charity mileage rate change?', a: 'No. The charitable rate is set by law at 14 cents per mile and did not change.' }
-    ]
-  },
-  'free-mileage-log-template': {
-    title: 'Free Mileage Log Template — IRS-Ready PDF, No Signup',
-    h1: 'Free Mileage Log Template',
-    description: 'Free mileage log template that generates an IRS-compliant PDF instantly. No signup, no credit card. Used by freelancers, drivers, and small business owners.',
-    keyword: 'free mileage log template',
-    intro: 'Skip the Excel templates. This free mileage log generator creates a clean, IRS-ready PDF in under 3 minutes. Just enter your trips, click generate, and download. Works for business, medical, and charity miles using the official 2026 IRS rates.',
-    tips: [
-      'IRS requires: date, destination, business purpose, and miles driven',
-      'Best practice: log trips weekly, not at year-end',
-      'Save the PDF and your odometer photos as backup',
-      'Print or email the PDF to your CPA at tax time'
-    ]
-  },
-  'irs-mileage-log-requirements': {
-    title: 'IRS Mileage Log Requirements 2026 — Complete Audit-Proof Guide',
-    h1: 'IRS Mileage Log Requirements (2026)',
-    description: 'Complete IRS mileage log requirements for 2026: the 4 required fields, Publication 463 rules, contemporaneous recordkeeping, and how to survive an audit. Free generator included.',
-    keyword: 'irs mileage log requirements',
-    intro: 'The IRS requires four pieces of information for every business trip: the date, your destination, the business purpose, and the miles driven. Under IRS Publication 463, your records must be "contemporaneous" — created at or near the time of each trip, not reconstructed months later from memory. You must also log your odometer reading at the start and end of the tax year. The 2026 standard mileage rate is 72.5¢/mile through June 30 and 76¢/mile from July 1. This free generator captures every required field in an IRS-ready PDF format that holds up under audit.',
-    tips: [
-      'Four required fields per trip: date, destination, business purpose, miles driven',
-      'Record odometer reading on January 1 and December 31 each year',
-      'Records must be contemporaneous (kept at or near the time of each trip)',
-      'IRS Publication 463 governs vehicle expense recordkeeping rules',
-      'Reconstructed or estimated logs are commonly rejected during audits',
-      'Keep records 3 years from filing date (6 years if income under-reported)',
-      'You cannot deduct commuting miles (home to regular workplace)',
-      'Standard mileage (76¢ from July 2026) vs actual expenses: pick one method per vehicle'
-    ],
-    sections: [
-      {
-        h: 'The Four Fields the IRS Requires',
-        p: [
-          'Every entry in your mileage log must contain four specific data points, and missing any one of them can invalidate the deduction for that trip. These are: <strong>the date of the trip</strong>, <strong>your destination</strong> (where you drove), <strong>the business purpose</strong> (why the trip was necessary for your work), and <strong>the number of miles driven</strong>.',
-          'The business purpose is the field most people get wrong. "Work" or "business" is not specific enough. The IRS wants to see something like "client meeting at 123 Main St" or "property showing for buyer" or "delivery route - downtown zone." The purpose should make clear that the trip was ordinary and necessary for your trade or business.',
-          'Beyond the per-trip data, you must also record your vehicle\'s odometer reading on the first and last day of the tax year. This establishes your total annual mileage, which the IRS uses to verify your business-use percentage. Without start and end odometer readings, an auditor cannot confirm what fraction of your driving was for business.'
-        ]
-      },
-      {
-        h: 'What "Contemporaneous" Really Means',
-        p: [
-          'The single most important rule in IRS Publication 463 is that your records must be contemporaneous. This means you record each trip at or near the time it happens — the same day, or at worst within the same week. A log you build from memory or from calendar reconstruction at tax time is far weaker evidence and is frequently thrown out during audits.',
-          'The IRS allows what it calls "adequate records" or "sufficient evidence to support your own statement." A contemporaneous mileage log is the gold standard for adequate records. If you wait until April to recreate a year of driving, you no longer have a contemporaneous record, and the burden of proof shifts heavily against you.',
-          'This is exactly why a simple tool you can open daily matters. Logging three or four trips at the end of each workday takes two minutes and produces an unimpeachable record. Trying to remember 600 trips in April produces a guess.'
-        ]
-      },
-      {
-        h: 'Standard Mileage Rate vs Actual Expenses',
-        p: [
-          'The IRS gives you two methods to deduct vehicle costs. The <strong>standard mileage method</strong> multiplies your business miles by a fixed rate (72.5¢ through June 2026, 76¢ from July 1), and that single number covers gas, maintenance, insurance, and depreciation. The <strong>actual expense method</strong> requires you to track every receipt — fuel, repairs, insurance premiums, lease payments — and deduct the business-use percentage.',
-          'For most self-employed people and gig workers, the standard mileage method wins. It is simpler, requires only a mileage log instead of a shoebox of receipts, and often produces a larger deduction for fuel-efficient vehicles. The actual expense method tends to win only for expensive vehicles with high operating costs.',
-          'Important: if you want to use the standard mileage rate, you must choose it in the first year you use the car for business. You can switch to actual expenses later, but if you start with actual expenses (and claim accelerated depreciation), you are generally locked out of the standard rate for that vehicle.'
-        ]
-      },
-      {
-        h: 'Surviving a Mileage Audit',
-        p: [
-          'Vehicle deductions are one of the most commonly audited items on Schedule C because they are easy to inflate. If the IRS questions your mileage, they will ask for your log. A complete, contemporaneous log with all four required fields plus odometer readings almost always satisfies the examiner.',
-          'Supporting evidence strengthens your position further: appointment calendars, client invoices, delivery platform earnings summaries, and gas receipts that corroborate your driving patterns. If you drive for DoorDash or Uber, your platform trip history is excellent backup. If you are a realtor, your MLS showing records line up with your log.',
-          'The trips that draw scrutiny are the round-number estimates ("about 10,000 miles") and the suspiciously consistent entries ("exactly 50 miles every single day"). Real driving is irregular. A log that reflects genuine day-to-day variation is far more credible than one that looks manufactured.'
-        ]
-      }
-    ],
-    faq: [
-      {
-        q: 'Does the IRS require a specific mileage log format?',
-        a: 'No. The IRS does not mandate a specific form or app. It requires that your records contain the four key data points (date, destination, purpose, miles) and be contemporaneous. A paper logbook, a spreadsheet, or a generated PDF are all acceptable as long as they contain the required information.'
-      },
-      {
-        q: 'Can I use Google Maps timeline as my mileage log?',
-        a: 'Google Maps timeline can serve as supporting evidence, but on its own it usually is not sufficient because it does not record the business purpose of each trip. You can use it to reconstruct distances, but you still need to add the purpose and confirm which trips were for business.'
-      },
-      {
-        q: 'What happens if I forgot to track my mileage all year?',
-        a: 'You can attempt to reconstruct a log from calendars, appointment records, and map data, but a reconstructed log is weaker evidence than a contemporaneous one and may be challenged in an audit. Going forward, the safest approach is to log trips daily or weekly. The IRS expects records kept at or near the time of travel.'
-      },
-      {
-        q: 'How long do I need to keep my mileage log?',
-        a: 'Keep your mileage log for at least 3 years from the date you filed the return, which matches the standard IRS audit window. If you substantially under-reported income, the IRS can look back 6 years, so many tax professionals recommend keeping records for 6 years to be safe.'
-      },
-      {
-        q: 'Can I deduct my commute to work?',
-        a: 'No. Commuting miles between your home and your regular place of business are considered personal and are never deductible. However, if you have a qualifying home office as your principal place of business, trips from your home office to clients or job sites can be deductible.'
-      },
-      {
-        q: 'What is the 2026 IRS standard mileage rate?',
-        a: 'For 2026 the business rate is 72.5 cents per mile for January to June and 76 cents per mile from July 1. Medical and moving is 20.5 cents, then 23.5 cents from July 1. Charitable driving is 14 cents all year. The 76 cent business rate is the highest the IRS has set.'
-      }
-    ]
-  },
-  'mileage-log-uk': {
-    title: 'UK Mileage Log Generator — HMRC Approved Mileage Allowance',
-    h1: 'UK Mileage Log (HMRC Approved Rates)',
-    description: 'Free UK mileage log generator using HMRC approved mileage rates: 45p/mile for the first 10,000 miles, 25p thereafter. Generate compliant PDFs.',
-    keyword: 'uk mileage log',
-    intro: 'In the UK, HMRC allows 45p per mile for the first 10,000 business miles per year, and 25p per mile after that. Motorcycles get 24p/mile and bicycles 20p/mile. Generate your HMRC-compliant mileage log here for free.',
-    tips: [
-      'Cars/vans: 45p first 10,000 miles, 25p after',
-      'Motorcycles: 24p per mile (no threshold)',
-      'Bicycles: 20p per mile',
-      'Keep records for at least 5 years after the 31 January submission deadline'
-    ]
-  },
-  'mileage-log-canada': {
-    title: 'CRA Mileage Log 2026 — Free Generator (T2125 Compliant)',
-    h1: 'CRA Mileage Log Generator (2026 Rates)',
-    description: 'Free CRA-compliant mileage log generator. 2026 rates: $0.73/km first 5,000 km, $0.67/km after. T2125 and T777 ready. Generate audit-proof PDF in 3 minutes.',
-    keyword: 'cra mileage log',
-    intro: 'The 2026 CRA mileage rate is $0.73/km for the first 5,000 business kilometres and $0.67/km after that ($0.77/$0.71 in Yukon, NWT, and Nunavut). Generate a CRA-compliant logbook for T2125 self-employment or T777 employment expense claims. Free, no signup, audit-proof PDF in under 3 minutes.',
-    tips: [
-      '2026 CRA rate: $0.73/km for first 5,000 km, $0.67/km after (provinces)',
-      'Territories (Yukon, NWT, Nunavut): $0.77/km first 5,000, $0.71/km after',
-      'Required fields per trip: date, destination, business purpose, kilometres',
-      'Self-employed (T2125): deduct actual vehicle expenses × business-use %',
-      'Employees (T777): use signed T2200 from employer to claim',
-      'Simplified method: keep full 12-month base year + 3-month sample years',
-      'Keep all records 6 years from the end of the tax year (CRA rule)',
-      'Record odometer at January 1 and December 31 each year'
-    ]
-  },
-  'cra-mileage-log-template': {
-    title: 'Free CRA Mileage Log Template 2026 — Printable PDF Logbook',
-    h1: 'CRA Mileage Log Template (2026)',
-    description: 'Free printable CRA mileage log template. 2026 rates included. Add trips online and generate a CRA-compliant PDF logbook for T2125 or T777 tax filing.',
-    keyword: 'cra mileage log template',
-    intro: 'A proper CRA mileage log template must capture date, destination, business purpose, and kilometres driven for every business trip — plus odometer readings at the start and end of the tax year. This free generator builds an audit-proof PDF logbook using the 2026 CRA rates ($0.73/km first 5,000 km, $0.67/km after). Use it for T2125 self-employment income or T777 employment expenses. No signup, no spreadsheet, no app to install.',
-    tips: [
-      'Required columns: Date | Start | End | Purpose | Kilometres | Type',
-      '2026 rate auto-calculated: $0.73/km × first 5,000 + $0.67/km × rest',
-      'Add odometer readings (Jan 1 and Dec 31) at the top of the page',
-      'Logs must be contemporaneous — record trips the same day or week',
-      'Acceptable formats: PDF, spreadsheet, CSV, or paper logbook',
-      'Reconstructed logs are usually rejected during a CRA audit',
-      'Keep the logbook + supporting docs (fuel, insurance) for 6 years',
-      'Add notes for trips over 100 km or unusual destinations'
-    ],
-    sections: [
-      {
-        h: 'What the CRA Requires in a Mileage Log',
-        p: [
-          'The Canada Revenue Agency requires a logbook that records, for each business trip, the <strong>date</strong>, the <strong>destination</strong>, the <strong>purpose</strong> of the trip, and the <strong>number of kilometres driven</strong>. You must also record your vehicle\'s odometer reading at the <strong>beginning and end of the fiscal period</strong> (typically January 1 and December 31).',
-          'These four data points plus the annual odometer readings let the CRA calculate your <strong>business-use percentage</strong> — the portion of your total driving that was for business. This percentage determines how much of your vehicle expenses you can deduct, whether you use the full logbook method or claim the per-kilometre allowance.',
-          'For 2026, the CRA reasonable per-kilometre rate is <strong>73¢ for the first 5,000 business kilometres and 67¢ thereafter</strong> (77¢/71¢ in Yukon, Northwest Territories, and Nunavut). This generator applies the correct rate automatically as you add trips.'
-        ]
-      },
-      {
-        h: 'Full Logbook vs Simplified Logbook Method',
-        p: [
-          'The CRA accepts two approaches. The <strong>full logbook method</strong> requires you to record every business trip for the entire year. This is the gold standard and the safest option, especially in your first year of claiming vehicle expenses.',
-          'The <strong>simplified logbook method</strong> lets established businesses keep a full logbook for one complete <em>base year</em>, then maintain a representative <em>three-month sample</em> in later years. The CRA uses the sample, compared against the base year, to estimate your annual business-use percentage. To use this method you must have a base year on file and your usage pattern must stay reasonably consistent.',
-          'For most self-employed Canadians and gig drivers, the full logbook method is simplest to defend. Recording trips as they happen — which takes a couple of minutes a day with this tool — removes any guesswork and gives you a complete, audit-ready record.'
-        ]
-      },
-      {
-        h: 'T2125 vs T777 — Which Form Do You Use?',
-        p: [
-          'If you are <strong>self-employed</strong> (a sole proprietor, gig worker, or independent contractor), you report vehicle expenses on <strong>Form T2125, Statement of Business or Professional Activities</strong>, which is filed with your T1 personal return. You deduct your business-use percentage of total vehicle costs, or apply the per-kilometre method.',
-          'If you are an <strong>employee</strong> who is required to use your own vehicle for work, you claim motor vehicle expenses on <strong>Form T777, Statement of Employment Expenses</strong>. To do this, your employer must complete and sign <strong>Form T2200, Declaration of Conditions of Employment</strong>, confirming you were required to pay your own vehicle costs. Keep the signed T2200 in your records — you do not file it, but the CRA can request it.',
-          'In both cases, the mileage logbook is the foundation of your claim. Without it, the CRA can deny the deduction entirely.'
-        ]
-      }
-    ],
-    faq: [
-      {
-        q: 'What is the CRA mileage rate for 2026?',
-        a: 'The 2026 CRA reasonable per-kilometre rate is 73 cents for the first 5,000 business kilometres and 67 cents for each kilometre after that. In Yukon, the Northwest Territories, and Nunavut, the rates are 77 cents and 71 cents respectively.'
-      },
-      {
-        q: 'What does the CRA require in a mileage logbook?',
-        a: 'The CRA requires the date, destination, purpose, and kilometres for each business trip, plus odometer readings at the start and end of the fiscal year. These establish your business-use percentage, which determines your deductible vehicle expenses.'
-      },
-      {
-        q: 'How long do I need to keep my CRA mileage log?',
-        a: 'The CRA requires you to keep your logbook and supporting documents for six years from the end of the tax year to which they relate. This is longer than the IRS requirement, so Canadian filers should retain records well beyond filing.'
-      },
-      {
-        q: 'Can I use a simplified logbook for the CRA?',
-        a: 'Yes, if you have kept a full logbook for one complete base year. After that, you can maintain a three-month sample period in subsequent years, and the CRA will estimate annual business use by comparing the sample to your base year, provided your driving pattern stays consistent.'
-      },
-      {
-        q: 'Do I use T2125 or T777 for vehicle expenses?',
-        a: 'Self-employed individuals use Form T2125 (Statement of Business or Professional Activities). Employees required to use their own vehicle use Form T777 (Statement of Employment Expenses) and need a signed Form T2200 from their employer. Both rely on your mileage logbook.'
-      }
-    ]
-  },
-  'forgot-to-track-mileage': {
-    title: 'Forgot to Track Mileage? Reconstruct Your IRS Log Step-by-Step',
-    h1: 'Forgot to Track Mileage? Here is What to Do',
-    description: 'Did not track your business miles last year? Reconstruct an IRS-compliant mileage log using calendar entries, Google Timeline, Uber summaries, and bank statements. Free generator included.',
-    keyword: 'forgot to track mileage',
-    intro: 'You are not the first person to reach tax season without a mileage log, and you will not be the last. The IRS allows reconstructed logs under Publication 463 — as long as you back them up with reasonable evidence. This page walks you through exactly how to rebuild a defensible log from the records you already have, then generate it as an IRS-ready PDF for free. No app download. No signup. No subscription.',
-    tips: [
-      'Pull Google Maps Timeline (timeline.google.com) for full location history',
-      'Export Uber/Lyft/DoorDash trip summaries from your driver tax dashboard',
-      'Scan calendar appointments for client visits and meetings',
-      'Use bank/credit card statements showing gas, tolls, and travel expenses',
-      'Find odometer readings on oil change receipts near Jan 1 and Dec 31',
-      'Once you have evidence, enter trips into the generator above and download a PDF'
-    ]
-  },
-  'mileage-log-instacart-shoppers': {
-    title: 'Free Mileage Log for Instacart Shoppers — IRS Tax Deduction Tracker',
-    h1: 'Mileage Log for Instacart & Shipt Shoppers',
-    description: 'Free IRS mileage log generator for Instacart, Shipt, and grocery delivery shoppers. Maximize your 1099 tax deductions with a compliant PDF.',
-    keyword: 'instacart mileage log',
-    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones — every mile counts. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), a shopper logging 12,000 business miles evenly across the year claims about $8,910. Generate your IRS-ready log here for free.',
-    tips: [
-      'Track miles from your home to the first store of the shift',
-      'Log between-store and store-to-customer miles separately',
-      'Wait time at the store qualifies if you are actively shopping',
-      'Save Instacart batch summaries as backup for the trip dates'
-    ]
-  },
-  'mileage-log-lyft-drivers': {
-    title: 'Free Mileage Log for Lyft Drivers — 2026 IRS Tax Deduction Tracker',
-    h1: 'Mileage Log for Lyft Drivers',
-    description: 'Free IRS mileage log generator for Lyft drivers. Track every business mile, including miles between rides, and generate a tax-ready PDF.',
-    keyword: 'lyft mileage log',
-    intro: 'Lyft only tracks "online miles" — it misses miles to the first ride, between rides, and back home. Those uncounted miles can mean $1,000+ in lost deductions per year. This free generator captures every business mile and produces a 2026 IRS-compliant PDF in minutes.',
-    tips: [
-      'Lyft trip summaries are a starting point, not a full log',
-      'Track miles to the first pickup and home from the last drop-off',
-      'Cancellations still count — log the miles you drove',
-      'Keep the Lyft tax summary from your driver dashboard as backup'
-    ]
-  },
-  'mileage-log-nurses': {
-    title: 'Mileage Log for Travel Nurses & Home Health Workers — Free PDF',
-    h1: 'Mileage Log for Nurses & Home Health Workers',
-    description: 'Free mileage log generator for travel nurses, home health aides, and in-home care providers. Track patient visits and generate IRS-compliant PDFs.',
-    keyword: 'nurse mileage log',
-    intro: 'Home health nurses, hospice workers, and travel nurses drive between patient homes all day. The miles between patient visits are fully deductible at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A nurse logging 15,000 business miles evenly across the year claims about $11,140. Generate your IRS-ready log here for free.',
-    tips: [
-      'Patient-to-patient drives are deductible (not commute to first patient)',
-      'Drives to the pharmacy or supply pickup count as business',
-      'Use patient initials, not full names, for HIPAA-safe logging',
-      'Charting time at the patient home does not affect mileage deduction'
-    ]
-  },
-  'mileage-log-construction-contractors': {
-    title: 'Mileage Log for Construction Contractors — Free Job Site Tracker',
-    h1: 'Mileage Log for Construction & Trades',
-    description: 'Free IRS mileage log generator for construction contractors, plumbers, electricians, and HVAC technicians. Track job site visits and supply runs.',
-    keyword: 'contractor mileage log',
-    intro: 'Construction contractors, electricians, plumbers, and HVAC techs drive between job sites, supply houses, and client meetings. Every mile is a tax deduction at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A contractor logging 20,000 business miles evenly across the year claims about $14,850. Generate your log here for free.',
-    tips: [
-      'Job-to-job drives are deductible — even short ones',
-      'Trips to Home Depot, Lowe\'s, or supply houses count',
-      'Materials pickup and tool runs are business mileage',
-      'Drives to estimate appointments are deductible whether you win the job or not'
-    ]
-  },
-  'irs-mileage-rate-history': {
-    title: 'IRS Mileage Rate History (1994–2026) — Every Year, Every Rate',
-    h1: 'IRS Mileage Rate History',
-    description: 'Complete history of IRS standard mileage rates from 1994 to 2026. Includes business, medical, and charity rates for every year.',
-    keyword: 'irs mileage rate history',
-    intro: 'The IRS standard mileage rate has more than doubled since 1994, when it was 29¢/mile. In 2026 it changed twice: 72.5¢ from January 1 and 76¢ from July 1, the highest rate on record. This page lists every business, medical, and charity rate going back three decades — useful when amending old returns or reconstructing past mileage logs.',
-    tips: [
-      '2026 (from Jul 1): 76¢ business, 23.5¢ medical, 14¢ charity (mid-year increase)',
-      '2026 (Jan-Jun): 72.5¢ business, 20.5¢ medical, 14¢ charity',
-      '2025: 70¢ business, 21¢ medical, 14¢ charity',
-      '2024: 67¢ business, 21¢ medical, 14¢ charity',
-      '2023: 65.5¢ business, 22¢ medical, 14¢ charity',
-      '2022 (Jul-Dec): 62.5¢ business (mid-year increase due to fuel)',
-      '2022 (Jan-Jun): 58.5¢ business',
-      '2021: 56¢ business, 16¢ medical, 14¢ charity',
-      '2020: 57.5¢ business, 17¢ medical, 14¢ charity'
-    ]
-  },
-  'mileage-log-generator': {
-    title: 'Free Mileage Log Generator — Create IRS-Ready PDF in 3 Minutes',
-    h1: 'Mileage Log Generator',
-    description: 'Free online mileage log generator. Create an IRS-compliant mileage log PDF in 3 minutes. No signup, no spreadsheet, no app. Just add trips and download.',
-    keyword: 'mileage log generator',
-    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip — date, start and end location, miles, and purpose — and the tool builds a professional logbook with your deduction auto-calculated at the IRS rate for each trip date (72.5¢/mile before July 1, 2026, 76¢ from July 1). No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
-    tips: [
-      'Add unlimited trips — the tool totals your miles and deduction automatically',
-      'The correct 2026 IRS rate is applied per trip date: 72.5¢ before July 1, 76¢ from July 1',
-      'Generated PDF includes date, locations, purpose, and odometer columns',
-      'No account needed — your data stays in your browser until you download',
-      'Print the PDF or keep it digital — both are IRS-acceptable',
-      'Works for any tax year — change the year before generating'
-    ]
-  },
-  'mileage-log-2026': {
-    title: 'Mileage Log 2026 — Free IRS Template & Generator (76¢ From July 1)',
-    h1: 'Mileage Log 2026 (Updated for the July Rate Change)',
-    description: 'Free 2026 mileage log generator that applies the right IRS rate per trip: 72.5¢/mile January to June, 76¢ from July 1. Compliant PDF logbook, no signup.',
-    keyword: 'mileage log 2026',
-    intro: 'The 2026 IRS standard mileage rate is 72.5¢ per business mile for January to June and 76¢ from July 1, after a mid-year increase. This free generator builds a 2026 mileage log PDF and applies the right rate to each trip by date. Whether you are self-employed, a gig worker, or claiming employee business expenses, generate your audit-proof 2026 logbook here in minutes.',
-    tips: [
-      '2026 business rate: 72.5¢/mile Jan to Jun, 76¢/mile from Jul 1 (70¢ in 2025)',
-      '2026 medical/moving rate: 20.5¢/mile Jan to Jun, 23.5¢/mile from Jul 1',
-      '2026 charity rate: 14¢/mile (set by statute, unchanged)',
-      'Record odometer readings on January 1 and December 31, 2026',
-      'Log trips contemporaneously — same day or same week',
-      'Keep your 2026 records until at least 2030 (IRS 3-year audit window, 6 for some cases)'
-    ]
-  },
-  'mileage-log-grubhub-drivers': {
-    title: 'Free Mileage Log for Grubhub Drivers — Tax Deduction Tracker',
-    h1: 'Mileage Log for Grubhub Drivers',
-    description: 'Free IRS mileage log generator for Grubhub delivery drivers. Track every delivery mile and maximize your 1099 tax deductions with a compliant PDF.',
-    keyword: 'grubhub mileage log',
-    intro: 'Grubhub drivers are independent contractors (1099), which means every business mile is deductible at the 2026 IRS rate (72.5¢/mile January to June, 76¢ from July 1). Most Grubhub drivers leave hundreds of dollars on the table by not tracking miles properly. Just 30 miles of deliveries per shift equals about $22.80 in deductions at the current rate — that adds up to thousands per year. Generate your IRS-ready Grubhub mileage log here for free.',
-    tips: [
-      'Track miles from when you start driving toward your first pickup',
-      'Log miles between deliveries, not just restaurant-to-customer',
-      'Include miles driven while waiting and repositioning for orders',
-      'Grubhub does not track all your deductible miles — keep your own log',
-      'Screenshot your Grubhub daily earnings summary as backup',
-      'Standard mileage method usually beats actual expenses for delivery drivers'
-    ]
-  },
-  'mileage-log-amazon-flex': {
-    title: 'Free Mileage Log for Amazon Flex Drivers — Tax Deduction PDF',
-    h1: 'Mileage Log for Amazon Flex Drivers',
-    description: 'Free IRS mileage log generator for Amazon Flex delivery drivers. Track package delivery miles and maximize your 1099 tax deductions.',
-    keyword: 'amazon flex mileage log',
-    intro: 'Amazon Flex drivers are 1099 independent contractors who can deduct every business mile at the 2026 IRS rate (72.5¢/mile January to June, 76¢ from July 1). A typical 4-hour Flex block covers 40-60 miles, roughly $30-46 in deductions per block at the current rate. Over a year of regular blocks, that can mean $3,000-$8,000 in vehicle deductions. Amazon does not track your miles for you, so a personal log is essential. Generate your IRS-ready Amazon Flex mileage log here for free.',
-    tips: [
-      'Track miles from home to the delivery station if you start your route there',
-      'Log all miles during your delivery block, including between stops',
-      'Include miles driven back home after completing your block',
-      'Amazon Flex app shows route miles but not all deductible miles — keep your own',
-      'Save your block confirmation screenshots as supporting evidence',
-      'Standard mileage (76¢ from July 2026) usually beats tracking actual gas and maintenance'
-    ]
-  },
-  'mileage-log-therapists': {
-    title: 'Free Mileage Log for Therapists & Counselors — IRS Tax Deduction',
-    h1: 'Mileage Log for Therapists & Counselors',
-    description: 'Free IRS mileage log generator for therapists, counselors, and home-visit clinicians. Track client-visit miles for your private practice tax deductions.',
-    keyword: 'therapist mileage log',
-    intro: 'Therapists, counselors, and clinicians who travel between offices, see clients in their homes, or visit care facilities can deduct those business miles at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). Mobile and in-home therapists often drive 100-200 business miles per week, which is $76-$152 in weekly deductions at the current rate, or roughly $4,000-$7,500 per year. This free generator builds an IRS-compliant mileage log for your private practice in minutes.',
-    tips: [
-      'Deduct miles between your office and client homes or facilities',
-      'Travel between two work locations is deductible (office to client site)',
-      'Commuting from home to your main office is NOT deductible',
-      'If you work from a home office, trips to clients ARE deductible',
-      'Record the client visit purpose (e.g. "home session - client A")',
-      'Keep records 3 years minimum (6 if you under-report income)'
-    ]
-  },
-  'mileiq-alternative': {
-    title: 'Best Free MileIQ Alternative 2026 — No Subscription, No App Required',
-    h1: 'Free MileIQ Alternative (2026)',
-    description: 'Looking for a MileIQ alternative after the 2026 price hike? This free mileage log generator requires no app, no signup, and no subscription. Instant IRS-ready PDF.',
-    keyword: 'mileiq alternative',
-    intro: 'MileIQ raised its price by 50% in 2026 — from $5.99 to $8.99 per month — and still limits free users to just 40 drives per month. If you are looking for a MileIQ alternative that actually works without a subscription, this free mileage log generator creates IRS-compliant PDFs with no app to install, no account to create, and no monthly fee. Ever.',
-    tips: [
-      'No subscription — MileIQ costs $8.99/month ($107/year), this tool is free forever',
-      'No app install — works in any browser on phone, tablet, or computer',
-      'No signup — MileIQ requires an account, this tool requires nothing',
-      'No drive limit — MileIQ free caps at 40 drives/month, this has no cap',
-      'IRS-compliant PDF — same required fields (date, destination, purpose, miles)',
-      'Works for all professions — realtors, gig drivers, self-employed, contractors',
-      'Your data stays in your browser — no cloud, no privacy concerns',
-      'Pro upgrade just $9 lifetime (not $107/year like MileIQ)'
-    ],
-    sections: [
-      {
-        h: 'Why People Are Leaving MileIQ in 2026',
-        p: [
-          'In early 2026, MileIQ increased its unlimited plan from $5.99 to <strong>$8.99 per month</strong> — a 50% price hike that caught many users off guard. At $107.88 per year, MileIQ is now one of the most expensive mileage trackers on the market. The free tier remains limited to just 40 drives per month, which most active drivers blow through in the first two weeks.',
-          'The frustration is not just about price. MileIQ is a <strong>mobile-only app</strong> that runs GPS in the background, which drains battery and raises privacy concerns. It auto-detects trips but still requires you to manually classify each one as business or personal — a swipe for every single drive. And if you forget to swipe for a few days, you end up with a backlog of unclassified trips that you have to sort through at the end of the week.',
-          'For many self-employed workers and gig drivers, the question has become: <strong>do I really need to pay $108/year for something that still requires daily manual input?</strong> The answer, increasingly, is no.'
-        ]
-      },
-      {
-        h: 'MileIQ vs This Free Generator — Side by Side',
-        p: [
-          '<strong>Automatic tracking:</strong> MileIQ uses GPS to auto-detect drives. This generator does not — you enter trips manually. If you want set-and-forget GPS tracking, MileIQ (or TripLog, which offers free unlimited auto-tracking in 2026) is the better fit. But if you are willing to spend 5 minutes per week logging trips, manual entry produces a <em>more accurate and audit-defensible</em> record because every entry has a specific, deliberate business purpose.',
-          '<strong>Cost:</strong> MileIQ costs $8.99/month ($107/year). Everlance costs $9/month ($108/year). Driversnote starts at $11/month for teams. This generator is completely free, with an optional $9 <em>lifetime</em> Pro upgrade — less than one month of MileIQ.',
-          '<strong>Privacy:</strong> MileIQ runs location tracking 24/7 and stores all trip data in the cloud. This generator stores your data locally in your browser. Nothing is uploaded to any server unless you choose to generate a PDF. If privacy matters to you, this is the safer choice.',
-          '<strong>Output:</strong> Both produce IRS-compliant mileage reports. MileIQ generates CSV and PDF reports from its dashboard. This generator produces a clean, professional PDF with all four IRS-required fields plus odometer readings and a deduction summary — ready to hand to your CPA or upload to TurboTax.'
-        ]
-      },
-      {
-        h: 'Who Should Switch from MileIQ?',
-        p: [
-          'This alternative is the best fit if you are <strong>cost-conscious</strong> (you do not want to pay $108/year for mileage tracking), if you drive a <strong>predictable number of business trips</strong> (and can log them weekly), or if you prefer a <strong>web tool</strong> over a phone app. It works especially well for real estate agents who log showings, gig drivers who track delivery routes, and self-employed professionals with regular client visits.',
-          'If you rely heavily on automatic GPS detection because you drive dozens of unpredictable trips per day and never want to open a log, consider TripLog (free unlimited auto-tracking) or Stride (100% free). But if you want the simplest, fastest, most private way to build an IRS-ready mileage log — without installing anything or creating an account — this is it.'
-        ]
-      }
-    ],
-    faq: [
-      {
-        q: 'Is there a truly free alternative to MileIQ?',
-        a: 'Yes. This mileage log generator is completely free with no drive limit, no signup, and no subscription. TripLog also offers free unlimited automatic tracking in 2026, and Stride is 100% free (app-based). MileIQ free tier limits you to 40 drives per month.'
-      },
-      {
-        q: 'How much does MileIQ cost in 2026?',
-        a: 'MileIQ raised its price to $8.99 per month (up from $5.99) in 2026, which comes to $107.88 per year for the unlimited plan. The free plan is limited to 40 drives per month.'
-      },
-      {
-        q: 'Can I import my MileIQ data into another tracker?',
-        a: 'Yes. In MileIQ, go to Reports, create a report with all your mileage data, and export it as a CSV file. You can keep this for your records or import it into another tracking solution. Your historical data belongs to you.'
-      },
-      {
-        q: 'Is a manual mileage log as good as an app for IRS purposes?',
-        a: 'Yes. The IRS does not require any specific format or software. A manual log with date, destination, purpose, and miles — kept at or near the time of each trip — is fully compliant. In fact, manual logs with specific purpose entries are often stronger in audits than auto-generated app logs with generic descriptions.'
-      },
-      {
-        q: 'What is the best free mileage tracker overall?',
-        a: 'It depends on your needs. For automatic GPS tracking with no cost, TripLog is the best app option in 2026. For a simple web-based log with no app or signup required, this generator is the fastest and most private option. For a fully free expense plus mileage tracker, Stride covers both at no cost.'
-      }
-    ]
-  },
-  'everlance-alternative': {
-    title: 'Free Everlance Alternative 2026 — No Monthly Fee, No App Needed',
-    h1: 'Free Everlance Alternative (2026)',
-    description: 'Looking for an Everlance alternative without the $9/month fee? Free mileage log generator with no app, no signup. IRS-compliant PDF in 3 minutes.',
-    keyword: 'everlance alternative',
-    intro: 'Everlance raised its price to $9 per month in 2026 and expanded into tax filing — features many users never asked for. If you just need a simple, IRS-compliant mileage log without paying $108 per year, this free generator produces the same output with no app, no account, and no subscription. Enter your trips, download your PDF, and you are done.',
-    tips: [
-      'Everlance costs $9/month ($108/year) — this tool is free, Pro is $9 lifetime',
-      'No app to install — Everlance requires iOS/Android download',
-      'No bank sync needed — Everlance connects to your bank, this tool does not',
-      'Same IRS-compliant output — date, destination, purpose, miles, deduction',
-      'No cloud storage — your data stays in your browser, not on Everlance servers',
-      'Works for all tax situations — self-employed, gig, real estate, employee',
-      'Generate PDF in 3 minutes — no weekly swiping or trip classification',
-      'CRA rates included — Everlance is US-only, this works for Canada too'
-    ],
-    sections: [
-      {
-        h: 'Everlance vs This Free Generator',
-        p: [
-          '<strong>Everlance</strong> is a full-featured mileage and expense tracker with automatic GPS detection, bank account syncing, receipt scanning, and — as of 2026 — built-in tax filing. It is a powerful tool for people who want everything in one place. The trade-off is cost ($9/month), complexity, and the requirement to share your bank and location data with a third-party cloud service.',
-          'This <strong>free generator</strong> does one thing well: it builds an IRS-compliant mileage log PDF. No GPS, no bank sync, no expense categories — just the four fields the IRS requires (date, destination, purpose, miles) plus a calculated deduction. If you only need a mileage log and not a full financial platform, this is the faster, simpler, and cheaper option.',
-          'Both produce IRS-acceptable output. The difference is whether you want an <strong>all-in-one financial platform</strong> (Everlance) or a <strong>focused mileage tool</strong> (this generator). Most self-employed individuals who already use QuickBooks, FreshBooks, or a CPA for their finances only need the mileage log — not another financial app.'
-        ]
-      }
-    ],
-    faq: [
-      {
-        q: 'Is Everlance worth the price in 2026?',
-        a: 'Everlance is worth it if you use its full feature set: mileage tracking, expense management, bank syncing, and tax filing. If you only need a mileage log for IRS deductions, a free alternative that produces the same PDF output saves you $108 per year.'
-      },
-      {
-        q: 'Does Everlance work in Canada?',
-        a: 'Everlance is primarily designed for the US market. If you need CRA-compliant mileage tracking with Canadian per-kilometre rates, this free generator includes 2026 CRA rates ($0.73/km first 5,000 km, $0.67/km after) and supports T2125 reporting.'
-      },
-      {
-        q: 'Can I cancel Everlance and keep my data?',
-        a: 'Yes. Export your mileage reports from Everlance before cancelling. You can download CSV or PDF reports from your Everlance dashboard. Once exported, you own that data and can reference it for future tax filings.'
-      }
-    ]
-  }
-};
-
-// === GUMROAD WEBHOOK ===
-// Gumroad sale notification: when a user purchases lifetime Pro
-app.post('/gumroad-webhook', async (req, res) => {
-  try {
-    const { email, sale_id, product_id, refunded } = req.body;
-
-    if (!email) return res.status(400).send('No email');
-
-    if (refunded === 'true' || refunded === true) {
-      await revokePro(email);
-      console.log(`Refund processed for ${email}`);
-    } else {
-      await grantPro(email, { sale_id, product_id });
-      console.log(`Pro access granted to ${email}`);
-    }
-
-    res.send('OK');
-  } catch (err) {
-    console.error('Webhook error:', err);
-    res.status(500).send('Error');
-  }
-});
-
-// === VERIFY LICENSE (user enters email to unlock) ===
+// ===== Pro (Gumroad license key, verified server-side on every Pro action) =====
 app.post('/verify-pro', async (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.json({ pro: false, error: 'No email provided' });
-
-  const pro = await isPro(email);
-  res.json({ pro, email: email.toLowerCase().trim() });
+  const result = await verifyLicense(req.body && req.body.license_key);
+  res.json({ pro: result.valid, reason: result.valid ? undefined : result.reason });
 });
 
-// === ROUTES ===
+// Gumroad ping endpoint kept so an existing ping URL does not error. It never grants access:
+// Pro is checked against Gumroad's license API instead of trusting unsigned request bodies.
+app.post('/gumroad-webhook', (req, res) => res.send('OK'));
 
-// Homepage
-app.get('/', (req, res) => {
-  res.render('index', {
-    rates: IRS_RATES_2026,
-    title: 'Free IRS Mileage Log Generator 2026 — No Signup, Instant PDF',
-    description: 'Free IRS-compliant mileage log generator. Track business, medical, and charity miles. Generate tax-ready PDF in under 3 minutes. No signup, no credit card.'
-  });
-});
-
-// Generate PDF
+// ===== PDF log =====
 app.post('/generate-pdf', async (req, res) => {
   try {
-    const { trips, userInfo, year } = req.body;
-
-    if (!trips || !Array.isArray(trips) || trips.length === 0) {
-      return res.status(400).json({ error: 'No trips provided' });
-    }
-
-    const taxYear = year === '2024' || year === '2025' ? year : '2026';
-
-    // Pro check (server-side, async)
-    const userIsPro = userInfo && userInfo.email && await isPro(userInfo.email);
-
-    const doc = new PDFDocument({ margin: 40, size: 'A4', bufferPages: true });
-    const chunks = [];
-    doc.on('data', c => chunks.push(c));
-    doc.on('end', () => {
-      const pdfData = Buffer.concat(chunks);
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="mileage-log-${taxYear}.pdf"`);
-      res.send(pdfData);
-    });
-
-    // Header
-    doc.fontSize(20).fillColor('#0a2540').text('Mileage Log', { align: 'left' });
-    doc.fontSize(10).fillColor('#666').text(`Tax Year ${taxYear}  •  IRS Standard Mileage Rates`, { align: 'left' });
-    doc.moveDown(0.5);
-
-    if (userInfo && userInfo.name) {
-      doc.fontSize(11).fillColor('#0a2540').text(`Name: ${userInfo.name}`);
-    }
-    if (userInfo && userInfo.vehicle) {
-      doc.fontSize(11).fillColor('#0a2540').text(`Vehicle: ${userInfo.vehicle}`);
-    }
-    if (userInfo && userInfo.startOdometer) {
-      doc.fontSize(11).fillColor('#0a2540').text(`Starting Odometer: ${userInfo.startOdometer}`);
-    }
-    if (userInfo && userInfo.endOdometer) {
-      doc.fontSize(11).fillColor('#0a2540').text(`Ending Odometer: ${userInfo.endOdometer}`);
-    }
-
-    doc.moveDown(1);
-
-    // Table header
-    const startY = doc.y;
-    const colWidths = [60, 120, 120, 110, 50, 60];
-    const headers = ['Date', 'Start Location', 'End Location', 'Purpose', 'Miles', 'Type'];
-
-    doc.fontSize(9).fillColor('#fff').rect(40, startY, 520, 20).fill('#0a2540');
-    let x = 45;
-    headers.forEach((h, i) => {
-      doc.fillColor('#fff').text(h, x, startY + 6, { width: colWidths[i] });
-      x += colWidths[i];
-    });
-
-    let y = startY + 22;
-    let totals = { business: 0, medical: 0, charity: 0, personal: 0 };
-    // Deduction per type, and 2026 miles split at the July 1 rate change.
-    const deduction = { business: 0, medical: 0, charity: 0 };
-    const split = { business: [0, 0], medical: [0, 0] };
-
-    trips.forEach((trip, idx) => {
-      if (y > 750) {
-        doc.addPage();
-        y = 40;
-      }
-
-      const bg = idx % 2 === 0 ? '#f7f9fc' : '#ffffff';
-      doc.rect(40, y, 520, 18).fill(bg);
-
-      x = 45;
-      const row = [
-        trip.date || '',
-        trip.start || '',
-        trip.end || '',
-        trip.purpose || '',
-        String(trip.miles || 0),
-        (trip.type || 'business').toUpperCase()
-      ];
-
-      doc.fontSize(8).fillColor('#0a2540');
-      row.forEach((val, i) => {
-        doc.text(val, x, y + 5, { width: colWidths[i] - 4, ellipsis: true });
-        x += colWidths[i];
-      });
-
-      const miles = parseFloat(trip.miles) || 0;
-      const type = trip.type || 'business';
-      if (totals[type] !== undefined) totals[type] += miles;
-      if (deduction[type] !== undefined) deduction[type] += miles * ratesFor(taxYear, trip.date)[type];
-      if (taxYear === '2026' && split[type]) split[type][String(trip.date || '') >= RATE_CHANGE_2026 ? 1 : 0] += miles;
-
-      y += 18;
-    });
-
-    // Totals
-    y += 10;
-    if (y > 700) { doc.addPage(); y = 40; }
-
-    doc.fontSize(12).fillColor('#0a2540').text('Summary', 40, y);
-    y += 20;
-
-    doc.fontSize(10).fillColor('#0a2540');
-    const line = (label, type) => {
-      if (taxYear === '2026') {
-        const [h1, h2] = split[type];
-        const r1 = IRS_RATES_2026_H1[type], r2 = IRS_RATES_2026_H2[type];
-        return `${label} ${totals[type].toFixed(1)} mi  (${h1.toFixed(1)} × $${r1} before Jul 1 + ${h2.toFixed(1)} × $${r2} from Jul 1)  =  $${deduction[type].toFixed(2)}`;
-      }
-      return `${label} ${totals[type].toFixed(1)} mi  ×  $${ratesFor(taxYear)[type]}/mi  =  $${deduction[type].toFixed(2)}`;
-    };
-    doc.text(line('Business Miles:', 'business'), 40, y, { width: 520 });
-    y += 16;
-    doc.text(line('Medical Miles: ', 'medical'), 40, y, { width: 520 });
-    y += 16;
-    doc.text(`Charity Miles:    ${totals.charity.toFixed(1)} mi  ×  $0.14/mi  =  $${deduction.charity.toFixed(2)}`, 40, y);
-    y += 16;
-    doc.text(`Personal Miles:   ${totals.personal.toFixed(1)} mi  (not deductible)`, 40, y);
-    y += 24;
-
-    const totalDeduction = deduction.business + deduction.medical + deduction.charity;
-    doc.fontSize(13).fillColor('#0a2540').text(`Total Deduction: $${totalDeduction.toFixed(2)}`, 40, y);
-    if (taxYear === '2026') {
-      doc.fontSize(8).fillColor('#666').text('2026 IRS rates: 72.5¢ business / 20.5¢ medical (Jan 1 - Jun 30, Notice 2026-10); 76¢ / 23.5¢ from Jul 1 (IRB 2026-29); charity 14¢.', 40, y + 20, { width: 520 });
-    }
-
-    // Footer (free version footer note) — uses userIsPro from above
-
-    // === DIAGONAL CENTER WATERMARK ON EVERY PAGE (free users) ===
-    if (!userIsPro) {
-      const range = doc.bufferedPageRange();
-      const startPage = range.start;
-      const endPage = range.start + range.count;
-
-      // A4: 595 x 842 points
-      const PAGE_W = 595;
-      const PAGE_H = 842;
-
-      for (let i = startPage; i < endPage; i++) {
-        doc.switchToPage(i);
-
-        // === BIG DIAGONAL CENTER WATERMARK ===
-        doc.save();
-        doc.translate(PAGE_W / 2, PAGE_H / 2);
-        doc.rotate(-35);
-        doc.fontSize(90)
-           .fillColor('#ff0000')
-           .opacity(0.35)
-           .text('FREE VERSION', -350, -45, { width: 700, align: 'center' });
-        doc.restore();
-        doc.opacity(1);
-
-        // === SECOND WATERMARK BAND (for proof of concept) ===
-        doc.save();
-        doc.translate(PAGE_W / 2, PAGE_H / 2);
-        doc.rotate(-35);
-        doc.fontSize(20)
-           .fillColor('#ff0000')
-           .opacity(0.5)
-           .text('Watermark removed with Pro', -350, 50, { width: 700, align: 'center' });
-        doc.restore();
-        doc.opacity(1);
-
-        // === THIRD WATERMARK BAND ===
-        doc.save();
-        doc.translate(PAGE_W / 2, PAGE_H / 2);
-        doc.rotate(-35);
-        doc.fontSize(16)
-           .fillColor('#ff0000')
-           .opacity(0.45)
-           .text('Get Pro at mileagelogmaker.com', -350, 90, { width: 700, align: 'center' });
-        doc.restore();
-        doc.opacity(1);
-
-        // === BOTTOM FOOTER ===
-        doc.fontSize(11)
-           .fillColor('#cc0000')
-           .opacity(1)
-           .text(
-             'Free version. Remove the watermark with Pro ($9) at mileagelogmaker.com',
-             40, 815,
-             { align: 'center', width: 520 }
-           );
-      }
-    }
-
-    doc.end();
+    const r = cleanRequest(req.body);
+    if (!r.trips.length) return res.status(400).json({ error: 'No trips provided' });
+    const pro = r.license ? (await verifyLicense(r.license)).valid : false;
+    const pdf = await buildLogPdf({ region: r.region, trips: r.trips, userInfo: r.userInfo, pro, logo: r.logo }, r.summary);
+    const name = r.region === 'ca' ? `vehicle-logbook-${r.year}.pdf` : r.region === 'uk' ? 'hmrc-mileage-log.pdf' : `mileage-log-${r.year}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${name}"`);
+    res.setHeader('X-MLM-Pro', pro ? '1' : '0');
+    res.send(pdf);
   } catch (err) {
     console.error('PDF error:', err);
     res.status(500).json({ error: 'PDF generation failed' });
   }
 });
 
-// Niche SEO pages
+// ===== Pro export: CSV / Excel =====
+app.post('/export', async (req, res) => {
+  try {
+    const r = cleanRequest(req.body);
+    if (!r.trips.length) return res.status(400).json({ error: 'No trips provided' });
+    const check = r.license ? await verifyLicense(r.license) : { valid: false };
+    if (!check.valid) return res.status(402).json({ error: 'Pro license required', reason: check.reason || 'missing' });
+    const base = r.region === 'ca' ? `vehicle-logbook-${r.year}` : r.region === 'uk' ? 'hmrc-mileage-log' : `mileage-log-${r.year}`;
+    if (req.body.format === 'csv') {
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="${base}.csv"`);
+      return res.send(buildCsv(r.region, r.trips, r.summary));
+    }
+    const buf = await buildXlsx(r.region, r.trips, r.summary, r.userInfo);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${base}.xlsx"`);
+    res.send(Buffer.from(buf));
+  } catch (err) {
+    console.error('Export error:', err);
+    res.status(500).json({ error: 'Export failed' });
+  }
+});
+
+// ===== Pages =====
+const KEY_PAGES = ['irs-mileage-log-requirements', 'free-mileage-log-template', 'mileage-log-self-employed', 'mileage-log-real-estate-agents', 'mileage-log-uber-drivers', 'mileage-log-doordash-drivers', 'cra-mileage-log-template', 'mileage-log-2026-irs-rate'];
+
+function relatedFor(slug, page) {
+  const wanted = (page.related || []).concat(KEY_PAGES);
+  const seen = new Set([slug]);
+  const out = [];
+  for (const s of wanted) {
+    if (seen.has(s) || !NICHE_PAGES[s]) continue;
+    seen.add(s);
+    out.push({ slug: s, h1: NICHE_PAGES[s].h1, blurb: NICHE_PAGES[s].blurb || '' });
+    if (out.length === 6) break;
+  }
+  return out;
+}
+
+app.get('/', (req, res) => {
+  res.render('index', {
+    title: 'Free IRS Mileage Log Generator 2026: PDF, No Signup',
+    description: 'Free mileage log generator for IRS taxes. Log business, medical and charity trips and download a PDF with the 2026 rates (72.5¢, then 76¢ from July 1) applied by date.',
+    canonical: SITE + '/'
+  });
+});
+
+app.get('/blog', (req, res) => {
+  res.render('blog-index', {
+    canonical: SITE + '/blog',
+    posts: Object.entries(BLOG_POSTS).map(([slug, p]) => ({ slug, ...p }))
+  });
+});
+
 app.get('/:slug', (req, res, next) => {
   const slug = req.params.slug;
-  if (NICHE_PAGES[slug]) {
+  const page = NICHE_PAGES[slug];
+  if (page) {
     return res.render('niche', {
-      page: NICHE_PAGES[slug],
-      slug,
-      rates: IRS_RATES_2026,
-      allPages: Object.keys(NICHE_PAGES).filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: NICHE_PAGES[s].h1 }))
+      page, slug, canonical: `${SITE}/${slug}`,
+      region: page.region || 'us',
+      related: relatedFor(slug, page)
     });
   }
   if (BLOG_POSTS[slug]) {
     return res.render('blog-post', {
-      post: BLOG_POSTS[slug],
-      slug,
-      rates: IRS_RATES_2026,
+      post: BLOG_POSTS[slug], slug, canonical: `${SITE}/${slug}`,
       allPosts: Object.keys(BLOG_POSTS).filter(s => s !== slug).slice(0, 4).map(s => ({ slug: s, title: BLOG_POSTS[s].title }))
     });
   }
   next();
 });
 
-// Blog index
-app.get('/blog', (req, res) => {
-  res.render('blog-index', {
-    posts: Object.entries(BLOG_POSTS).map(([slug, p]) => ({ slug, ...p }))
-  });
-});
-
-// Sitemap
+// ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  res.set('Content-Type', 'text/xml');
-  const base = 'https://mileagelogmaker.com';
-  const urls = [
-    '',
-    '/blog',
-    ...Object.keys(NICHE_PAGES).map(s => '/' + s),
-    ...Object.keys(BLOG_POSTS).map(s => '/' + s)
-  ].map(path => `
-  <url>
-    <loc>${base}${path}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>${path === '' ? '1.0' : '0.8'}</priority>
-  </url>`).join('');
-
-  res.send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
-</urlset>`);
+  const entries = [['/', SITE_UPDATED], ['/blog', SITE_UPDATED]]
+    .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
+    .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
+  const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 });
 
-// Robots
 app.get('/robots.txt', (req, res) => {
-  res.type('text/plain');
-  res.send(`User-agent: *
-Allow: /
-
-Sitemap: https://mileagelogmaker.com/sitemap.xml`);
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /generate-pdf\nDisallow: /export\nDisallow: /verify-pro\n\nSitemap: ${SITE}/sitemap.xml\n`);
 });
 
-// 404
 app.use((req, res) => {
   res.status(404).render('404');
 });
 
-app.listen(PORT, () => {
-  console.log(`MileageLogMaker running on ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`MileageLogMaker running on ${PORT}`));
+}
 
 module.exports = app;

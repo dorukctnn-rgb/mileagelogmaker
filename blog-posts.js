@@ -396,7 +396,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The Qualified Business Income deduction lets self-employed drivers deduct up to 20% of their net business income, subject to income limits. For 2026, this phases out for incomes above $383,900 (married filing jointly) or $191,950 (single). Most rideshare drivers qualify for the full 20%.'
+      text: 'The Qualified Business Income deduction lets self-employed drivers deduct up to 20% of their net business income, subject to income limits. For 2026, the wage and property limits only start to apply above $403,500 of taxable income for married couples filing jointly and $201,750 for most other filers (IRS Rev. Proc. 2025-32), so most rideshare drivers can use the simple 20% calculation.'
     },
     {
       type: 'h2',

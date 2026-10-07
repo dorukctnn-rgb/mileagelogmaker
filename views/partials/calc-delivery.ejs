@@ -1,0 +1,35 @@
+<h2 id="calculator"><%= page.calcHeading || 'DoorDash mileage deduction calculator' %></h2>
+<p>Enter your business miles to see the standard mileage deduction and a rough idea of the tax it saves. The deduction lowers both self-employment tax and income tax, so it is worth more than your income tax bracket alone.</p>
+<div class="calc" id="dcalc">
+  <div class="grid">
+    <div class="field"><label for="dcYear">Tax year</label>
+      <select id="dcYear"><option value="2026">2026</option><option value="2025">2025</option></select></div>
+    <div class="field" id="dcH1Wrap"><label for="dcH1" id="dcH1Label">Business miles Jan 1 to Jun 30, 2026</label><input type="number" id="dcH1" value="3000" min="0" inputmode="decimal"></div>
+    <div class="field" id="dcH2Wrap"><label for="dcH2">Business miles from Jul 1, 2026</label><input type="number" id="dcH2" value="3000" min="0" inputmode="decimal"></div>
+    <div class="field"><label for="dcBracket">Federal income tax bracket</label>
+      <select id="dcBracket"><option value="0.10">10%</option><option value="0.12" selected>12%</option><option value="0.22">22%</option><option value="0.24">24%</option><option value="0.32">32%</option><option value="0.35">35%</option><option value="0.37">37%</option></select></div>
+  </div>
+  <div class="calc-out" id="dcOut"></div>
+</div>
+<p style="font-size:14px;color:#56657a">How it is calculated: deduction = miles x IRS rate for the date driven. Self-employment tax saved is about deduction x 92.35% x 15.3% (Schedule SE). Income tax saved is about deduction x your bracket. This ignores state tax, the QBI deduction and the deduction for half of self-employment tax, so treat it as an estimate, not tax advice.</p>
+<script>
+(function () {
+  function g(id) { return document.getElementById(id); }
+  function money(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function calc() {
+    var y = g('dcYear').value, h1 = Math.max(0, parseFloat(g('dcH1').value) || 0), h2 = Math.max(0, parseFloat(g('dcH2').value) || 0);
+    var br = parseFloat(g('dcBracket').value);
+    var ded, miles, detail;
+    if (y === '2026') { miles = h1 + h2; ded = h1 * 0.725 + h2 * 0.76; detail = h1.toLocaleString('en-US') + ' mi x $0.725 + ' + h2.toLocaleString('en-US') + ' mi x $0.76'; }
+    else { miles = h1; ded = h1 * 0.70; detail = h1.toLocaleString('en-US') + ' mi x $0.70'; }
+    var se = ded * 0.9235 * 0.153, inc = ded * br;
+    g('dcH2Wrap').style.display = y === '2026' ? '' : 'none';
+    g('dcH1Label').textContent = y === '2026' ? 'Business miles Jan 1 to Jun 30, 2026' : 'Business miles in 2025';
+    g('dcOut').innerHTML = '<p>Mileage deduction</p><p class="big">' + money(ded) + '</p><p>' + detail + '</p>' +
+      '<p>Estimated tax saved: <strong>' + money(se + inc) + '</strong> (about ' + money(se) + ' self-employment tax + ' + money(inc) + ' federal income tax)</p>' +
+      (miles ? '<p>That is roughly ' + money((se + inc) / miles) + ' of tax saved per logged business mile.</p>' : '');
+  }
+  ['dcYear', 'dcH1', 'dcH2', 'dcBracket'].forEach(function (id) { g(id).addEventListener('input', calc); g(id).addEventListener('change', calc); });
+  calc();
+})();
+</script>
