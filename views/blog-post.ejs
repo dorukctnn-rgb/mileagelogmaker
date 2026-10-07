@@ -1,122 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><%= post.title %> | MileageLogMaker</title>
-<meta name="description" content="<%= post.description %>">
-<meta property="og:title" content="<%= post.title %>">
-<meta property="og:description" content="<%= post.description %>">
-<meta property="og:type" content="article">
-<meta name="google-site-verification" content="lTAZNAqExJcgGVTl7hfH3sdplbLhtLtfScgj18hkzO4" />
-<link rel="canonical" href="https://mileagelogmaker.com/<%= slug %>">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "<%= post.title %>",
-  "description": "<%= post.description %>",
-  "author": { "@type": "Organization", "name": "MileageLogMaker" },
-  "publisher": { "@type": "Organization", "name": "MileageLogMaker" },
-  "datePublished": "2026-05-01"
-}
-</script>
+<%- include('partials/head', { title: post.title, description: post.description, canonical: canonical, ogType: 'article' }) %>
+<script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'Article', headline: post.title, description: post.description, mainEntityOfPage: canonical,
+      datePublished: post.published || '2026-05-01', dateModified: post.updated || '2026-10-07',
+      author: { '@type': 'Organization', name: 'MileageLogMaker', url: SITE + '/' },
+      publisher: { '@type': 'Organization', name: 'MileageLogMaker', logo: { '@type': 'ImageObject', url: SITE + '/android-chrome-512x512.png' } },
+      image: SITE + '/og-image.png' },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE + '/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title, item: canonical } ] }
+  ]
+}) %></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#0a2540;line-height:1.7}
-.nav{background:#fff;border-bottom:1px solid #e6ebf1;padding:14px 0}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:18px;font-weight:700;color:#0a2540;text-decoration:none}
-.nav-links a{color:#425466;text-decoration:none;margin-left:20px;font-size:14px}
-
-article{max-width:760px;margin:50px auto 60px;padding:0 20px}
-.meta{color:#8898aa;font-size:13px;margin-bottom:14px}
-article h1{font-size:38px;font-weight:800;line-height:1.2;margin-bottom:24px;letter-spacing:-0.5px}
-article h2{font-size:24px;margin:36px 0 14px;font-weight:700}
-article p{font-size:17px;color:#0a2540;margin-bottom:18px}
-
-.cta{background:linear-gradient(135deg,#635bff 0%,#5048e5 100%);color:#fff;padding:30px;border-radius:12px;margin:40px 0;text-align:center}
-.cta h3{font-size:22px;margin-bottom:10px}
-.cta p{color:rgba(255,255,255,.9);margin-bottom:20px;font-size:16px}
-.cta a{display:inline-block;background:#fff;color:#635bff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600}
-
-.related{background:#f7f9fc;padding:50px 20px;margin-top:60px}
-.related-inner{max-width:1200px;margin:0 auto}
-.related h2{font-size:22px;margin-bottom:20px;font-weight:700}
-.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-@media(max-width:700px){.related-grid{grid-template-columns:1fr}}
-.related-card{background:#fff;border:1px solid #e6ebf1;padding:18px;border-radius:8px;text-decoration:none;color:#0a2540}
-.related-card:hover{border-color:#635bff}
-.related-card strong{display:block;font-size:15px}
-
-footer{background:#0a2540;color:#a3b1cc;padding:30px 20px;text-align:center;font-size:13px}
-footer a{color:#fff;text-decoration:none;margin:0 10px}
+.post{max-width:760px;margin:40px auto 50px;padding:0 16px}
+.post .meta{color:#7a8aa0;font-size:13px;margin-bottom:12px}
+.post h1{font-size:36px;font-weight:800;line-height:1.2;margin-bottom:22px;letter-spacing:-.5px}
+.post h2{font-size:24px;margin:34px 0 12px;font-weight:700}
+.post p{font-size:17px;color:var(--ink);margin-bottom:16px}
+.cta{background:var(--navy);color:#fff;padding:26px;border-radius:12px;margin:34px 0;text-align:center}
+.cta h3{font-size:21px;margin-bottom:8px}
+.cta p{color:rgba(255,255,255,.85)!important;margin-bottom:16px!important;font-size:15.5px!important}
+.cta a{display:inline-block;background:#fff;color:var(--navy);padding:11px 22px;border-radius:7px;text-decoration:none;font-weight:600}
+@media(max-width:600px){.post h1{font-size:28px}}
 </style>
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="MileageLogMaker">
-<meta property="og:image" content="https://mileagelogmaker.com/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://mileagelogmaker.com/og-image.png">
-<link rel="icon" href="/favicon.ico">
 </head>
 <body>
-
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo">📍 MileageLogMaker</a>
-    <div class="nav-links">
-      <a href="/blog">Blog</a>
-      <a href="/">Tool</a>
-    </div>
-  </div>
-</nav>
-
-<article>
-  <div class="meta"><%= post.date %> • <%= post.read %> read</div>
+<%- include('partials/nav') %>
+<article class="post">
+  <div class="meta"><%= post.date %>, <%= post.read %> read</div>
   <h1><%= post.title %></h1>
-
   <% post.content.forEach(function(block, idx){ %>
-    <% if(block.type === 'h2'){ %>
-      <h2><%= block.text %></h2>
-    <% } else { %>
-      <p><%= block.text %></p>
-    <% } %>
-
+    <% if(block.type === 'h2'){ %><h2><%= block.text %></h2><% } else { %><p><%= block.text %></p><% } %>
     <% if(idx === 3){ %>
       <div class="cta">
-        <h3>Generate your IRS-ready mileage log free</h3>
-        <p>No signup. No app. Just enter your trips and download a 2026 IRS-compliant PDF in 3 minutes.</p>
-        <a href="/">Open the generator →</a>
+        <h3>Make your mileage log in a few minutes</h3>
+        <p>Free, no signup. Enter trips and download a PDF with the 2026 IRS rates applied by date.</p>
+        <a href="/#generator">Open the generator</a>
       </div>
     <% } %>
   <% }); %>
-
-  <div class="cta">
-    <h3>Ready to generate your log?</h3>
-    <p>Free, no signup, IRS-ready PDF using the latest 2026 rates.</p>
-    <a href="/">Open the generator →</a>
+  <div class="sources" style="margin-top:30px">
+    <h2>Sources</h2>
+    <ul>
+      <li><a href="<%= R.SOURCES.irsRates.url %>" target="_blank" rel="noopener"><%= R.SOURCES.irsRates.label %></a></li>
+      <li><a href="<%= R.SOURCES.pub463.url %>" target="_blank" rel="noopener"><%= R.SOURCES.pub463.label %></a></li>
+    </ul>
+    <p class="checked">Rates last checked on <%= R.LAST_CHECKED_TEXT %>.</p>
   </div>
 </article>
-
 <section class="related">
-  <div class="related-inner">
-    <h2>Continue reading</h2>
-    <div class="related-grid">
-      <% allPosts.forEach(function(p){ %>
-        <a href="/<%= p.slug %>" class="related-card"><strong><%= p.title %></strong></a>
-      <% }); %>
-    </div>
+  <h2>Keep reading</h2>
+  <div class="related-grid">
+    <% allPosts.forEach(function(p){ %><a href="/<%= p.slug %>" class="related-card"><strong><%= p.title %></strong></a><% }); %>
+    <a href="/irs-mileage-log-requirements" class="related-card"><strong>IRS Mileage Log Requirements</strong><span>What a compliant log needs, with a sample</span></a>
   </div>
 </section>
-
-<footer>
-  <div>
-    <a href="/">Home</a>
-    <a href="/blog">Blog</a>
-    <a href="/irs-mileage-log-requirements">IRS Rules</a>
-  </div>
-  <div style="margin-top:16px">© 2026 MileageLogMaker</div>
-</footer>
-
+<%- include('partials/footer') %>
+<%- include('partials/pro-modal') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/calc.js?v=2"></script>
+<script src="/app.js?v=3"></script>
 </body>
 </html>

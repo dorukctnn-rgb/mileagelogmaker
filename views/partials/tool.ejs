@@ -1,0 +1,81 @@
+<%
+  var unitLabel = region === 'ca' ? 'Kilometres' : 'Miles';
+  var ph = typeof purposePlaceholder !== 'undefined' && purposePlaceholder ? purposePlaceholder : 'Client meeting at Acme Co.';
+%>
+<div class="tool" id="generator" data-region="<%= region %>">
+  <div class="panel">
+    <h2>Add a trip</h2>
+    <div class="row2">
+      <div class="field"><label for="tripDate">Date</label><input type="date" id="tripDate"></div>
+      <div class="field"><label for="tripMiles"><%= unitLabel %></label><input type="number" id="tripMiles" placeholder="12.5" step="0.1" min="0" inputmode="decimal"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="tripStart">Start</label><input type="text" id="tripStart" placeholder="Home office"></div>
+      <div class="field"><label for="tripEnd">Destination</label><input type="text" id="tripEnd" placeholder="123 Main St"></div>
+    </div>
+    <div class="field"><label for="tripPurpose">Business purpose</label><input type="text" id="tripPurpose" placeholder="<%= ph %>"></div>
+    <div class="field"><label for="tripType">Type</label>
+      <select id="tripType">
+        <option value="business">Business</option>
+        <% if (region === 'us') { %><option value="medical">Medical</option><option value="charity">Charity</option><% } %>
+        <option value="personal">Personal</option>
+      </select>
+    </div>
+    <div class="tool-actions">
+      <button type="button" class="btn" onclick="MLM.addTrip()">Add trip</button>
+      <button type="button" class="btn btn-ghost" id="sampleBtn" onclick="MLM.loadSample()">Try with sample trips</button>
+    </div>
+
+    <h3>Log details (optional)</h3>
+    <div class="row2">
+      <div class="field"><label for="userName">Your name</label><input type="text" id="userName" placeholder="Jordan Lee" autocomplete="name"></div>
+      <div class="field"><label for="userVehicle">Vehicle</label><input type="text" id="userVehicle" placeholder="2022 Toyota Camry"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="startOdo">Odometer at start of <%= region === 'ca' ? 'period' : 'year' %></label><input type="number" id="startOdo" placeholder="45000" inputmode="numeric"></div>
+      <div class="field"><label for="endOdo">Odometer at end of <%= region === 'ca' ? 'period' : 'year' %></label><input type="number" id="endOdo" placeholder="58500" inputmode="numeric"></div>
+    </div>
+    <% if (region === 'us') { %>
+    <div class="field"><label for="taxYear">Tax year</label>
+      <select id="taxYear">
+        <option value="2026">2026 (72.5¢ Jan to Jun, 76¢ from Jul 1)</option>
+        <option value="2025">2025 (70¢ per mile)</option>
+        <option value="2024">2024 (67¢ per mile)</option>
+      </select>
+    </div>
+    <% } else if (region === 'ca') { %>
+    <div class="row2">
+      <div class="field"><label for="taxYear">Year</label>
+        <select id="taxYear"><option value="2026">2026</option><option value="2025">2025</option></select>
+      </div>
+      <div class="field"><label for="zone">Where you drive</label>
+        <select id="zone"><option value="provinces">Provinces</option><option value="territories">Yukon, NWT, Nunavut</option></select>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="field"><label for="vehicleType">Vehicle type</label>
+      <select id="vehicleType"><option value="car">Car or van</option><option value="motorcycle">Motorcycle</option><option value="bicycle">Bicycle</option></select>
+    </div>
+    <% } %>
+  </div>
+
+  <div>
+    <div class="panel">
+      <h2>Your trips (<span id="tripCount">0</span>)</h2>
+      <div class="trip-list" id="tripList"><div class="empty">No trips yet. Add one, or try the sample trips.</div></div>
+      <button type="button" class="btn" id="generateBtn" onclick="MLM.generatePDF()" style="width:100%;margin-top:12px">Download PDF log</button>
+      <p class="free-note" id="freeNote">Free PDFs carry a light "Free version" watermark. <a href="#" onclick="MLM.openPro();return false">Pro</a> ($9 one-time) removes it and adds Excel/CSV export and your logo.</p>
+      <div class="pro-tools">
+        <div class="label">Pro tools <span class="pill" id="proPill">Pro</span></div>
+        <div class="tool-actions">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="MLM.exportFile('xlsx')">Export Excel</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="MLM.exportFile('csv')">Export CSV</button>
+          <label class="btn btn-ghost btn-sm" for="logoInput" style="cursor:pointer">Add your logo</label>
+          <input type="file" id="logoInput" accept="image/png,image/jpeg" style="display:none" onchange="MLM.setLogo(this)">
+          <span id="logoName" style="font-size:12px;color:#56657a"></span>
+        </div>
+      </div>
+    </div>
+    <div class="summary" id="summary" aria-live="polite"></div>
+  </div>
+</div>
