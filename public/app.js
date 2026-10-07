@@ -40,7 +40,7 @@
     } else {
       list.innerHTML = trips.map(function (t, i) {
         return '<div class="trip-item"><div class="info"><strong>' + esc(t.date) + ': ' + esc(t.start || '?') + ' to ' + esc(t.end || '?') + '</strong>' +
-          '<span>' + esc(t.purpose || 'No purpose entered') + ' · ' + esc(t.type) + '</span></div>' +
+          '<span>' + esc(t.purpose || 'No purpose entered') + ', ' + esc(t.type) + '</span></div>' +
           '<div class="miles">' + esc(t.miles) + ' ' + unit + '</div>' +
           '<button type="button" class="btn-danger" aria-label="Remove trip" onclick="MLM.removeTrip(' + i + ')">&times;</button></div>';
       }).join('');
@@ -48,9 +48,9 @@
     var s = window.MLMCalc.summarize(opts(), RATES);
     var rows = [];
     if (region === 'us') {
-      rows.push(['Business', n1(s.totals.business) + ' mi · ' + money(s.amounts.business)]);
-      rows.push(['Medical', n1(s.totals.medical) + ' mi · ' + money(s.amounts.medical)]);
-      rows.push(['Charity', n1(s.totals.charity) + ' mi · ' + money(s.amounts.charity)]);
+      rows.push(['Business', n1(s.totals.business) + ' mi, ' + money(s.amounts.business)]);
+      rows.push(['Medical', n1(s.totals.medical) + ' mi, ' + money(s.amounts.medical)]);
+      rows.push(['Charity', n1(s.totals.charity) + ' mi, ' + money(s.amounts.charity)]);
       $('summary').innerHTML = '<h3>Standard mileage deduction</h3>' + rows.map(function (r) {
         return '<div class="summary-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
       }).join('') + '<div class="summary-row total"><span>Total</span><span>' + money(s.total) + '</span></div>' +

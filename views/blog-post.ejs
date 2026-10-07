@@ -32,7 +32,7 @@
 <body>
 <%- include('partials/nav') %>
 <article class="post">
-  <div class="meta"><%= post.date %> · <%= post.read %> read</div>
+  <div class="meta"><%= post.date %>, <%= post.read %> read</div>
   <h1><%= post.title %></h1>
   <% post.content.forEach(function(block, idx){ %>
     <% if(block.type === 'h2'){ %><h2><%= block.text %></h2><% } else { %><p><%= block.text %></p><% } %>
@@ -64,6 +64,6 @@
 <%- include('partials/pro-modal') %>
 <script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
 <script src="/calc.js?v=2"></script>
-<script src="/app.js?v=2"></script>
+<script src="/app.js?v=3"></script>
 </body>
 </html>

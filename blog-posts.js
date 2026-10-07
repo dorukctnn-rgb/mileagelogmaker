@@ -12,7 +12,7 @@ const BLOG_POSTS = {
   content: [
     {
       type: 'p',
-      text: 'If you drive your personal vehicle for work — whether you are self-employed, a freelancer, an Uber driver, or a real estate agent — you are likely leaving thousands of dollars on the table every year by not deducting your mileage correctly. For 2026 the IRS allows 72.5 cents for every business mile driven January to June and 76 cents from July 1, which means even a modest 10,000 business miles is worth roughly $7,250 to $7,600 in deductions. This guide walks you through exactly how to claim it.'
+      text: 'If you drive your personal vehicle for work (whether you are self-employed, a freelancer, an Uber driver, or a real estate agent), you are likely leaving thousands of dollars on the table every year by not deducting your mileage correctly. For 2026 the IRS allows 72.5 cents for every business mile driven January to June and 76 cents from July 1, which means even a modest 10,000 business miles is worth roughly $7,250 to $7,600 in deductions. This guide walks you through exactly how to claim it.'
     },
     {
       type: 'h2',
@@ -20,7 +20,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The mileage deduction is available to anyone who uses a personal vehicle for business purposes. This includes self-employed individuals filing Schedule C, gig economy drivers (Uber, Lyft, DoorDash, Instacart, Shipt, Amazon Flex), real estate agents, traveling salespeople, home health workers, contractors, and small business owners. As of the 2017 Tax Cuts and Jobs Act, W-2 employees can no longer deduct unreimbursed business mileage on their federal returns — but a few exceptions remain for armed forces reservists, qualifying performing artists, fee-basis state or local government officials, and some educator expenses.'
+      text: 'The mileage deduction is available to anyone who uses a personal vehicle for business purposes. This includes self-employed individuals filing Schedule C, gig economy drivers (Uber, Lyft, DoorDash, Instacart, Shipt, Amazon Flex), real estate agents, traveling salespeople, home health workers, contractors, and small business owners. As of the 2017 Tax Cuts and Jobs Act, W-2 employees can no longer deduct unreimbursed business mileage on their federal returns, but a few exceptions remain for armed forces reservists, qualifying performing artists, fee-basis state or local government officials, and some educator expenses.'
     },
     {
       type: 'h2',
@@ -28,7 +28,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The IRS gives you two ways to calculate your vehicle deduction. The standard mileage rate method multiplies your business miles by the IRS rate (72.5 cents through June 2026, 76 cents from July 1). The actual expenses method tracks every dollar you spend on the vehicle — gas, insurance, maintenance, depreciation, lease payments — and deducts the business-use percentage. For most people, the standard mileage rate is simpler and produces a similar or larger deduction. But if you drive an expensive vehicle with high actual costs, the actual expenses method may save more. You must choose the standard mileage rate in the first year you use the vehicle for business; otherwise you are locked into actual expenses for the life of that vehicle.'
+      text: 'The IRS gives you two ways to calculate your vehicle deduction. The standard mileage rate method multiplies your business miles by the IRS rate (72.5 cents through June 2026, 76 cents from July 1). The actual expenses method tracks every dollar you spend on the vehicle (gas, insurance, maintenance, depreciation, lease payments) and deducts the business-use percentage. For most people, the standard mileage rate is simpler and produces a similar or larger deduction. But if you drive an expensive vehicle with high actual costs, the actual expenses method may save more. You must choose the standard mileage rate in the first year you use the vehicle for business; otherwise you are locked into actual expenses for the life of that vehicle.'
     },
     {
       type: 'h2',
@@ -44,7 +44,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'IRS Publication 463 requires four pieces of information for every business trip: the date, the destination, the business purpose, and the miles driven. You must also record your odometer reading at the start of the year and at the end of the year. Records must be "contemporaneous" — meaning you log them at or near the time of the trip, not reconstructed at year-end. A weekly log is considered timely. The records can be kept on paper, in a spreadsheet, in an app, or as a PDF — the IRS does not require any specific format, only that all required information is present.'
+      text: 'IRS Publication 463 requires four pieces of information for every business trip: the date, the destination, the business purpose, and the miles driven. You must also record your odometer reading at the start of the year and at the end of the year. Records must be "contemporaneous", meaning you log them at or near the time of the trip, not reconstructed at year-end. A weekly log is considered timely. The records can be kept on paper, in a spreadsheet, in an app, or as a PDF. The IRS does not require any specific format, only that all required information is present.'
     },
     {
       type: 'h2',
@@ -60,7 +60,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The IRS scrutinizes vehicle deductions closely because they are commonly inflated. Round numbers (exactly 10,000 miles, exactly 12,000 miles) are a red flag. Claiming 100% business use of a personal vehicle is rarely credible — most people have at least some personal use. Claiming more business miles than the vehicle was actually driven (based on odometer readings) is an immediate disqualifier. Reconstructing a log at tax time without supporting evidence (calendar entries, client invoices, GPS data) often gets disallowed. The safest approach is to track contemporaneously, log specific destinations and purposes, and keep your odometer readings.'
+      text: 'The IRS scrutinizes vehicle deductions closely because they are commonly inflated. Round numbers (exactly 10,000 miles, exactly 12,000 miles) are a red flag. Claiming 100% business use of a personal vehicle is rarely credible, since most people have at least some personal use. Claiming more business miles than the vehicle was actually driven (based on odometer readings) is an immediate disqualifier. Reconstructing a log at tax time without supporting evidence (calendar entries, client invoices, GPS data) often gets disallowed. The safest approach is to track contemporaneously, log specific destinations and purposes, and keep your odometer readings.'
     },
     {
       type: 'h2',
@@ -184,7 +184,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Here is the trap: if you want the option to use standard mileage on a vehicle later, you MUST use standard mileage in the first year you place that vehicle in business service. Choose actual expenses in year one and you are locked into actual expenses forever for that vehicle. This rule does not apply in reverse — start with standard mileage, and you can switch to actual expenses any future year. For leased vehicles, the rule is stricter: whichever method you choose in year one applies for the entire lease, including renewals.'
+      text: 'Here is the trap: if you want the option to use standard mileage on a vehicle later, you MUST use standard mileage in the first year you place that vehicle in business service. Choose actual expenses in year one and you are locked into actual expenses forever for that vehicle. This rule does not apply in reverse: start with standard mileage, and you can switch to actual expenses any future year. For leased vehicles, the rule is stricter: whichever method you choose in year one applies for the entire lease, including renewals.'
     },
     {
       type: 'h2',
@@ -192,13 +192,13 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Run both calculations the first year. Track every receipt for actual expenses, AND log every business mile for standard mileage. At tax time, compare the two and take whichever is larger. After year one, keep tracking miles regardless — even if you choose actual expenses, your business-use percentage depends on miles driven. Most people simplify after year one by sticking with standard mileage and tracking only miles plus parking and tolls.'
+      text: 'Run both calculations the first year. Track every receipt for actual expenses, AND log every business mile for standard mileage. At tax time, compare the two and take whichever is larger. After year one, keep tracking miles regardless. Even if you choose actual expenses, your business-use percentage depends on miles driven. Most people simplify after year one by sticking with standard mileage and tracking only miles plus parking and tolls.'
     }
   ]
 },
 
 'forgot-to-track-mileage-what-now': {
-  title: 'I Forgot to Track My Mileage — Can I Still Claim the Deduction?',
+  title: 'I Forgot to Track My Mileage: Can I Still Claim the Deduction?',
   description: 'Did not keep a mileage log last year? You can still reconstruct one and claim the deduction. Here is exactly how, with IRS-approved evidence sources.',
   keyword: 'forgot to track mileage what to do',
   date: 'May 2026',
@@ -206,7 +206,7 @@ const BLOG_POSTS = {
   content: [
     {
       type: 'p',
-      text: 'You hit tax season, opened your records, and realized you never kept a mileage log. Welcome to the most common tax-time panic in the gig economy and freelance world. The good news: the IRS does not throw away your deduction just because your records are incomplete. Under Publication 463, you can reconstruct a mileage log using indirect evidence — and a properly reconstructed log can hold up under audit. Here is exactly how to do it.'
+      text: 'You hit tax season, opened your records, and realized you never kept a mileage log. Welcome to the most common tax-time panic in the gig economy and freelance world. The good news: the IRS does not throw away your deduction just because your records are incomplete. Under Publication 463, you can reconstruct a mileage log using indirect evidence, and a properly reconstructed log can hold up under audit. Here is exactly how to do it.'
     },
     {
       type: 'h2',
@@ -222,7 +222,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'If you had Google location history enabled (most Android users and many iPhone users do), go to timeline.google.com and review your past year. Google Timeline shows every place you visited, on what date, with estimated travel times and distances. This is your single most valuable evidence source. Export the data as JSON or KML, or simply screenshot the days that show business travel patterns. Note: Apple Maps does not retain history this way — iPhone users may need to rely on other sources.'
+      text: 'If you had Google location history enabled (most Android users and many iPhone users do), go to timeline.google.com and review your past year. Google Timeline shows every place you visited, on what date, with estimated travel times and distances. This is your single most valuable evidence source. Export the data as JSON or KML, or simply screenshot the days that show business travel patterns. Note: Apple Maps does not retain history this way, so iPhone users may need to rely on other sources.'
     },
     {
       type: 'h2',
@@ -262,7 +262,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Once you have evidence for some months, the IRS allows you to extrapolate. If you have detailed records for November and December showing 1,000 business miles each month, and your Uber summary shows roughly equal earnings in every month, you can reasonably claim ~12,000 business miles for the year. The key word is "reasonably" — this works for stable income patterns. It does not work if your business activity varied wildly month to month.'
+      text: 'Once you have evidence for some months, the IRS allows you to extrapolate. If you have detailed records for November and December showing 1,000 business miles each month, and your Uber summary shows roughly equal earnings in every month, you can reasonably claim ~12,000 business miles for the year. The key word is "reasonably": this works for stable income patterns. It does not work if your business activity varied wildly month to month.'
     },
     {
       type: 'h2',
@@ -293,14 +293,14 @@ const BLOG_POSTS = {
 
 'tax-deductions-for-uber-lyft-drivers': {
   title: 'Tax Deductions for Uber and Lyft Drivers: The 2026 Complete List',
-  description: 'Every tax deduction available to Uber and Lyft drivers in 2026 — mileage, phone bills, snacks for passengers, car washes, and more. Save thousands at tax time.',
+  description: 'Every tax deduction available to Uber and Lyft drivers in 2026: mileage, phone bills, snacks for passengers, car washes, and more. Save thousands at tax time.',
   keyword: 'uber lyft driver tax deductions',
   date: 'May 2026',
   read: '8 min',
   content: [
     {
       type: 'p',
-      text: 'Driving for Uber and Lyft makes you a 1099 independent contractor, which means you pay self-employment tax on every dollar earned — but you also get to deduct every legitimate business expense. The biggest deduction by far is mileage, but it is far from the only one. Here is the complete 2026 tax deduction list every rideshare driver should know.'
+      text: 'Driving for Uber and Lyft makes you a 1099 independent contractor, which means you pay self-employment tax on every dollar earned, but you also get to deduct every legitimate business expense. The biggest deduction by far is mileage, but it is far from the only one. Here is the complete 2026 tax deduction list every rideshare driver should know.'
     },
     {
       type: 'h2',
@@ -308,7 +308,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'At 76¢ per business mile (from July 1, 2026; 72.5¢ before), mileage is usually 60-80% of a rideshare driver\'s total deductions. Track every mile from going online to going offline, including drives to busy zones, between trips, to gas stations, and to car washes. A driver logging 30,000 business miles evenly across 2026 deducts about $22,275 — often the difference between owing taxes and getting a refund.'
+      text: 'At 76¢ per business mile (from July 1, 2026; 72.5¢ before), mileage is usually 60-80% of a rideshare driver\'s total deductions. Track every mile from going online to going offline, including drives to busy zones, between trips, to gas stations, and to car washes. A driver logging 30,000 business miles evenly across 2026 deducts about $22,275, often the difference between owing taxes and getting a refund.'
     },
     {
       type: 'h2',
@@ -316,7 +316,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Your phone is required to drive — you cannot accept rides without it. The business-use percentage of your monthly phone bill is deductible. Most drivers reasonably claim 50-80% business use. If your phone bill is $80/month and you use it 70% for rideshare, that is $56/month or $672/year deductible.'
+      text: 'Your phone is required to drive: you cannot accept rides without it. The business-use percentage of your monthly phone bill is deductible. Most drivers reasonably claim 50-80% business use. If your phone bill is $80/month and you use it 70% for rideshare, that is $56/month or $672/year deductible.'
     },
     {
       type: 'h2',
@@ -332,7 +332,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Bottled water, mints, gum, tissues, phone chargers for passengers, and air fresheners are all deductible. Drivers chasing 5-star ratings can easily spend $30-50/month on amenities — that is $360-600/year in deductions.'
+      text: 'Bottled water, mints, gum, tissues, phone chargers for passengers, and air fresheners are all deductible. Drivers chasing 5-star ratings can easily spend $30-50/month on amenities. That is $360-600/year in deductions.'
     },
     {
       type: 'h2',
@@ -372,7 +372,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'A dashcam is increasingly recommended (and in some markets required) for rideshare drivers. The full purchase cost is deductible — typically $80-300 — and any cloud storage subscription is also deductible monthly.'
+      text: 'A dashcam is increasingly recommended (and in some markets required) for rideshare drivers. The full purchase cost is deductible (typically $80-300), and any cloud storage subscription is also deductible monthly.'
     },
     {
       type: 'h2',
@@ -388,7 +388,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'You can deduct half of your self-employment tax on Schedule 1, line 15. This happens automatically when you fill out Schedule SE. It is not optional and not optional to skip — every driver gets this deduction.'
+      text: 'You can deduct half of your self-employment tax on Schedule 1, line 15. This happens automatically when you fill out Schedule SE. It is not optional, and every driver gets this deduction.'
     },
     {
       type: 'h2',

@@ -20,7 +20,7 @@
 <div class="posts">
   <% posts.forEach(function(p){ %>
     <a href="/<%= p.slug %>" class="post-card">
-      <div class="meta"><%= p.date %> · <%= p.read %> read</div>
+      <div class="meta"><%= p.date %>, <%= p.read %> read</div>
       <h2><%= p.title %></h2>
       <p><%= p.description %></p>
     </a>
@@ -30,6 +30,6 @@
 <%- include('partials/pro-modal') %>
 <script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
 <script src="/calc.js?v=2"></script>
-<script src="/app.js?v=2"></script>
+<script src="/app.js?v=3"></script>
 </body>
 </html>

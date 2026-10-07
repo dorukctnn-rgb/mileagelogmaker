@@ -61,7 +61,7 @@ const NICHE_PAGES = {
     h1: 'Mileage Log for Instacart & Shipt Shoppers',
     description: 'Free IRS mileage log generator for Instacart, Shipt, and grocery delivery shoppers. Maximize your 1099 tax deductions with a compliant PDF.',
     keyword: 'instacart mileage log',
-    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones — every mile counts. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), a shopper logging 12,000 business miles evenly across the year claims about $8,910. Generate your IRS-ready log here for free.',
+    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones. Every mile counts. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), a shopper logging 12,000 business miles evenly across the year claims about $8,910. Generate your IRS-ready log here for free.',
     tips: [
       'Log home-to-first-store miles separately: whether they count depends on the commuting rules',
       'Log between-store and store-to-customer miles separately',
@@ -77,7 +77,7 @@ const NICHE_PAGES = {
     tips: [
       'Lyft trip summaries are a starting point, not a full log',
       'Log miles to your first pickup and home from the last drop-off separately (commuting rules decide them)',
-      'Cancellations still count — log the miles you drove',
+      'Cancellations still count: log the miles you drove',
       'Keep the Lyft tax summary from your driver dashboard as backup'
     ]
   },
@@ -102,7 +102,7 @@ const NICHE_PAGES = {
     keyword: 'contractor mileage log',
     intro: 'Construction contractors, electricians, plumbers, and HVAC techs drive between job sites, supply houses, and client meetings. Every mile is a tax deduction at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A contractor logging 20,000 business miles evenly across the year claims about $14,850. Generate your log here for free.',
     tips: [
-      'Job-to-job drives are deductible — even short ones',
+      'Job-to-job drives are deductible: even short ones count',
       'Trips to Home Depot, Lowe\'s, or supply houses count',
       'Materials pickup and tool runs are business mileage',
       'Drives to estimate appointments are deductible whether you win the job or not'
@@ -140,13 +140,13 @@ const NICHE_PAGES = {
     h1: 'Mileage Log Generator',
     description: 'Free online mileage log generator. Create an IRS-compliant mileage log PDF in 3 minutes. No signup, no spreadsheet, no app. Just add trips and download.',
     keyword: 'mileage log generator',
-    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip — date, start and end location, miles, and purpose — and the tool builds a professional logbook with your deduction auto-calculated at the IRS rate for each trip date (72.5¢/mile before July 1, 2026, 76¢ from July 1). No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
+    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip (date, start and end location, miles, and purpose) and the tool builds a professional logbook with your deduction auto-calculated at the IRS rate for each trip date (72.5¢/mile before July 1, 2026, 76¢ from July 1). No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
     tips: [
-      'Add unlimited trips — the tool totals your miles and deduction automatically',
+      'Add unlimited trips: the tool totals your miles and deduction automatically',
       'The correct 2026 IRS rate is applied per trip date: 72.5¢ before July 1, 76¢ from July 1',
       'The PDF lists date, start, destination, purpose, miles and type, with your odometer readings and a dated rate summary',
-      'No account needed — your data stays in your browser until you download',
-      'Print the PDF or keep it digital — both are IRS-acceptable',
+      'No account needed: your data stays in your browser until you download',
+      'Print the PDF or keep it digital: both are IRS-acceptable',
       'Choose tax year 2024, 2025 or 2026 before generating'
     ]
   },
@@ -162,7 +162,7 @@ const NICHE_PAGES = {
       '2026 medical/moving rate: 20.5¢/mile Jan to Jun, 23.5¢/mile from Jul 1',
       '2026 charity rate: 14¢/mile (set by statute, unchanged)',
       'Record odometer readings on January 1 and December 31, 2026',
-      'Log trips contemporaneously — same day or same week',
+      'Log trips contemporaneously: same day or same week',
       'Keep your 2026 records until at least 2030 (IRS 3-year audit window, 6 for some cases)'
     ]
   },
@@ -176,7 +176,7 @@ const NICHE_PAGES = {
       'Log home-to-station miles separately: whether they count depends on the commuting rules',
       'Log all miles during your delivery block, including between stops',
       'Log the drive home after your block separately for the same reason',
-      'Amazon Flex app shows route miles but not all deductible miles — keep your own',
+      'Amazon Flex app shows route miles but not all deductible miles, so keep your own',
       'Save your block confirmation screenshots as supporting evidence',
       'Standard mileage (76¢ from July 2026) usually beats tracking actual gas and maintenance'
     ]
@@ -201,40 +201,40 @@ const NICHE_PAGES = {
     h1: 'Free MileIQ Alternative (2026)',
     description: 'Looking for a MileIQ alternative after the 2026 price hike? This free mileage log generator requires no app, no signup, and no subscription. Instant IRS-ready PDF.',
     keyword: 'mileiq alternative',
-    intro: 'MileIQ raised its price by 50% in 2026 — from $5.99 to $8.99 per month — and still limits free users to just 40 drives per month. If you are looking for a MileIQ alternative that actually works without a subscription, this free mileage log generator creates IRS-compliant PDFs with no app to install, no account to create, and no monthly fee. Ever.',
+    intro: 'MileIQ raised its price by 50% in 2026, from $5.99 to $8.99 per month, and still limits free users to just 40 drives per month. If you are looking for a MileIQ alternative that actually works without a subscription, this free mileage log generator creates IRS-compliant PDFs with no app to install, no account to create, and no monthly fee. Ever.',
     tips: [
-      'No subscription — MileIQ costs $8.99/month ($107/year), this tool is free forever',
-      'No app install — works in any browser on phone, tablet, or computer',
-      'No signup — MileIQ requires an account, this tool requires nothing',
-      'No drive limit — MileIQ free caps at 40 drives/month, this has no cap',
-      'IRS-compliant PDF — same required fields (date, destination, purpose, miles)',
-      'Works for all professions — realtors, gig drivers, self-employed, contractors',
-      'Your data stays in your browser — no cloud, no privacy concerns',
+      'No subscription: MileIQ costs $8.99/month ($107/year), this tool is free forever',
+      'No app install: works in any browser on phone, tablet, or computer',
+      'No signup: MileIQ requires an account, this tool requires nothing',
+      'No drive limit: MileIQ free caps at 40 drives/month, this has no cap',
+      'IRS-compliant PDF: same required fields (date, destination, purpose, miles)',
+      'Works for all professions: realtors, gig drivers, self-employed, contractors',
+      'Your data stays in your browser: no cloud, no privacy concerns',
       'Pro upgrade just $9 lifetime (not $107/year like MileIQ)'
     ],
     sections: [
       {
         h: 'Why People Are Leaving MileIQ in 2026',
         p: [
-          'In early 2026, MileIQ increased its unlimited plan from $5.99 to <strong>$8.99 per month</strong> — a 50% price hike that caught many users off guard. At $107.88 per year, MileIQ is now one of the most expensive mileage trackers on the market. The free tier remains limited to just 40 drives per month, which most active drivers blow through in the first two weeks.',
-          'The frustration is not just about price. MileIQ is a <strong>mobile-only app</strong> that runs GPS in the background, which drains battery and raises privacy concerns. It auto-detects trips but still requires you to manually classify each one as business or personal — a swipe for every single drive. And if you forget to swipe for a few days, you end up with a backlog of unclassified trips that you have to sort through at the end of the week.',
+          'In early 2026, MileIQ increased its unlimited plan from $5.99 to <strong>$8.99 per month</strong>, a 50% price hike that caught many users off guard. At $107.88 per year, MileIQ is now one of the most expensive mileage trackers on the market. The free tier remains limited to just 40 drives per month, which most active drivers blow through in the first two weeks.',
+          'The frustration is not just about price. MileIQ is a <strong>mobile-only app</strong> that runs GPS in the background, which drains battery and raises privacy concerns. It auto-detects trips but still requires you to manually classify each one as business or personal: a swipe for every single drive. And if you forget to swipe for a few days, you end up with a backlog of unclassified trips that you have to sort through at the end of the week.',
           'For many self-employed workers and gig drivers, the question has become: <strong>do I really need to pay $108/year for something that still requires daily manual input?</strong> The answer, increasingly, is no.'
         ]
       },
       {
-        h: 'MileIQ vs This Free Generator — Side by Side',
+        h: 'MileIQ vs This Free Generator: Side by Side',
         p: [
-          '<strong>Automatic tracking:</strong> MileIQ uses GPS to auto-detect drives. This generator does not — you enter trips manually. If you want set-and-forget GPS tracking, MileIQ (or TripLog, which offers free unlimited auto-tracking in 2026) is the better fit. But if you are willing to spend 5 minutes per week logging trips, manual entry produces a <em>more accurate and audit-defensible</em> record because every entry has a specific, deliberate business purpose.',
-          '<strong>Cost:</strong> MileIQ costs $8.99/month ($107/year). Everlance costs $9/month ($108/year). Driversnote starts at $11/month for teams. This generator is completely free, with an optional $9 <em>lifetime</em> Pro upgrade — less than one month of MileIQ.',
+          '<strong>Automatic tracking:</strong> MileIQ uses GPS to auto-detect drives. This generator does not: you enter trips manually. If you want set-and-forget GPS tracking, MileIQ (or TripLog, which offers free unlimited auto-tracking in 2026) is the better fit. But if you are willing to spend 5 minutes per week logging trips, manual entry produces a <em>more accurate and audit-defensible</em> record because every entry has a specific, deliberate business purpose.',
+          '<strong>Cost:</strong> MileIQ costs $8.99/month ($107/year). Everlance costs $9/month ($108/year). Driversnote starts at $11/month for teams. This generator is completely free, with an optional $9 <em>lifetime</em> Pro upgrade, which costs less than one month of MileIQ.',
           '<strong>Privacy:</strong> MileIQ runs location tracking 24/7 and stores all trip data in the cloud. This generator stores your data locally in your browser. Nothing is uploaded to any server unless you choose to generate a PDF. If privacy matters to you, this is the safer choice.',
-          '<strong>Output:</strong> Both produce IRS-compliant mileage reports. MileIQ generates CSV and PDF reports from its dashboard. This generator produces a clean, professional PDF with all four IRS-required fields plus odometer readings and a deduction summary — ready to hand to your CPA or upload to TurboTax.'
+          '<strong>Output:</strong> Both produce IRS-compliant mileage reports. MileIQ generates CSV and PDF reports from its dashboard. This generator produces a clean, professional PDF with all four IRS-required fields plus odometer readings and a deduction summary, ready to hand to your CPA or upload to TurboTax.'
         ]
       },
       {
         h: 'Who Should Switch from MileIQ?',
         p: [
           'This alternative is the best fit if you are <strong>cost-conscious</strong> (you do not want to pay $108/year for mileage tracking), if you drive a <strong>predictable number of business trips</strong> (and can log them weekly), or if you prefer a <strong>web tool</strong> over a phone app. It works especially well for real estate agents who log showings, gig drivers who track delivery routes, and self-employed professionals with regular client visits.',
-          'If you rely heavily on automatic GPS detection because you drive dozens of unpredictable trips per day and never want to open a log, consider TripLog (free unlimited auto-tracking) or Stride (100% free). But if you want the simplest, fastest, most private way to build an IRS-ready mileage log — without installing anything or creating an account — this is it.'
+          'If you rely heavily on automatic GPS detection because you drive dozens of unpredictable trips per day and never want to open a log, consider TripLog (free unlimited auto-tracking) or Stride (100% free). But if you want the simplest, fastest, most private way to build an IRS-ready mileage log without installing anything or creating an account, this is it.'
         ]
       }
     ],
@@ -253,7 +253,7 @@ const NICHE_PAGES = {
       },
       {
         q: 'Is a manual mileage log as good as an app for IRS purposes?',
-        a: 'Yes. The IRS does not require any specific format or software. A manual log with date, destination, purpose, and miles — kept at or near the time of each trip — is fully compliant. In fact, manual logs with specific purpose entries are often stronger in audits than auto-generated app logs with generic descriptions.'
+        a: 'Yes. The IRS does not require any specific format or software. A manual log with date, destination, purpose, and miles, kept at or near the time of each trip, is fully compliant. In fact, manual logs with specific purpose entries are often stronger in audits than auto-generated app logs with generic descriptions.'
       },
       {
         q: 'What is the best free mileage tracker overall?',
@@ -266,24 +266,24 @@ const NICHE_PAGES = {
     h1: 'Free Everlance Alternative (2026)',
     description: 'Looking for an Everlance alternative without the $9/month fee? Free mileage log generator with no app, no signup. IRS-compliant PDF in 3 minutes.',
     keyword: 'everlance alternative',
-    intro: 'Everlance raised its price to $9 per month in 2026 and expanded into tax filing — features many users never asked for. If you just need a simple, IRS-compliant mileage log without paying $108 per year, this free generator produces the same output with no app, no account, and no subscription. Enter your trips, download your PDF, and you are done.',
+    intro: 'Everlance raised its price to $9 per month in 2026 and expanded into tax filing. Many users never asked for those features. If you just need a simple, IRS-compliant mileage log without paying $108 per year, this free generator produces the same output with no app, no account, and no subscription. Enter your trips, download your PDF, and you are done.',
     tips: [
-      'Everlance costs $9/month ($108/year) — this tool is free, Pro is $9 lifetime',
-      'No app to install — Everlance requires iOS/Android download',
-      'No bank sync needed — Everlance connects to your bank, this tool does not',
-      'Same IRS-compliant output — date, destination, purpose, miles, deduction',
-      'No cloud storage — your data stays in your browser, not on Everlance servers',
-      'Works for all tax situations — self-employed, gig, real estate, employee',
-      'Generate PDF in 3 minutes — no weekly swiping or trip classification',
+      'Everlance costs $9/month ($108/year): this tool is free, Pro is $9 lifetime',
+      'No app to install: Everlance requires iOS/Android download',
+      'No bank sync needed: Everlance connects to your bank, this tool does not',
+      'Same IRS-compliant output: date, destination, purpose, miles, deduction',
+      'No cloud storage: your data stays in your browser, not on Everlance servers',
+      'Works for all tax situations: self-employed, gig, real estate, employee',
+      'Generate PDF in 3 minutes: no weekly swiping or trip classification',
       'Canadian kilometre logbook (CRA) and UK HMRC versions included'
     ],
     sections: [
       {
         h: 'Everlance vs This Free Generator',
         p: [
-          '<strong>Everlance</strong> is a full-featured mileage and expense tracker with automatic GPS detection, bank account syncing, receipt scanning, and — as of 2026 — built-in tax filing. It is a powerful tool for people who want everything in one place. The trade-off is cost ($9/month), complexity, and the requirement to share your bank and location data with a third-party cloud service.',
-          'This <strong>free generator</strong> does one thing well: it builds an IRS-compliant mileage log PDF. No GPS, no bank sync, no expense categories — just the four fields the IRS requires (date, destination, purpose, miles) plus a calculated deduction. If you only need a mileage log and not a full financial platform, this is the faster, simpler, and cheaper option.',
-          'Both produce IRS-acceptable output. The difference is whether you want an <strong>all-in-one financial platform</strong> (Everlance) or a <strong>focused mileage tool</strong> (this generator). Most self-employed individuals who already use QuickBooks, FreshBooks, or a CPA for their finances only need the mileage log — not another financial app.'
+          '<strong>Everlance</strong> is a full-featured mileage and expense tracker with automatic GPS detection, bank account syncing, receipt scanning, and (as of 2026) built-in tax filing. It is a powerful tool for people who want everything in one place. The trade-off is cost ($9/month), complexity, and the requirement to share your bank and location data with a third-party cloud service.',
+          'This <strong>free generator</strong> does one thing well: it builds an IRS-compliant mileage log PDF. No GPS, no bank sync, no expense categories: just the four fields the IRS requires (date, destination, purpose, miles) plus a calculated deduction. If you only need a mileage log and not a full financial platform, this is the faster, simpler, and cheaper option.',
+          'Both produce IRS-acceptable output. The difference is whether you want a <strong>full financial platform</strong> (Everlance) or a <strong>focused mileage tool</strong> (this generator). Most self-employed individuals who already use QuickBooks, FreshBooks, or a CPA for their finances only need the mileage log, not another financial app.'
         ]
       }
     ],

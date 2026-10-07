@@ -276,7 +276,7 @@ function pdfTemplate(file, opts) {
       doc.rect(left, y - rowH * opts.rows - HEAD, width, rowH * opts.rows + HEAD).strokeColor('#b9c4d3').lineWidth(0.8).stroke();
       doc.font('Helvetica-Bold').fontSize(9).fillColor('#0a2540').text('Page total: ____________', left, y + 8, { width, align: 'right', lineBreak: false });
       doc.font('Helvetica').fontSize(7.5).fillColor('#56657a').text(opts.footer, left, y + 24, { width, lineBreak: true });
-      doc.text(`Free template from MileageLogMaker.com  ·  Rates and rules checked ${R.LAST_CHECKED_TEXT}  ·  Page ${page + 1} of 2`, left, 592, { width, align: 'center', lineBreak: false });
+      doc.text(`Free template from MileageLogMaker.com. Rates and rules checked ${R.LAST_CHECKED_TEXT}. Page ${page + 1} of 2`, left, 592, { width, align: 'center', lineBreak: false });
     }
     doc.end();
     out.on('finish', resolve);
