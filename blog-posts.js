@@ -12,7 +12,7 @@ const BLOG_POSTS = {
   content: [
     {
       type: 'p',
-      text: 'If you drive your personal vehicle for work (whether you are self-employed, a freelancer, an Uber driver, or a real estate agent), you are likely leaving thousands of dollars on the table every year by not deducting your mileage correctly. For 2026 the IRS allows 72.5 cents for every business mile driven January to June and 76 cents from July 1, which means even a modest 10,000 business miles is worth roughly $7,250 to $7,600 in deductions. This guide walks you through exactly how to claim it.'
+      text: 'If you drive your personal vehicle for work (whether you are self-employed, a freelancer, an Uber driver, or a real estate agent), you may be missing a large deduction. For 2026 the IRS allows 72.5 cents for every business mile driven January to June and 76 cents from July 1, which means even a modest 10,000 business miles is worth roughly $7,250 to $7,600 in deductions. This guide walks you through exactly how to claim it.'
     },
     {
       type: 'h2',
@@ -60,7 +60,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'The IRS scrutinizes vehicle deductions closely because they are commonly inflated. Round numbers (exactly 10,000 miles, exactly 12,000 miles) are a red flag. Claiming 100% business use of a personal vehicle is rarely credible, since most people have at least some personal use. Claiming more business miles than the vehicle was actually driven (based on odometer readings) is an immediate disqualifier. Reconstructing a log at tax time without supporting evidence (calendar entries, client invoices, GPS data) often gets disallowed. The safest approach is to track contemporaneously, log specific destinations and purposes, and keep your odometer readings.'
+      text: 'Vehicle deductions are easy to overstate, so they get a close look. Round numbers (exactly 10,000 miles, exactly 12,000 miles) look estimated rather than logged. Claiming 100% business use of a personal vehicle is rarely credible, since most people have at least some personal use. Claiming more business miles than the vehicle was actually driven (based on odometer readings) cannot be supported. Reconstructing a log at tax time without supporting evidence (calendar entries, client invoices, GPS data) often gets disallowed. The safest approach is to track contemporaneously, log specific destinations and purposes, and keep your odometer readings.'
     },
     {
       type: 'h2',
@@ -168,7 +168,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Standard mileage usually wins for fuel-efficient vehicles, older paid-off cars, and high-mileage drivers. The 2026 rates (72.5¢, then 76¢ from July) are generous for cars that cost under 50¢/mile to actually operate. A Honda Civic owner driving 15,000 business miles per year almost always comes out ahead with standard mileage. Rideshare and delivery drivers, freelancers using older vehicles, and anyone who drives a lot of miles in a cheap car should default to standard mileage.'
+      text: 'Standard mileage usually wins for fuel-efficient vehicles, older paid-off cars, and high-mileage drivers. The 2026 rates (72.5¢, then 76¢ from July) are generous for cars that cost under 50¢/mile to actually operate. A Honda Civic owner driving 15,000 business miles per year will usually come out ahead with standard mileage. Rideshare and delivery drivers, freelancers using older vehicles, and anyone who drives a lot of miles in a cheap car should default to standard mileage.'
     },
     {
       type: 'h2',
@@ -316,7 +316,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Your phone is required to drive: you cannot accept rides without it. The business-use percentage of your monthly phone bill is deductible. Most drivers reasonably claim 50-80% business use. If your phone bill is $80/month and you use it 70% for rideshare, that is $56/month or $672/year deductible.'
+      text: 'Your phone is required to drive: you cannot accept rides without it. The business-use percentage of your monthly phone bill is deductible. Claim the share you can support, for example by comparing your driving hours with your phone use. If your phone bill is $80/month and you use it 70% for rideshare, that is $56/month or $672/year deductible.'
     },
     {
       type: 'h2',
@@ -332,7 +332,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'p',
-      text: 'Bottled water, mints, gum, tissues, phone chargers for passengers, and air fresheners are all deductible. Drivers chasing 5-star ratings can easily spend $30-50/month on amenities. That is $360-600/year in deductions.'
+      text: 'Bottled water, mints, gum, tissues, phone chargers for passengers, and air fresheners are all deductible. If you spend $30-50 a month on amenities, that is $360-600 a year in deductions.'
     },
     {
       type: 'h2',
