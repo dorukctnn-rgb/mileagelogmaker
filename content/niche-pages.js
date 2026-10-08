@@ -56,58 +56,6 @@ const NICHE_PAGES = {
       'Once you have evidence, enter trips into the generator above and download a PDF'
     ]
   },
-  'mileage-log-instacart-shoppers': {
-    title: 'Instacart & Shipt Mileage Log for Taxes (Free PDF)',
-    h1: 'Mileage Log for Instacart & Shipt Shoppers',
-    description: 'Free IRS mileage log generator for Instacart, Shipt, and grocery delivery shoppers. Maximize your 1099 tax deductions with a compliant PDF.',
-    keyword: 'instacart mileage log',
-    intro: 'Instacart and Shipt shoppers drive between stores, customer homes, and shopping zones. Every mile counts. At the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1), a shopper logging 12,000 business miles evenly across the year claims about $8,910. Generate your IRS-ready log here for free.',
-    tips: [
-      'Log home-to-first-store miles separately: whether they count depends on the commuting rules',
-      'Log between-store and store-to-customer miles separately',
-      'Save Instacart batch summaries as backup for the trip dates'
-    ]
-  },
-  'mileage-log-lyft-drivers': {
-    title: 'Lyft Mileage Log for Taxes: Free 2026 Generator',
-    h1: 'Mileage Log for Lyft Drivers',
-    description: 'Free mileage log generator for Lyft drivers. Log each shift with date, area, purpose and miles and download a PDF with the 2026 IRS rates applied.',
-    keyword: 'lyft mileage log',
-    intro: 'A rideshare app can only report the miles you drive while you are online. It is not a mileage log, and it cannot see business driving with the app off. This free generator lets you log every shift with date, area, purpose and miles, and builds a PDF with the 2026 IRS rates (72.5¢ a mile before July 1, 76¢ from July 1).',
-    tips: [
-      'Lyft trip summaries are a starting point, not a full log',
-      'Log miles to your first pickup and home from the last drop-off separately (commuting rules decide them)',
-      'Cancellations still count: log the miles you drove',
-      'Keep the Lyft tax summary from your driver dashboard as backup'
-    ]
-  },
-  'mileage-log-nurses': {
-    title: 'Mileage Log for Nurses & Home Health Workers (Free PDF)',
-    h1: 'Mileage Log for Nurses & Home Health Workers',
-    description: 'Free mileage log generator for travel nurses, home health aides, and in-home care providers. Track patient visits and generate IRS-compliant PDFs.',
-    keyword: 'nurse mileage log',
-    intro: 'Home health nurses, hospice workers, and travel nurses drive between patient homes all day. If you work as an independent contractor (1099), miles between patient visits are deductible at the 2026 IRS rates (72.5¢ a mile January to June, 76¢ from July 1): 15,000 business miles spread evenly over the year is about $11,140. If you are a W-2 employee, unreimbursed mileage is not deductible on your federal return, so use the log to claim reimbursement from your employer.',
-    tips: [
-      'Patient-to-patient drives are business miles; the drive to a regular workplace is commuting',
-      'W-2 employees: ask for reimbursement through an employer accountable plan; the IRS does not allow a deduction for unreimbursed employee travel',
-      'Drives to the pharmacy or supply pickup count as business',
-      'Use patient initials, not full names, for HIPAA-safe logging',
-      'Charting time at the patient home does not affect mileage deduction'
-    ]
-  },
-  'mileage-log-construction-contractors': {
-    title: 'Mileage Log for Contractors & Trades (Free, 2026)',
-    h1: 'Mileage Log for Construction & Trades',
-    description: 'Free IRS mileage log generator for construction contractors, plumbers, electricians, and HVAC technicians. Track job site visits and supply runs.',
-    keyword: 'contractor mileage log',
-    intro: 'Construction contractors, electricians, plumbers, and HVAC techs drive between job sites, supply houses, and client meetings. Every mile is a tax deduction at the 2026 IRS rates (72.5¢/mile January to June, 76¢ from July 1). A contractor logging 20,000 business miles evenly across the year claims about $14,850. Generate your log here for free.',
-    tips: [
-      'Job-to-job drives are deductible: even short ones count',
-      'Trips to Home Depot, Lowe\'s, or supply houses count',
-      'Materials pickup and tool runs are business mileage',
-      'Drives to estimate appointments are deductible whether you win the job or not'
-    ]
-  },
   'irs-mileage-rate-history': {
     updated: '2026-10-07',
     title: 'IRS Mileage Rate History 2011-2026: Every Rate by Year',
@@ -117,7 +65,7 @@ const NICHE_PAGES = {
     keyword: 'irs mileage rate history',
     intro: 'The IRS changed the standard mileage rate in the middle of the year three times since 2011: July 2011, July 2022 and July 2026. The table lists every business, medical or moving, and charity rate from 2011 to 2026, as published on irs.gov. Use the rate for the period in which you drove, which matters when you amend an older return or rebuild a past log.',
     sources: ['irsRates', 'irsNotice', 'irsMidyear'],
-    related: ['mileage-log-2026-irs-rate', 'mileage-log-2026', 'irs-mileage-log-requirements', 'forgot-to-track-mileage', 'free-mileage-log-template', 'mileage-log-self-employed'],
+    related: ['mileage-log-2026-irs-rate', 'irs-mileage-log-requirements', 'forgot-to-track-mileage', 'free-mileage-log-template', 'mileage-log-self-employed'],
     sections: [
       {
         h: 'Standard mileage rates by year (cents per mile)',
@@ -133,67 +81,6 @@ const NICHE_PAGES = {
       '2024: 67¢ business, 21¢ medical, 14¢ charity',
       '2022: 58.5¢ for Jan to Jun, 62.5¢ for Jul to Dec',
       'Use the rate for the date driven, not the date you file'
-    ]
-  },
-  'mileage-log-generator': {
-    title: 'Free Mileage Log Generator: IRS-Ready PDF in Minutes',
-    h1: 'Mileage Log Generator',
-    description: 'Free online mileage log generator. Create an IRS-compliant mileage log PDF in 3 minutes. No signup, no spreadsheet, no app. Just add trips and download.',
-    keyword: 'mileage log generator',
-    intro: 'This free mileage log generator creates an IRS-compliant PDF in about 3 minutes. Add each business trip (date, start and end location, miles, and purpose) and the tool builds a professional logbook with your deduction auto-calculated at the IRS rate for each trip date (72.5¢/mile before July 1, 2026, 76¢ from July 1). No signup, no spreadsheet formulas, no app to install. It works for self-employed individuals, gig drivers, real estate agents, and anyone claiming the standard mileage deduction.',
-    tips: [
-      'Add unlimited trips: the tool totals your miles and deduction automatically',
-      'The correct 2026 IRS rate is applied per trip date: 72.5¢ before July 1, 76¢ from July 1',
-      'The PDF lists date, start, destination, purpose, miles and type, with your odometer readings and a dated rate summary',
-      'No account needed: your data stays in your browser until you download',
-      'Print the PDF or keep it digital: both are IRS-acceptable',
-      'Choose tax year 2024, 2025 or 2026 before generating'
-    ]
-  },
-  'mileage-log-2026': {
-    title: 'Mileage Log 2026: Free Template & Generator (76¢ Rate)',
-    h1: 'Mileage Log 2026 (Updated for the July Rate Change)',
-    description: 'Free 2026 mileage log generator that applies the right IRS rate per trip: 72.5¢/mile January to June, 76¢ from July 1. Compliant PDF logbook, no signup.',
-    keyword: 'mileage log 2026',
-    sources: ['irsRates', 'irsNews2026', 'irsNotice', 'irsMidyear'],
-    intro: 'The 2026 IRS standard mileage rate is 72.5¢ per business mile for January to June and 76¢ from July 1, after a mid-year increase. This free generator builds a 2026 mileage log PDF and applies the right rate to each trip by date. Whether you are self-employed, a gig worker or getting reimbursed by an employer, build your 2026 log here in minutes.',
-    tips: [
-      '2026 business rate: 72.5¢/mile Jan to Jun, 76¢/mile from Jul 1 (70¢ in 2025)',
-      '2026 medical/moving rate: 20.5¢/mile Jan to Jun, 23.5¢/mile from Jul 1',
-      '2026 charity rate: 14¢/mile (set by statute, unchanged)',
-      'Record odometer readings on January 1 and December 31, 2026',
-      'Log trips contemporaneously: same day or same week',
-      'Keep your 2026 records until at least 2030 (IRS 3-year audit window, 6 for some cases)'
-    ]
-  },
-  'mileage-log-amazon-flex': {
-    title: 'Amazon Flex Mileage Log for Taxes (Free PDF, 2026)',
-    h1: 'Mileage Log for Amazon Flex Drivers',
-    description: 'Free IRS mileage log generator for Amazon Flex delivery drivers. Track package delivery miles and maximize your 1099 tax deductions.',
-    keyword: 'amazon flex mileage log',
-    intro: 'Amazon Flex drivers are 1099 independent contractors who can deduct every business mile at the 2026 IRS rate (72.5¢/mile January to June, 76¢ from July 1). For example, a block with 50 miles of driving is $38 of deduction at 76¢ a mile. Keep your own log with odometer readings for each block rather than relying on route figures in the app. Generate your IRS-ready Amazon Flex mileage log here for free.',
-    tips: [
-      'Log home-to-station miles separately: whether they count depends on the commuting rules',
-      'Log all miles during your delivery block, including between stops',
-      'Log the drive home after your block separately for the same reason',
-      'Amazon Flex app shows route miles but not all deductible miles, so keep your own',
-      'Save your block confirmation screenshots as supporting evidence',
-      'Standard mileage (76¢ from July 2026) usually beats tracking actual gas and maintenance'
-    ]
-  },
-  'mileage-log-therapists': {
-    title: 'Mileage Log for Therapists & Counselors (Free, 2026)',
-    h1: 'Mileage Log for Therapists & Counselors',
-    description: 'Free IRS mileage log generator for therapists, counselors, and home-visit clinicians. Track client-visit miles for your private practice tax deductions.',
-    keyword: 'therapist mileage log',
-    intro: 'Therapists, counselors and clinicians in private practice who travel between offices, see clients at home or visit care facilities can deduct those business miles at the 2026 IRS rates (72.5¢ a mile January to June, 76¢ from July 1). For example, 150 business miles a week is $114 of deduction a week at 76¢. If you are a W-2 employee, unreimbursed mileage is not deductible on your federal return; use the log to get reimbursed. This free generator builds the log for your practice in minutes.',
-    tips: [
-      'Deduct miles between your office and client homes or facilities',
-      'Travel between two work locations is deductible (office to client site)',
-      'Commuting from home to your main office is NOT deductible',
-      'If you work from a home office, trips to clients ARE deductible',
-      'Record the client visit purpose (e.g. "home session, client A")',
-      'Keep records 3 years minimum (6 if you under-report income)'
     ]
   },
   'mileiq-alternative': {
