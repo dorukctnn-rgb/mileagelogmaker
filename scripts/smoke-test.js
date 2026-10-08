@@ -16,7 +16,7 @@ const assert = require('assert');
 
   const sm = await (await fetch(base + '/sitemap.xml')).text();
   const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
-  check(locs.length > 25, 'sitemap has too few URLs: ' + locs.length);
+  check(locs.length >= 18, 'sitemap has too few URLs: ' + locs.length);
   check(locs.every(u => u.startsWith(SITE)), 'sitemap URL not on www host');
   check((sm.match(/<lastmod>/g) || []).length === locs.length, 'sitemap lastmod missing');
   const robots = await (await fetch(base + '/robots.txt')).text();
@@ -56,6 +56,19 @@ const assert = require('assert');
 
   // Unknown page is a real 404
   check((await fetch(base + '/no-such-page')).status === 404, '404 status');
+
+  // One URL per page: retired duplicates and trailing-slash variants 301 to the canonical path
+  const redirects = {
+    '/mileage-log-generator': '/', '/mileage-log-2026': '/free-mileage-log-template',
+    '/mileage-log-lyft-drivers': '/mileage-log-uber-drivers', '/forgot-to-track-mileage-what-now': '/forgot-to-track-mileage',
+    '/irs-mileage-log-requirements/': '/irs-mileage-log-requirements', '/blog/?utm_source=x': '/blog?utm_source=x',
+    '//example.com/': '/example.com'
+  };
+  for (const [from, to] of Object.entries(redirects)) {
+    const r = await fetch(base + from, { redirect: 'manual' });
+    check(r.status === 301 && r.headers.get('location') === to, `${from} should 301 to ${to}, got ${r.status} ${r.headers.get('location')}`);
+    check(!locs.includes(SITE + from), `${from} is retired but still in the sitemap`);
+  }
 
   // PDF generation (free) works for all regions and is watermarked
   const trips = [{ date: '2026-06-30', start: 'A', end: 'B', purpose: 'Client', miles: 10, type: 'business' }, { date: '2026-07-01', start: 'B', end: 'A', purpose: 'Client', miles: 20, type: 'business' }];

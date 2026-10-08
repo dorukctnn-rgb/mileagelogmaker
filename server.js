@@ -21,6 +21,21 @@ const PORT = process.env.PORT || 3000;
 app.disable('x-powered-by');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// One URL per page. The production vercel.app alias and trailing-slash variants used to answer 200
+// with the same HTML; they now 301 to the canonical www URL so Google sees a single address.
+const ALIAS_HOSTS = new Set(['mileagelogmaker.vercel.app']);
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const query = req.originalUrl.slice(req.path.length);
+  // Strip trailing slashes; collapse leading ones so "//host/" can never become an off-site redirect.
+  const cleanPath = req.path.length > 1 ? (req.path.replace(/\/+$/, '') || '/').replace(/^\/{2,}/, '/') : req.path;
+  const host = String(req.headers.host || '').toLowerCase();
+  if (ALIAS_HOSTS.has(host)) return res.redirect(301, SITE + cleanPath + query);
+  if (cleanPath !== req.path) return res.redirect(301, cleanPath + query);
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1h' }));
 app.use(express.json({ limit: '2mb' }));
 
@@ -137,8 +152,25 @@ app.get('/blog', (req, res) => {
   });
 });
 
+// Pages retired in October 2026 because Search Console reported them "Crawled - currently not indexed",
+// "Discovered - currently not indexed" or unknown: each was a short duplicate of a stronger page.
+// Each one now 301s to the page that answers the same search better.
+const RETIRED = {
+  'mileage-log-generator': '/',
+  'mileage-log-2026': '/free-mileage-log-template',
+  'irs-mileage-rate-2026-explained': '/mileage-log-2026-irs-rate',
+  'forgot-to-track-mileage-what-now': '/forgot-to-track-mileage',
+  'mileage-log-lyft-drivers': '/mileage-log-uber-drivers',
+  'mileage-log-amazon-flex': '/mileage-log-doordash-drivers',
+  'mileage-log-instacart-shoppers': '/mileage-log-doordash-drivers',
+  'mileage-log-nurses': '/mileage-log-self-employed',
+  'mileage-log-construction-contractors': '/mileage-log-self-employed',
+  'mileage-log-therapists': '/mileage-log-self-employed'
+};
+
 app.get('/:slug', (req, res, next) => {
   const slug = req.params.slug;
+  if (RETIRED[slug]) return res.redirect(301, RETIRED[slug]);
   const page = NICHE_PAGES[slug];
   if (page) {
     return res.render('niche', {
