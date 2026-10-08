@@ -179,7 +179,8 @@ module.exports = {
         h: 'Using the mileage log creator',
         p: [
           'Add trips as you go (the list is saved in your browser), then click "Download PDF log" whenever you need a copy for your records or your accountant. Choose the tax year: for 2026 each trip gets 72.5¢ or 76¢ depending on its date, and the PDF shows both subtotals so the math is easy to check.',
-          'If you use the <strong>actual expense method</strong> instead, the log still matters: enter personal trips too, or your odometer readings, and use the business-use share of total miles to split costs like fuel and insurance.'
+          'If you use the <strong>actual expense method</strong> instead, the log still matters: enter personal trips too, or your odometer readings, and use the business-use share of total miles to split costs like fuel and insurance.',
+          'Mileage is one line of Schedule C. If part of your self-employment income comes from Etsy, the platform fees are a second deductible line, and they sit in twelve separate monthly CSV statements. The free <a href="https://peakappsstudio.com/etsy-tax-summary/" rel="noopener">Etsy tax summary</a> reads those statements in your browser and totals the year\'s sales, refunds and every fee.'
         ]
       },
       {
