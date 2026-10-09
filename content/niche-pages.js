@@ -84,109 +84,203 @@ const NICHE_PAGES = {
       'Use the rate for the date driven, not the date you file'
     ]
   },
+  // Competitor prices and plan limits below were read on each vendor's own page on 2026-10-09.
+  // Re-check every figure on the linked page before changing a date here.
   'mileiq-alternative': {
-    title: 'Free MileIQ Alternative 2026: No Subscription, No App',
-    h1: 'Free MileIQ Alternative (2026)',
-    description: 'Looking for a MileIQ alternative after the 2026 price hike? This free mileage log generator requires no app, no signup, and no subscription. Instant IRS-ready PDF.',
+    updated: '2026-10-09',
+    layout: 'article',
+    title: 'MileIQ Alternatives 2026: Current Prices and Free Options',
+    h1: 'MileIQ alternatives: what MileIQ costs now, and what to use instead',
+    badge: 'Prices checked on each vendor\'s own site on October 9, 2026',
+    description: 'MileIQ Unlimited is $13.99 a month or $11.66 billed annually; the free plan stops at 40 drives. TripLog, Everlance and Driversnote prices, checked October 9, 2026.',
     keyword: 'mileiq alternative',
-    intro: 'MileIQ raised its Unlimited plan from $8.99 to $13.99 a month in 2026, and its free plan still stops at 40 drives a month. If you are looking for a MileIQ alternative that works without a subscription, this free mileage log generator creates IRS-compliant PDFs with no app to install, no account to create, and no monthly fee.',
+    ctaLabel: 'Create a free mileage log',
+    leadHtml: 'MileIQ Unlimited costs <strong>$13.99 a month</strong>, or <strong>$11.66 a month billed annually</strong> ($139.92 a year), and the free plan stops at <strong>40 drives a month</strong> (<a href="https://mileiq.com/pricing" target="_blank" rel="noopener">mileiq.com/pricing</a>, checked October 9, 2026). Below are the prices and free-plan limits of the main alternatives, read from each vendor\'s own pricing page on the same day, and a plain answer to whether you need an app at all.',
+    sources: ['pub463', 'irsRates'],
+    extraSources: [
+      { label: 'MileIQ: Pricing (Free and Unlimited plans)', url: 'https://mileiq.com/pricing' },
+      { label: 'MileIQ: Automatic classification by Work Hours or by swipe', url: 'https://mileiq.com/' },
+      { label: 'MileIQ Help Center: How to request a Monthly Report (PDF and CSV)', url: 'https://support.mileiq.com/hc/en-us/articles/203801449-How-to-request-a-Monthly-Report' },
+      { label: 'TripLog: Pricing (Basic, Premium and the 7-day pass)', url: 'https://www.triplog.net/pricing' },
+      { label: 'Everlance: Pricing and plan comparison', url: 'https://www.everlance.com/pricing' },
+      { label: 'Driversnote: Pricing', url: 'https://www.driversnote.com/pricing' }
+    ],
+    checkedNote: 'Competitor prices and plan limits were read on each vendor\'s own pricing or help page on October 9, 2026. Vendors change prices, so check the linked page before you buy.',
+    related: ['everlance-alternative', 'irs-mileage-log-requirements', 'free-mileage-log-template', 'mileage-log-uber-drivers', 'mileage-log-self-employed', 'forgot-to-track-mileage'],
+    sectionsBefore: [
+      {
+        h: 'MileIQ and the alternatives, side by side',
+        id: 'compare',
+        html: '<div class="table-wrap"><table class="data"><thead><tr><th>App</th><th>Free plan</th><th>Paid plan, as listed</th><th>Automatic tracking</th></tr></thead><tbody>' +
+          '<tr><td><strong>MileIQ</strong></td><td>40 drives a month</td><td>Unlimited: $13.99 a month, or $11.66 a month billed annually</td><td>Yes. You classify each drive with a swipe, or MileIQ classifies by your Work Hours</td></tr>' +
+          '<tr><td><strong>TripLog</strong></td><td>Basic: unlimited automatic GPS tracking. Downloading the annual report uses a 7-day pass; one pass a calendar year is free, from January 1</td><td>Premium: $4.99 a month, paid annually as $59.99</td><td>Yes</td></tr>' +
+          '<tr><td><strong>Everlance</strong></td><td>Basic: 30 automatically tracked trips a month, unlimited manual trips. CSV and PDF exports are not in Basic</td><td>Starter: $10.99 a month or $89.99 a year</td><td>Yes</td></tr>' +
+          '<tr><td><strong>Driversnote</strong></td><td>Up to 15 trips a month</td><td>Pro: 11 USD a month, before tax</td><td>Yes</td></tr>' +
+          '<tr><td><strong>MileageLogMaker</strong> (this site)</td><td>Unlimited trips; the PDF carries a light &ldquo;Free version&rdquo; watermark</td><td>Pro: $9 once (no watermark, Excel and CSV export, your logo)</td><td>No. You enter trips yourself</td></tr>' +
+          '</tbody><caption>Prices in US dollars as shown on each vendor\'s pricing page on October 9, 2026. Links are under Sources.</caption></table></div>'
+      },
+      {
+        h: 'What a year costs',
+        p: [
+          'Paid monthly, MileIQ Unlimited comes to <strong>$167.88</strong> a year (12 &times; $13.99); billed annually it is <strong>$139.92</strong>. Everlance Starter is $89.99 a year and TripLog Premium $59.99 a year. Driversnote lists Pro at 11 USD a month before tax. MileageLogMaker Pro is a single $9 payment, and the free version has no trip limit.',
+          'The cheapest automatic option is TripLog\'s free Basic plan, which its pricing page lists with unlimited automatic GPS tracking. If you want a phone to log trips for you without paying, try that before paying for MileIQ.'
+        ]
+      }
+    ],
+    tipsHeading: 'Before you switch from MileIQ',
     tips: [
-      'No subscription: MileIQ Unlimited costs $13.99/month ($11.66/month billed annually), this tool is free',
-      'No app install: works in any browser on phone, tablet, or computer',
-      'No signup: MileIQ requires an account, this tool requires nothing',
-      'No drive limit: MileIQ free caps at 40 drives/month, this has no cap',
-      'IRS-compliant PDF: same required fields (date, destination, purpose, miles)',
-      'Works for all professions: realtors, gig drivers, self-employed, contractors',
-      'Your data stays in your browser: no cloud, no privacy concerns',
-      'Pro upgrade is a single $9 payment, not a subscription'
+      'Download PDF and CSV reports for every month of this tax year (steps below)',
+      'Write down your odometer reading on the day you switch',
+      'Note the switch date in both records so no trip is logged twice',
+      'Keep the old reports with your tax return'
     ],
     sections: [
       {
-        h: 'Reasons to Look Beyond MileIQ in 2026',
+        h: 'Do you need automatic tracking?',
         p: [
-          'In 2026, MileIQ raised its Unlimited plan from $8.99 to <strong>$13.99 per month</strong> on monthly billing. Billed annually it is $11.66 per month, about $140 a year. The free tier is limited to 40 drives per month. Prices from mileiq.com/pricing, checked October 7, 2026.',
-          'Price is only part of it. MileIQ is a <strong>mobile-only app</strong> that detects drives through your phone\'s location services, which some people do not want running all day. It auto-detects trips but you still classify each one as business or personal: a swipe for every drive. If you forget to swipe for a few days, you end up with a backlog of unclassified trips to sort through.',
-          'Some self-employed workers and gig drivers ask a simple question: <strong>do I need to pay about $140 a year for something that still needs a swipe on every drive?</strong> If you can log trips weekly, you do not.'
+          'Automatic tracking earns its price when you make many short trips you would otherwise forget: rideshare or delivery shifts, or a day of site visits. If that is you, keep an automatic tracker, and compare TripLog\'s free plan with MileIQ before you pay.',
+          'If your business driving is regular (the same clients, a weekly route, a few trips a week), an app adds little. The IRS does not require an app or a particular format. It asks for the date, destination, business purpose and miles of each trip, plus your total miles for the year, recorded at or near the time, and Publication 463 accepts a log kept on a weekly basis. The full list is in <a href="/irs-mileage-log-requirements">IRS mileage log requirements</a>.',
+          'The IRS does not approve or certify mileage apps or templates. &ldquo;IRS-compliant&rdquo; on any product, this one included, means the log records the elements Publication 463 asks for.'
         ]
       },
       {
-        h: 'MileIQ vs This Free Generator: Side by Side',
+        h: 'Moving your MileIQ history before you cancel',
         p: [
-          '<strong>Automatic tracking:</strong> MileIQ uses GPS to auto-detect drives. This generator does not: you enter trips manually. If you want set-and-forget GPS tracking, MileIQ (or TripLog, which offers free unlimited auto-tracking in 2026) is the better fit. But if you are willing to spend 5 minutes per week logging trips, manual entry gives you a record where every entry has a specific business purpose, which is what the IRS looks for.',
-          '<strong>Cost:</strong> MileIQ Unlimited costs $13.99/month ($11.66/month billed annually). Everlance Starter costs $8.99/month ($69.99/year). Driversnote Pro costs $11/month. Prices are from each vendor\'s pricing page, checked October 7, 2026. This generator is free, with an optional $9 <em>lifetime</em> Pro upgrade, which costs less than one month of MileIQ.',
-          '<strong>Privacy:</strong> MileIQ detects drives through your phone\'s location services and stores trip data in its cloud. This generator stores your data locally in your browser. Nothing is uploaded to any server unless you choose to generate a PDF. If privacy matters to you, this keeps your trip data on your own device.',
-          '<strong>Output:</strong> Both produce IRS-compliant mileage reports. MileIQ generates CSV and PDF reports from its dashboard. This generator produces a clean, professional PDF with all four IRS-required fields plus odometer readings and a deduction summary, ready to hand to your CPA or upload to TurboTax.'
+          'MileIQ\'s help center describes two ways to get your drives out as files. <strong>In the app</strong>, tap the Share/Send button and choose a month; MileIQ emails you links to PDF and CSV versions of that month\'s report. <strong>On the web</strong>, sign in at dashboard.mileiq.com, open the Reports tab, select Create Report, choose the date range and drive types, then download the CSV or PDF from Archived Reports.',
+          'Do this for every month you will claim, and keep the files with your return. If you continue the year with another log, start it on the day after your last MileIQ drive.'
         ]
       },
       {
-        h: 'Who Should Switch from MileIQ?',
+        h: 'What MileIQ does well',
         p: [
-          'This alternative is the best fit if you are <strong>cost-conscious</strong> (you do not want to pay about $140 a year for mileage tracking), if you drive a <strong>predictable number of business trips</strong> (and can log them weekly), or if you prefer a <strong>web tool</strong> over a phone app. It works especially well for real estate agents who log showings, gig drivers who track delivery routes, and self-employed professionals with regular client visits.',
-          'If you rely heavily on automatic GPS detection because you drive dozens of unpredictable trips per day and never want to open a log, consider TripLog (free unlimited auto-tracking) or Stride (free). But if you want a simple way to build an IRS-ready mileage log without installing anything or creating an account, this is it.'
+          'MileIQ detects drives automatically. You classify each one as business or personal with a swipe, or let it classify drives for you based on Work Hours you set, and reports come as PDF and CSV from the app or the web dashboard. For someone with many unplanned trips, that saves real effort. The question is whether it is worth $139.92 a year to you when TripLog\'s free plan also tracks automatically.'
+        ]
+      },
+      {
+        h: 'Where this generator fits, and where it does not',
+        p: [
+          'MileageLogMaker is a log generator, not a tracker. You enter your trips and it builds a PDF with the date, destination, purpose and miles of each trip, the year\'s totals and the deduction at the IRS rate for each trip\'s date (72.5&cent; a mile to June 30, 2026, then 76&cent; from July 1). There is no app, no account and no trip limit. Trips are kept in your browser and sent to our server only to build the PDF, which is not stored.',
+          'It will not notice a drive you forget to enter, so it suits regular, predictable driving. The free PDF carries a light &ldquo;Free version&rdquo; watermark; Pro is a single $9 payment that removes it and adds Excel and CSV export and your logo.'
         ]
       }
     ],
     faq: [
       {
-        q: 'Is there a truly free alternative to MileIQ?',
-        a: 'Yes. This mileage log generator is completely free with no drive limit, no signup, and no subscription. TripLog also offers free unlimited automatic tracking on its Basic plan, and Stride is free (app-based). MileIQ free tier limits you to 40 drives per month.'
-      },
-      {
         q: 'How much does MileIQ cost in 2026?',
-        a: 'MileIQ Unlimited costs $13.99 per month on monthly billing ($167.88 per year), or $11.66 per month billed annually. That is up from $8.99 a month earlier in 2026. The free plan is limited to 40 drives per month. Prices from mileiq.com/pricing, checked October 7, 2026.'
+        a: 'MileIQ Unlimited is $13.99 a month billed monthly, or $11.66 a month billed annually ($139.92 a year). The free plan includes automatic tracking and reports for up to 40 drives a month. Prices from mileiq.com/pricing, checked October 9, 2026.'
       },
       {
-        q: 'Can I import my MileIQ data into another tracker?',
-        a: 'Yes. In MileIQ, go to Reports, create a report with all your mileage data, and export it as a CSV file. You can keep this for your records or import it into another tracking solution. Your historical data belongs to you.'
+        q: 'Is there a free MileIQ alternative with automatic tracking?',
+        a: 'Yes. TripLog lists its Basic plan as free forever with unlimited automatic GPS tracking; downloading the annual report uses a 7-day pass, and one pass each calendar year is free from January 1. Everlance\'s free plan tracks 30 trips a month automatically and Driversnote\'s covers 15 trips a month (all checked October 9, 2026).'
       },
       {
-        q: 'Is a manual mileage log as good as an app for IRS purposes?',
-        a: 'Yes. The IRS does not require any specific format or software. A manual log with date, destination, purpose, and miles, kept at or near the time of each trip, is fully compliant. What matters is the content: a specific business purpose on every entry, whether the log came from an app or from this generator.'
+        q: 'How do I export my MileIQ data?',
+        a: 'In the MileIQ app, tap Share/Send and choose a month to get PDF and CSV links by email. On dashboard.mileiq.com, open Reports, select Create Report, then download the CSV or PDF under Archived Reports. Source: MileIQ help center, checked October 9, 2026.'
       },
       {
-        q: 'What is the best free mileage tracker overall?',
-        a: 'It depends on your needs. For automatic GPS tracking at no cost, look at the free TripLog Basic plan. For a simple web-based log with no app or signup, use this generator. For a free expense and mileage tracker, look at Stride.'
+        q: 'Is a manual mileage log as good as an app for the IRS?',
+        a: 'Yes, if it holds the required details: the date, destination, business purpose and miles of each trip and your total miles for the year, recorded at or near the time. Publication 463 accepts a log kept on a weekly basis. The IRS does not certify any app or template.'
       }
     ]
   },
   'everlance-alternative': {
-    title: 'Free Everlance Alternative 2026: No Monthly Fee',
-    h1: 'Free Everlance Alternative (2026)',
-    description: 'Looking for an Everlance alternative without a monthly fee? Free mileage log generator with no app, no signup. IRS-compliant PDF in 3 minutes.',
+    updated: '2026-10-09',
+    layout: 'article',
+    title: 'Everlance Alternatives 2026: Prices Checked, Free Options',
+    h1: 'Everlance alternatives: what each plan costs and what to use instead',
+    badge: 'Prices checked on each vendor\'s own site on October 9, 2026',
+    description: 'Everlance Starter is $89.99 a year or $10.99 a month; the free plan tracks 30 trips a month and has no CSV or PDF export. Alternatives priced October 9, 2026.',
     keyword: 'everlance alternative',
-    intro: 'Everlance Starter costs $8.99 a month or $69.99 a year, and its free plan detects 30 trips a month automatically (everlance.com/pricing, checked October 7, 2026). If you just need a simple, IRS-compliant mileage log without paying $69.99 a year, this free generator produces the same output with no app, no account, and no subscription. Enter your trips, download your PDF, and you are done.',
+    ctaLabel: 'Create a free mileage log',
+    leadHtml: 'Everlance has three plans for individuals: <strong>Basic</strong> (free, 30 automatically tracked trips a month), <strong>Starter</strong> ($89.99 a year or $10.99 a month) and <strong>Professional</strong> ($119.99 a year or $19.99 a month), according to <a href="https://www.everlance.com/pricing" target="_blank" rel="noopener">everlance.com/pricing</a> on October 9, 2026. The right alternative depends on which part of Everlance you actually use: the mileage log, the expense tracking or the tax filing.',
+    sources: ['pub463', 'irsRates'],
+    extraSources: [
+      { label: 'Everlance: Pricing, plan comparison and FAQ', url: 'https://www.everlance.com/pricing' },
+      { label: 'Everlance: How its automatic mileage tracker detects drives', url: 'https://www.everlance.com/mileage-tracker' },
+      { label: 'TripLog: Pricing (Basic, Premium and the 7-day pass)', url: 'https://www.triplog.net/pricing' },
+      { label: 'MileIQ: Pricing', url: 'https://mileiq.com/pricing' },
+      { label: 'Driversnote: Pricing', url: 'https://www.driversnote.com/pricing' }
+    ],
+    checkedNote: 'Competitor prices and plan features were read on each vendor\'s own page on October 9, 2026. Vendors change plans, so check the linked page before you buy.',
+    related: ['mileiq-alternative', 'irs-mileage-log-requirements', 'free-mileage-log-template', 'mileage-log-self-employed', 'mileage-log-doordash-drivers', 'cra-mileage-log-template'],
+    sectionsBefore: [
+      {
+        h: 'What each Everlance plan includes',
+        id: 'plans',
+        html: '<div class="table-wrap"><table class="data"><thead><tr><th>Feature</th><th>Basic</th><th>Starter</th><th>Professional</th></tr></thead><tbody>' +
+          '<tr><td>Price</td><td>$0</td><td>$89.99 a year or $10.99 a month</td><td>$119.99 a year or $19.99 a month</td></tr>' +
+          '<tr><td>Automatic trip detection</td><td>30 trips a month</td><td>Unlimited</td><td>Unlimited</td></tr>' +
+          '<tr><td>Manual trips</td><td>Unlimited</td><td>Included</td><td>Included</td></tr>' +
+          '<tr><td>IRS-compliant mileage logs, web dashboard</td><td>Included</td><td>Included</td><td>Included</td></tr>' +
+          '<tr><td>CSV and PDF exports</td><td>Not included</td><td>Included</td><td>Included</td></tr>' +
+          '<tr><td>Bank and credit card integration</td><td>Not included</td><td>Not included</td><td>Included</td></tr>' +
+          '<tr><td>Tax filing and $1 million audit defense</td><td>Not included</td><td>Not included</td><td>Included</td></tr>' +
+          '<tr><td>Support</td><td>Email</td><td>Email, phone, chat</td><td>Email, phone, chat, live training</td></tr>' +
+          '</tbody><caption>From the plan comparison on everlance.com/pricing, October 9, 2026.</caption></table></div>'
+      },
+      {
+        h: 'Alternatives for the part you actually use',
+        id: 'alternatives',
+        html: '<div class="table-wrap"><table class="data fit"><thead><tr><th>If you use Everlance for</th><th>Alternatives, with prices checked October 9, 2026</th></tr></thead><tbody>' +
+          '<tr><td>Automatic mileage tracking only</td><td><strong>TripLog</strong> Basic: free, unlimited automatic GPS tracking; the annual report download uses a 7-day pass, one of which is free each calendar year. <strong>MileIQ</strong>: free for 40 drives a month, Unlimited $11.66 a month billed annually. <strong>Driversnote</strong>: free for 15 trips a month, Pro 11 USD a month before tax.</td></tr>' +
+          '<tr><td>A mileage log for regular, predictable trips</td><td><strong>MileageLogMaker</strong> (this site): free, no app or account, unlimited trips; Pro $9 once.</td></tr>' +
+          '<tr><td>Mileage plus expenses</td><td><strong>TripLog</strong> Premium: $59.99 a year, which TripLog lists with automatic expense tracking and unlimited reporting.</td></tr>' +
+          '<tr><td>Tax filing and audit defense</td><td>Everlance Professional bundles these. If a preparer or tax software already files your return, the mileage log may be the only part you need from an app.</td></tr>' +
+          '</tbody></table></div>'
+      }
+    ],
+    tipsHeading: 'Before you leave Everlance',
     tips: [
-      'Everlance Starter costs $8.99/month ($69.99/year): this tool is free, Pro is a single $9 payment',
-      'No app to install: Everlance requires iOS/Android download',
-      'No bank sync needed: Everlance connects to your bank, this tool does not',
-      'Same IRS-compliant output: date, destination, purpose, miles, deduction',
-      'No cloud storage: your data stays in your browser, not on Everlance servers',
-      'Works for all tax situations: self-employed, gig, real estate, employee',
-      'Generate PDF in 3 minutes: no weekly swiping or trip classification',
-      'Canadian kilometre logbook (CRA) and UK HMRC versions included'
+      'Export CSV and PDF reports for the whole tax year while Starter or Professional is active',
+      'On a trial, cancel before the 7 days end (Everlance says by phone)',
+      'Write down your odometer reading on the day you switch',
+      'Check that your new log has the date, destination, purpose and miles of every trip'
     ],
     sections: [
       {
-        h: 'Everlance vs This Free Generator',
+        h: 'The detail on Everlance\'s free plan',
         p: [
-          '<strong>Everlance</strong> is a full-featured mileage and expense tracker with automatic GPS detection, bank account syncing, receipt scanning, and, on its Professional plan, in-app tax filing. It suits people who want everything in one place. The trade-off is cost (Starter is $8.99/month), complexity, and sharing location and bank data with a cloud service if you use those features.',
-          'This <strong>free generator</strong> does one thing well: it builds an IRS-compliant mileage log PDF. No GPS, no bank sync, no expense categories: just the four fields the IRS requires (date, destination, purpose, miles) plus a calculated deduction. If you only need a mileage log and not a full financial platform, this is the faster, simpler, and cheaper option.',
-          'Both produce IRS-acceptable output. The difference is whether you want a <strong>full financial platform</strong> (Everlance) or a <strong>focused mileage tool</strong> (this generator). Self-employed people who already use QuickBooks, FreshBooks, or a CPA for their finances may only need the mileage log, not another financial app.'
+          'Everlance Basic tracks 30 trips a month automatically and lets you add unlimited trips by hand. Its plan comparison lists IRS-compliant mileage logs and the web dashboard on every plan, but CSV and PDF exports only on Starter and Professional. If you need a file to hand to an accountant or attach to a reimbursement claim, check that before relying on the free plan.',
+          'Automatic detection runs on your phone: Everlance says it uses the phone\'s GPS and motion sensors to detect when a drive starts and ends.'
+        ]
+      },
+      {
+        h: 'Before you cancel: export your trips',
+        p: [
+          'Because exports sit in the paid plans, download your CSV and PDF reports for the whole tax year while Starter or Professional is still active, and keep them with your return.',
+          'On a free trial, Everlance\'s FAQ says to call to cancel before the 7 days end, that it emails a reminder two days before the trial finishes, and that you can carry on with the free Basic plan with your previously recorded trips and transactions.'
+        ]
+      },
+      {
+        h: 'When Everlance is the better choice',
+        p: [
+          'If you want income, expenses and mileage in one app with bank and card feeds, or you want tax filing and audit defense bundled, Everlance Professional covers jobs a mileage log cannot. Even Basic includes receipt photo capture. A mileage-only tool is the cheaper choice only when mileage is the part you use.'
+        ]
+      },
+      {
+        h: 'Where this generator fits',
+        p: [
+          'MileageLogMaker does one job: the mileage log. You enter each trip\'s date, destination, purpose and miles, and download a PDF with the year\'s totals and the deduction at the IRS rate for each trip\'s date. A Canadian version builds a CRA kilometre logbook and a UK version an HMRC log, each with its own rates.',
+          'Nothing tracks in the background, so it suits drivers whose trips are regular enough to log once a week. The free PDF has a light &ldquo;Free version&rdquo; watermark; Pro ($9, paid once) removes it and adds Excel and CSV export.'
         ]
       }
     ],
     faq: [
       {
-        q: 'Is Everlance worth the price in 2026?',
-        a: 'Everlance is worth it if you use its full feature set: mileage tracking, expense management, bank syncing, and tax filing. If you only need a mileage log for IRS deductions, a free alternative that produces a comparable PDF saves you the $69.99 a year Starter price.'
+        q: 'How much does Everlance cost in 2026?',
+        a: 'Basic is free with 30 automatically tracked trips a month. Starter is $89.99 a year or $10.99 a month. Professional is $119.99 a year or $19.99 a month and adds automatic expense tracking, tax filing and $1 million audit defense. Prices from everlance.com/pricing, checked October 9, 2026.'
       },
       {
-        q: 'Can I use this generator for a CRA logbook in Canada?',
-        a: 'Yes. The CRA version logs kilometres and calculates your business-use percentage for Form T2125 (self-employed people deduct that share of actual vehicle costs). It also shows the 2026 CRA allowance rates of 73 cents for the first 5,000 km and 67 cents after, which apply to employer allowances.'
+        q: 'Does the free Everlance plan include exports?',
+        a: 'Not according to its plan comparison: CSV and PDF exports are listed under Starter and Professional only. Basic does include IRS-compliant mileage logs and the web dashboard.'
       },
       {
-        q: 'Can I cancel Everlance and keep my data?',
-        a: 'Yes. Export your mileage reports from Everlance before cancelling. You can download CSV or PDF reports from your Everlance dashboard. Once exported, you own that data and can reference it for future tax filings.'
+        q: 'Which apps compete with Everlance for individual drivers?',
+        a: 'MileIQ, TripLog and Driversnote all offer automatic mileage tracking with a free tier: 40 drives a month, unlimited tracking, and 15 trips a month respectively (checked October 9, 2026). For a log without an app, a generator like this one works if your trips are regular.'
+      },
+      {
+        q: 'How do I cancel an Everlance trial?',
+        a: 'Everlance\'s FAQ says to call to cancel before the 7-day trial ends, that it emails a reminder two days before, and that you can keep using the free Basic plan with your recorded trips and transactions.'
       }
     ]
   }
