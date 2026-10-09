@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node server.js",
     "build:templates": "node scripts/build-templates.js",
-    "test": "node scripts/smoke-test.js"
+    "test": "node --test \"test/**/*.test.js\" && node scripts/smoke-test.js"
   },
   "dependencies": {
     "ejs": "^3.1.9",

@@ -184,3 +184,7 @@ footer{background:var(--navy);color:#a3b1cc;padding:30px 16px;text-align:center;
 footer .links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px}
 footer a{color:#fff;text-decoration:none}
 footer .fine{margin-top:14px;max-width:760px;margin-left:auto;margin-right:auto}
+
+/* Trips handed over from the reimbursement calculator */
+.handover{background:#eef6ff;border:1px solid #cfe0f7;border-radius:8px;padding:9px 12px;font-size:13.5px;color:var(--ink);margin:0 0 10px}
+.source-note{font-size:14px;color:var(--muted)}

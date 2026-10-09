@@ -5,6 +5,7 @@ const BLOG_POSTS = require('./blog-posts.js');
 const NICHE_PAGES = require('./content/niche-pages.js');
 const R = require('./lib/rates.js');
 const MLMCalc = require('./public/calc.js');
+const Reimburse = require('./public/reimburse.js');
 const { verifyLicense } = require('./lib/license.js');
 const { buildLogPdf } = require('./lib/pdf.js');
 const { buildCsv, buildXlsx } = require('./lib/export.js');
@@ -54,13 +55,13 @@ function cleanTrips(trips) {
     end: str(t && t.end, 120),
     purpose: str(t && t.purpose, 200),
     miles: Math.max(0, Math.min(100000, parseFloat(t && t.miles) || 0)),
-    type: ['business', 'medical', 'charity', 'personal'].includes(t && t.type) ? t.type : 'business'
+    type: ['business', 'medical', 'moving', 'charity', 'personal'].includes(t && t.type) ? t.type : 'business'
   }));
 }
 function cleanRequest(body) {
   const b = body || {};
   const region = ['us', 'ca', 'uk'].includes(b.region) ? b.region : 'us';
-  const trips = cleanTrips(b.trips).map(t => (region !== 'us' && (t.type === 'medical' || t.type === 'charity') ? { ...t, type: 'business' } : t));
+  const trips = cleanTrips(b.trips).map(t => (region !== 'us' && (t.type === 'medical' || t.type === 'moving' || t.type === 'charity') ? { ...t, type: 'business' } : t));
   const u = b.userInfo || {};
   const userInfo = { name: str(u.name, 80), vehicle: str(u.vehicle, 80), startOdometer: str(u.startOdometer, 12), endOdometer: str(u.endOdometer, 12) };
   const year = region === 'ca' ? (R.CRA_YEARS.includes(String(b.year)) ? String(b.year) : '2026') : (R.IRS_YEARS.includes(String(b.year)) ? String(b.year) : '2026');
@@ -145,6 +146,25 @@ app.get('/', (req, res) => {
   });
 });
 
+// Free mileage reimbursement calculator. The example crosses the July 1, 2026 rate change on purpose.
+const REIMBURSE_EXAMPLE = [
+  { date: '2026-06-22', miles: 42, type: 'business', dest: 'Client site, 410 Pine St', purpose: 'Install and training' },
+  { date: '2026-06-29', miles: 18.5, type: 'business', dest: 'Office supply store, Main St', purpose: 'Buy printer toner' },
+  { date: '2026-07-08', miles: 38.5, type: 'business', dest: 'Supplier, 22 Oak Ave', purpose: 'Pick up replacement parts' }
+];
+app.get('/mileage-reimbursement-calculator', (req, res) => {
+  const rates = R.clientRates();
+  res.render('mileage-reimbursement-calculator', {
+    title: 'Mileage Reimbursement Calculator 2026: IRS 72.5¢ and 76¢',
+    description: 'Mileage reimbursement for 2026 worked out trip by trip: 72.5¢ a business mile to June 30, 76¢ from July 1. Employer rate option and a CSV for Excel.',
+    canonical: SITE + '/mileage-reimbursement-calculator',
+    Reimburse,
+    exampleTrips: REIMBURSE_EXAMPLE,
+    example: Reimburse.compute({ trips: REIMBURSE_EXAMPLE, rates, employerCents: null }),
+    periods: Reimburse.periods(rates)
+  });
+});
+
 app.get('/blog', (req, res) => {
   res.render('blog-index', {
     canonical: SITE + '/blog',
@@ -190,7 +210,7 @@ app.get('/:slug', (req, res, next) => {
 
 // ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  const entries = [['/', SITE_UPDATED], ['/blog', SITE_UPDATED]]
+  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', R.REIMBURSE_CHECKED], ['/blog', SITE_UPDATED]]
     .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
     .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
   const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');

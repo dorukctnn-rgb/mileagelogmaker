@@ -5,7 +5,7 @@
       <a href="/free-mileage-log-template" class="hide-sm">Templates</a>
       <a href="/irs-mileage-log-requirements" class="hide-sm">IRS rules</a>
       <a href="/mileage-log-2026-irs-rate" class="hide-sm">2026 rates</a>
-      <button type="button" class="nav-pro" id="navProBtn" onclick="MLM.openPro()">Get Pro $9</button>
+      <% if (typeof hidePro === 'undefined' || !hidePro) { %><button type="button" class="nav-pro" id="navProBtn" onclick="MLM.openPro()">Get Pro $9</button><% } %>
     </div>
   </div>
 </nav>

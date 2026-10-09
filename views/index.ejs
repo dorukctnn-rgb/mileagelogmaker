@@ -32,7 +32,7 @@
     <div class="rate-card"><strong>23.5¢ / 20.5¢</strong><span>medical, after / before Jul 1</span></div>
     <div class="rate-card"><strong>14¢</strong><span>charity mile, all year</span></div>
   </div>
-  <p class="rate-note">Source: <a href="<%= R.SOURCES.irsRates.url %>" rel="noopener" target="_blank">IRS standard mileage rates</a> (Notice 2026-10 and Announcement 2026-11). Last checked <%= R.LAST_CHECKED_TEXT %>. <a href="/mileage-log-2026-irs-rate">What changed in July</a></p>
+  <p class="rate-note">Source: <a href="<%= R.SOURCES.irsRates.url %>" rel="noopener" target="_blank">IRS standard mileage rates</a> (Notice 2026-10 and Announcement 2026-11). Last checked <%= R.LAST_CHECKED_TEXT %>. <a href="/mileage-log-2026-irs-rate">What changed in July</a>. Owed by an employer? Use the <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a>.</p>
 </section>
 
 <%- include('partials/tool', { region: 'us', purposePlaceholder: 'Client meeting at Acme Co.' }) %>
@@ -106,7 +106,7 @@
 <%- include('partials/footer') %>
 <%- include('partials/pro-modal') %>
 <script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
-<script src="/calc.js?v=2"></script>
-<script src="/app.js?v=3"></script>
+<script src="/calc.js?v=3"></script>
+<script src="/app.js?v=4"></script>
 </body>
 </html>
