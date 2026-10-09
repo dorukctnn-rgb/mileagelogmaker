@@ -36,7 +36,7 @@
 }).replace(/</g, '\\u003c') %>
 </script>
 <style>
-.rb{max-width:1200px;margin:8px auto 0;padding:0 16px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+.rb{max-width:1200px;margin:8px auto 0;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;align-items:start}
 .rb .panel h2{margin-bottom:4px}
 .rb .sub{font-size:14px;color:var(--muted);margin:0 0 14px}
 .seg{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:4px;margin-bottom:12px}
@@ -46,9 +46,10 @@
 .seg input:checked + span{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(10,37,64,.12),0 0 0 1px var(--line)}
 .seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
 .emp{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.emp[hidden]{display:none}
 .emp input{width:110px;padding:9px 10px;border:1px solid #d5dce6;border-radius:6px;font-size:16px;font-family:inherit}
 .emp label{font-size:14px;color:#425466}
-.trips-head,.trip-row{display:grid;grid-template-columns:138px 84px 128px minmax(0,1fr) minmax(0,1fr) 34px;gap:8px;align-items:center}
+.trips-head,.trip-row{display:grid;grid-template-columns:132px 74px 122px minmax(0,1fr) minmax(0,1.15fr) 34px;gap:8px;align-items:center}
 .trips-head{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;padding:0 0 6px;border-bottom:1px solid var(--line)}
 .trip-row{padding:8px 0;border-bottom:1px solid #eef2f6}
 .trip-row input,.trip-row select{width:100%;min-width:0;padding:9px 8px;border:1px solid #d5dce6;border-radius:6px;font-size:15px;font-family:inherit;background:#fff;color:var(--navy);min-height:42px}
@@ -76,20 +77,27 @@
 .rb-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .rate-line{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5}
 .content .formula{background:var(--navy);color:#e6ecf5;border-radius:8px;padding:12px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.8;margin:10px 0 16px;overflow-x:auto}
-@media(max-width:1000px){.rb{grid-template-columns:1fr}.rb-out{position:static}}
+.rb-sticky{display:none}
+@media(max-width:1080px){.rb{grid-template-columns:1fr}.rb-out{position:static}}
 @media(max-width:760px){
   .trips-head{display:none}
   .trip-row{grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px 0}
   .trip-row .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+  .trip-row > div:nth-child(3){grid-row:2;grid-column:1}
   .trip-row .f-dest,.trip-row .f-purpose{grid-column:1 / -1}
-  .trip-row .del{grid-column:2;justify-self:end;width:auto;padding:0 12px;font-size:13px}
+  .trip-row .del{grid-row:2;grid-column:2;align-self:end;justify-self:end;width:auto;padding:0 12px;font-size:13px}
+  .rb-sticky{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(10,37,64,.06);padding:10px 16px;align-items:center;justify-content:space-between;gap:12px}
+  .rb-sticky strong{font-size:18px;font-variant-numeric:tabular-nums}
+  .rb-sticky span{display:block;font-size:12px;color:var(--muted)}
+  .rb-sticky.is-off{display:none}
+  body.has-rb-sticky{padding-bottom:66px}
   .trip-row .del span{display:inline}
   .rb-big{font-size:34px}
 }
 @media(min-width:761px){.trip-row .del span{display:none}}
 </style>
 </head>
-<body>
+<body class="has-rb-sticky">
 
 <%- include('partials/nav', { hidePro: true }) %>
 
@@ -131,7 +139,7 @@
     </div>
   </form>
 
-  <div class="panel rb-out">
+  <div class="panel rb-out" id="rbOut">
     <div id="rbResult" aria-live="polite"><%- Reimburse.resultHTML(example) %></div>
     <a class="btn rb-cta" id="rbCta" href="/<%= Reimburse.prefillHash(example) %>">Keep the IRS-ready log for these miles</a>
     <p class="cta-note">Opens the free mileage log generator with these trips filled in. Add a destination and business purpose to each business trip there, then download the PDF log.</p>
@@ -196,6 +204,8 @@
     <a href="/" class="related-card"><strong>Mileage log generator</strong><span>PDF log with rates by date</span></a>
   </div>
 </section>
+
+<div class="rb-sticky"><div><strong id="rbStickyTotal"><%= Reimburse.money(example.total) %></strong><span id="rbStickyNote">at IRS rates</span></div><a href="#rbOut" class="btn btn-sm">See the breakdown</a></div>
 
 <%- include('partials/footer') %>
 <script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>

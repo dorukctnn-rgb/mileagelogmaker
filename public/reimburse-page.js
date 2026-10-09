@@ -42,6 +42,9 @@
     var res = C.compute({ trips: trips, rates: RATES, employerCents: employerCents() });
     last = res;
     $('rbResult').innerHTML = C.resultHTML(res);
+    var st = $('rbStickyTotal'), sn = $('rbStickyNote');
+    if (st) st.textContent = C.money(res.total);
+    if (sn) sn.textContent = res.employerRate !== null ? 'at the rates in the breakdown' : 'at IRS rates';
     // mark bad fields
     Array.prototype.forEach.call(rowsEl.querySelectorAll('.trip-row'), function (row, i) {
       ['date', 'miles'].forEach(function (n) {
@@ -108,6 +111,14 @@
     if (this.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
     if (window.gtag) try { window.gtag('event', 'reimburse_to_log'); } catch (err) {}
   });
+
+  // On phones the running total sits in a bar at the bottom; hide it while the full result is on screen.
+  var bar = document.querySelector('.rb-sticky');
+  if (bar && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      bar.classList.toggle('is-off', entries[0].isIntersecting);
+    }, { threshold: 0.15 }).observe($('rbOut'));
+  }
 
   // Bring back this browser's last list, if there is one.
   var saved = restore();
