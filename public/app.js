@@ -16,6 +16,36 @@
 
   var trips = load(STORE, []);
   if (!Array.isArray(trips)) trips = [];
+
+  // Trips handed over by the reimbursement calculator in #prefill=... (never sent to the server).
+  // Every field is checked here; the list is escaped again when it is rendered.
+  var handed = 0, handedYear = '';
+  (function readPrefill() {
+    var h = location.hash || '';
+    if (region !== 'us' || h.indexOf('#prefill=') !== 0 || h.length > 120000) return;
+    var data;
+    try { data = JSON.parse(decodeURIComponent(h.slice(9))); } catch (e) { return; }
+    if (!data || data.v !== 1 || !Array.isArray(data.trips)) return;
+    var text = function (v, max) { return typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max) : ''; };
+    var seen = {};
+    var key = function (t) { return [t.date, t.miles, t.type, t.end, t.purpose].join('|'); };
+    trips.forEach(function (t) { seen[key(t)] = 1; });
+    var years = {};
+    data.trips.slice(0, 500).forEach(function (t) {
+      if (!t || typeof t !== 'object') return;
+      var miles = typeof t.miles === 'number' ? t.miles : parseFloat(t.miles);
+      var date = typeof t.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : '';
+      if (!date || !isFinite(miles) || miles <= 0 || miles > 100000) return;
+      var trip = { date: date, start: text(t.start, 120), end: text(t.end, 120), purpose: text(t.purpose, 200), miles: Math.round(miles * 100) / 100,
+        type: ['business', 'medical', 'moving', 'charity', 'personal'].indexOf(t.type) >= 0 ? t.type : 'business' };
+      if (seen[key(trip)]) return;
+      seen[key(trip)] = 1; trips.push(trip); handed++; years[date.slice(0, 4)] = 1;
+    });
+    var ys = Object.keys(years);
+    if (ys.length === 1) handedYear = ys[0];
+    if (handed) store(STORE, trips);
+    try { history.replaceState(null, '', location.pathname + location.search + '#generator'); } catch (e) {}
+  })();
   var license = load('mlm_license', '');
   var logoData = '';
   try { localStorage.removeItem('pro_email'); } catch (e) {} // old email-based unlock, no longer accepted
@@ -39,7 +69,8 @@
       list.innerHTML = '<div class="empty">No trips yet. Add one, or try the sample trips.</div>';
     } else {
       list.innerHTML = trips.map(function (t, i) {
-        return '<div class="trip-item"><div class="info"><strong>' + esc(t.date) + ': ' + esc(t.start || '?') + ' to ' + esc(t.end || '?') + '</strong>' +
+        var route = t.start ? esc(t.start) + ' to ' + esc(t.end || '?') : (t.end ? esc(t.end) : 'Destination not entered');
+        return '<div class="trip-item"><div class="info"><strong>' + esc(t.date) + ': ' + route + '</strong>' +
           '<span>' + esc(t.purpose || 'No purpose entered') + ', ' + esc(t.type) + '</span></div>' +
           '<div class="miles">' + esc(t.miles) + ' ' + unit + '</div>' +
           '<button type="button" class="btn-danger" aria-label="Remove trip" onclick="MLM.removeTrip(' + i + ')">&times;</button></div>';
@@ -50,6 +81,7 @@
     if (region === 'us') {
       rows.push(['Business', n1(s.totals.business) + ' mi, ' + money(s.amounts.business)]);
       rows.push(['Medical', n1(s.totals.medical) + ' mi, ' + money(s.amounts.medical)]);
+      if (s.totals.moving) rows.push(['Military moving', n1(s.totals.moving) + ' mi, ' + money(s.amounts.moving)]);
       rows.push(['Charity', n1(s.totals.charity) + ' mi, ' + money(s.amounts.charity)]);
       $('summary').innerHTML = '<h3>Standard mileage deduction</h3>' + rows.map(function (r) {
         return '<div class="summary-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>';
@@ -211,6 +243,17 @@
   }
 
   window.MLM = { addTrip: addTrip, removeTrip: removeTrip, loadSample: loadSample, generatePDF: generatePDF, exportFile: exportFile, setLogo: setLogo, openPro: openPro, closePro: closePro, verifyLicense: verifyLicense };
+  if (handed && gen) {
+    var ty = $('taxYear');
+    if (ty && handedYear && ty.querySelector('option[value="' + handedYear + '"]')) ty.value = handedYear;
+    var note = document.createElement('p');
+    note.className = 'handover';
+    note.setAttribute('role', 'status');
+    note.textContent = handed + (handed === 1 ? ' trip' : ' trips') + ' added from the mileage reimbursement calculator. Add a destination and business purpose to any business trip that has none, then download the PDF log.';
+    var list = $('tripList');
+    if (list && list.parentNode) list.parentNode.insertBefore(note, list);
+    gen.scrollIntoView({ block: 'start' });
+  }
   render();
   updateProUI();
 })();

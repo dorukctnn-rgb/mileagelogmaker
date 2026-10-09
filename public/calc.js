@@ -27,17 +27,17 @@
   }
 
   function summarizeUS(trips, rates, year) {
-    var types = ['business', 'medical', 'charity', 'personal'];
+    var types = ['business', 'medical', 'moving', 'charity', 'personal'];
     var totals = {}, amounts = {};
     types.forEach(function (t) { totals[t] = 0; amounts[t] = 0; });
     var periods = (rates.irs[year] || rates.irs['2026']).map(function (p) {
-      return { from: p.from, business: p.business, medical: p.medical, charity: p.charity, miles: { business: 0, medical: 0, charity: 0 } };
+      return { from: p.from, business: p.business, medical: p.medical, moving: p.moving, charity: p.charity, miles: { business: 0, medical: 0, moving: 0, charity: 0 } };
     });
     var perTrip = trips.map(function (t) {
       var type = types.indexOf(t.type) >= 0 ? t.type : 'business';
       var miles = num(t.miles);
       var p = irsPeriod(rates, year, t.date);
-      var rate = type === 'personal' ? 0 : p[type];
+      var rate = type === 'personal' ? 0 : (p[type] || 0);
       totals[type] += miles;
       amounts[type] += miles * rate;
       if (type !== 'personal') {
@@ -47,7 +47,7 @@
       }
       return { rate: rate, amount: round2(miles * rate) };
     });
-    var total = amounts.business + amounts.medical + amounts.charity;
+    var total = amounts.business + amounts.medical + amounts.moving + amounts.charity;
     return { region: 'us', unit: 'mi', currency: '$', year: year, totals: totals, amounts: amounts, periods: periods, perTrip: perTrip, total: round2(total) };
   }
 

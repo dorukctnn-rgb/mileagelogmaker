@@ -632,7 +632,8 @@ module.exports = {
         html: '<ul><li><strong>General / self-employed:</strong> one row per trip with odometer columns. The Excel version applies 72.5¢ or 76¢ by date for 2026.</li>' +
           '<li><strong>Real estate agents:</strong> adds property address and client or MLS number.</li>' +
           '<li><strong>Rideshare and delivery:</strong> one row per shift with odometer out and in, plus the app\'s mileage figure.</li>' +
-          '<li><strong>Canada:</strong> a CRA kilometre logbook with business-use %, an expense sheet and the simplified logbook formula.</li></ul>'
+          '<li><strong>Canada:</strong> a CRA kilometre logbook with business-use %, an expense sheet and the simplified logbook formula.</li></ul>' +
+          '<p>Only need the reimbursement figure for a list of trips? The <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a> prices each trip at the IRS rate for its date (or your employer\'s rate) and downloads a CSV that opens in Excel.</p>'
       }
     ],
     tipsHeading: 'Fill it in so it holds up',

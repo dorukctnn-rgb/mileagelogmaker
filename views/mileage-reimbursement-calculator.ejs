@@ -1,0 +1,205 @@
+<%
+  var S = R.SOURCES;
+  var checked = R.REIMBURSE_CHECKED_TEXT;
+  var p2026 = periods.filter(function (p) { return p.year === '2026'; });
+  var h1 = p2026[0], h2 = p2026[1];
+  var c = Reimburse.cents, m = Reimburse.money;
+  var ex1 = Reimburse.round2(6000 * h1.business), ex2 = Reimburse.round2(7000 * h2.business), exT = Reimburse.round2(ex1 + ex2);
+  var emp = Reimburse.round2(13000 * 0.65);
+  var faqs = [
+    ['How do you calculate mileage reimbursement?', 'Multiply the business miles by the rate per mile. For 2026 the IRS rate depends on the date of the trip: ' + c(h1.business) + ' a mile from January 1 to June 30 and ' + c(h2.business) + ' from July 1. So 6,000 miles before July 1 and 7,000 after come to ' + m(ex1) + ' plus ' + m(ex2) + ', or ' + m(exT) + '. If your employer pays its own rate, multiply all business miles by that rate instead.'],
+    ['What is the IRS mileage reimbursement rate for 2026?', c(h1.business) + ' per business mile for January 1 to June 30, 2026 (Notice 2026-10) and ' + c(h2.business) + ' from July 1, 2026 (Announcement 2026-11). Medical and military moving: ' + c(h1.medical) + ', then ' + c(h2.medical) + '. Charity: 14¢ all year, set by law.'],
+    ['Do I use 72.5 or 76 cents a mile for 2026?', 'Use the rate for the date you drove. Announcement 2026-11 applies 76¢ to driving on or after July 1, 2026, and to allowances paid on or after that date for those trips. Trips before July 1 keep 72.5¢, even when the reimbursement is paid later.'],
+    ['Is mileage reimbursement taxable income?', 'Usually not, when it is paid under an accountable plan: the miles are for work, you account for them, and you return anything paid in excess. IRS Publication 463 says your employer then should not include the reimbursement in box 1 of your Form W-2. A mileage allowance above the federal rate (the IRS standard mileage rate) is different: the excess is reported as wages.'],
+    ['Does my employer have to pay the IRS rate?', 'Not under the federal tax rules. IRS Publication 463 treats the standard mileage rate as the federal rate for car allowances and describes allowances below it, at it and above it: up to the federal rate stays out of box 1 of your Form W-2, and any excess is taxed as wages. State law can ask for more: in California, Labor Code section 2802 requires employers to reimburse necessary work expenses in full.'],
+    ['Is mileage reimbursement required in California?', 'California Labor Code section 2802 requires an employer to indemnify an employee for all necessary expenditures incurred in direct consequence of the job, which includes driving a personal car for work. The section sets no rate per mile and does not mention the IRS rate, so a per-mile figure (the IRS rate or another) is only a way of pricing the miles: the duty is to cover the necessary costs.'],
+    ['Do Texas employers have to reimburse mileage?', 'The Texas Workforce Commission’s employer guide says employers do not have to reimburse employees’ out-of-pocket business expenses, but unreimbursed costs must not take pay below the minimum wage. Texas state employees are reimbursed per mile under Government Code sections 660.041 and 660.042, at no more than ' + c(h1.business) + ' (January 1 to June 30, 2026) and ' + c(h2.business) + ' (July 1 to December 31, 2026), the rates the Comptroller lists.'],
+    ['Can I calculate mileage reimbursement in Excel?', 'Yes. Download the CSV from the calculator: it opens in Excel or Google Sheets with one row per trip, the rate used and the amount, plus a summary by rate period. For a running log, the free Excel mileage log template applies the 2026 rate by date with formulas.'],
+    ['What records do I need for mileage reimbursement?', 'For each business trip: the date, the destination, the business purpose and the miles. IRS Publication 463 treats a log kept at or near the time of the trip as a timely record. The free log generator builds that log as a PDF from the trips you enter here.']
+  ];
+%><!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head', { title: title, description: description, canonical: canonical }) %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebApplication', name: 'Mileage reimbursement calculator 2026', url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'Any (web browser)', isAccessibleForFree: true,
+      description: 'Prices each trip at the IRS standard mileage rate for its date (72.5 cents to June 30, 2026, 76 cents from July 1) or at an employer rate, with totals by period and a CSV download.',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, dateModified: R.REIMBURSE_CHECKED },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Mileage reimbursement calculator', item: canonical } ] },
+    { '@type': 'FAQPage', mainEntity: faqs.map(function (f) { return { '@type': 'Question', name: f[0], acceptedAnswer: { '@type': 'Answer', text: f[1] } }; }) }
+  ]
+}).replace(/</g, '\\u003c') %>
+</script>
+<style>
+.rb{max-width:1200px;margin:8px auto 0;padding:0 16px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+.rb .panel h2{margin-bottom:4px}
+.rb .sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+.seg{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:4px;margin-bottom:12px}
+.seg label{flex:1;position:relative;cursor:pointer;margin:0}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;text-align:center;padding:8px;border-radius:6px;font-size:14px;font-weight:600;color:#425466}
+.seg input:checked + span{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(10,37,64,.12),0 0 0 1px var(--line)}
+.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+.emp{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.emp input{width:110px;padding:9px 10px;border:1px solid #d5dce6;border-radius:6px;font-size:16px;font-family:inherit}
+.emp label{font-size:14px;color:#425466}
+.trips-head,.trip-row{display:grid;grid-template-columns:138px 84px 128px minmax(0,1fr) minmax(0,1fr) 34px;gap:8px;align-items:center}
+.trips-head{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.trip-row{padding:8px 0;border-bottom:1px solid #eef2f6}
+.trip-row input,.trip-row select{width:100%;min-width:0;padding:9px 8px;border:1px solid #d5dce6;border-radius:6px;font-size:15px;font-family:inherit;background:#fff;color:var(--navy);min-height:42px}
+.trip-row input:focus,.trip-row select:focus,.emp input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,91,255,.12)}
+.trip-row input[aria-invalid=true]{border-color:var(--warn)}
+.trip-row .del{background:#fff;border:1px solid #f3cfd0;color:#c4282d;border-radius:6px;height:38px;cursor:pointer;font-size:18px;line-height:1}
+.trip-row .lbl{display:none}
+.trip-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.trip-actions .hint{font-size:13px;color:var(--muted)}
+.rb-out{position:sticky;top:12px}
+.rb-eyebrow{font-size:13px;font-weight:600;color:var(--muted);margin:0}
+.rb-big{font-size:40px;font-weight:800;letter-spacing:-.5px;line-height:1.1;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.rb-sub{font-size:14px;color:#425466;margin:0 0 12px}
+.rb-lines{border-top:1px solid var(--line)}
+.rb-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eef2f6;font-size:14.5px}
+.rb-line strong{display:block;font-weight:600}
+.rb-line span{display:block;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rb-line b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rb-total{font-size:16px;border-bottom:0}
+.rb-compare{font-size:14px;background:var(--bg);border-radius:8px;padding:10px 12px;margin:10px 0 0;color:var(--ink)}
+.rb-problems{margin:10px 0 0 18px;font-size:13.5px;color:var(--warn)}
+.rb-cta{display:block;width:100%;margin-top:16px;font-size:15.5px;padding:13px 16px}
+.rb-cta[aria-disabled=true]{background:#a8a3ff;pointer-events:none}
+.cta-note{font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.5}
+.rb-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.rate-line{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5}
+.content .formula{background:var(--navy);color:#e6ecf5;border-radius:8px;padding:12px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.8;margin:10px 0 16px;overflow-x:auto}
+@media(max-width:1000px){.rb{grid-template-columns:1fr}.rb-out{position:static}}
+@media(max-width:760px){
+  .trips-head{display:none}
+  .trip-row{grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px 0}
+  .trip-row .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+  .trip-row .f-dest,.trip-row .f-purpose{grid-column:1 / -1}
+  .trip-row .del{grid-column:2;justify-self:end;width:auto;padding:0 12px;font-size:13px}
+  .trip-row .del span{display:inline}
+  .rb-big{font-size:34px}
+}
+@media(min-width:761px){.trip-row .del span{display:none}}
+</style>
+</head>
+<body>
+
+<%- include('partials/nav', { hidePro: true }) %>
+
+<section class="hero">
+  <span class="badge">IRS 2026: <%= c(h1.business) %> a mile to June 30, <%= c(h2.business) %> from July 1</span>
+  <h1>Mileage reimbursement calculator 2026</h1>
+  <p class="lead">Mileage reimbursement is your business miles times the rate per mile. For 2026 the IRS rate is <%= c(h1.business) %> a mile for driving from January 1 to June 30 and <%= c(h2.business) %> from July 1, so this calculator prices each trip by its date. If your employer pays its own rate, enter that instead.</p>
+</section>
+
+<section class="rb" id="calculator" aria-label="Mileage reimbursement calculator">
+  <form class="panel" id="rbForm" novalidate>
+    <h2>Your trips</h2>
+    <p class="sub">The three trips below are an example that crosses July 1. Replace them with yours; the total updates as you type and stays in this browser.</p>
+    <div class="seg" role="radiogroup" aria-label="Rate per mile">
+      <label><input type="radio" name="rateMode" value="irs" checked><span>IRS standard rates</span></label>
+      <label><input type="radio" name="rateMode" value="employer"><span>My employer's rate</span></label>
+    </div>
+    <div class="emp" id="empWrap" hidden>
+      <input type="number" id="empCents" min="0" max="500" step="0.1" inputmode="decimal" placeholder="65" aria-describedby="empHelp">
+      <label for="empCents" id="empHelp">cents per business mile (medical, moving and charity trips keep the IRS rate)</label>
+    </div>
+    <div class="trips-head" aria-hidden="true"><span>Date</span><span>Miles</span><span>Type</span><span>Destination</span><span>Business purpose</span><span></span></div>
+    <div id="tripRows">
+      <% exampleTrips.forEach(function (t, i) { %>
+      <div class="trip-row" data-i="<%= i %>">
+        <div><span class="lbl">Date</span><input type="date" name="date" aria-label="Date" value="<%= t.date %>"></div>
+        <div><span class="lbl">Miles</span><input type="number" name="miles" aria-label="Miles" min="0" step="0.1" inputmode="decimal" value="<%= t.miles %>"></div>
+        <div><span class="lbl">Type</span><select name="type" aria-label="Type"><% Reimburse.TYPES.forEach(function (k) { %><option value="<%= k %>"<%= k === t.type ? ' selected' : '' %>><%= Reimburse.LABELS[k] %></option><% }) %></select></div>
+        <div class="f-dest"><span class="lbl">Destination (optional)</span><input type="text" name="dest" aria-label="Destination" maxlength="120" value="<%= t.dest %>"></div>
+        <div class="f-purpose"><span class="lbl">Business purpose (optional)</span><input type="text" name="purpose" aria-label="Business purpose" maxlength="200" value="<%= t.purpose %>"></div>
+        <button type="button" class="del" aria-label="Remove trip">&times;<span> Remove</span></button>
+      </div>
+      <% }) %>
+    </div>
+    <div class="trip-actions">
+      <button type="button" class="btn btn-ghost" id="addTrip">Add a trip</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="clearTrips">Start a blank list</button>
+      <span class="hint">Up to <%= Reimburse.MAX_TRIPS %> trips. A total for a whole month works too: one row, dated in that month.</span>
+    </div>
+  </form>
+
+  <div class="panel rb-out">
+    <div id="rbResult" aria-live="polite"><%- Reimburse.resultHTML(example) %></div>
+    <a class="btn rb-cta" id="rbCta" href="/<%= Reimburse.prefillHash(example) %>">Keep the IRS-ready log for these miles</a>
+    <p class="cta-note">Opens the free mileage log generator with these trips filled in. Add a destination and business purpose to each business trip there, then download the PDF log.</p>
+    <div class="rb-tools"><button type="button" class="btn btn-ghost btn-sm" id="rbCsv">Download CSV for Excel</button></div>
+    <p class="rate-line">IRS rates by trip date: <%= c(h1.business) %> (Jan 1 to Jun 30, 2026, Notice 2026-10) and <%= c(h2.business) %> (from Jul 1, Announcement 2026-11). Checked <%= checked %> on irs.gov.</p>
+  </div>
+</section>
+
+<article class="content">
+  <h2>How mileage reimbursement is calculated</h2>
+  <div class="answer"><p>Reimbursement = business miles × rate per mile. When the rate changes during the year, total the miles on each side of the change date and price each part at its own rate. In 2026 the change date is July 1.</p></div>
+  <div class="formula">6,000 mi × $<%= h1.business %> (Jan 1 to Jun 30) = <%= m(ex1) %><br>7,000 mi × $<%= h2.business %> (from Jul 1) = <%= m(ex2) %><br>Total for 13,000 business miles = <%= m(exT) %></div>
+  <p>At an employer rate of 65¢ for every mile, the same 13,000 miles pay <%= m(emp) %>, which is <%= m(Reimburse.round2(exT - emp)) %> less than the IRS figure. The calculator shows that comparison when you choose your employer's rate.</p>
+
+  <h2 id="rates">IRS standard mileage rates, 2024 to 2026</h2>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Period</th><th class="num">Business</th><th class="num">Medical or military moving</th><th class="num">Charity</th></tr></thead>
+    <tbody>
+      <% periods.slice().reverse().forEach(function (p) { %><tr><td><%= p.label %></td><td class="num"><%= c(p.business) %></td><td class="num"><%= c(p.medical) %></td><td class="num"><%= c(p.charity) %></td></tr>
+      <% }) %>
+    </tbody>
+    <caption>Cents per mile. The moving rate is only for active-duty members of the Armed Forces moving under orders and, from 2026, certain members of the intelligence community. Sources: IRS standard mileage rates table; Notice 2026-10 (news release IR-2025-128, December 29, 2025); Announcement 2026-11 in Internal Revenue Bulletin 2026-29 (July 13, 2026). Checked <%= checked %>.</caption>
+  </table></div>
+  <p>Older years are on the <a href="/irs-mileage-rate-history">IRS mileage rate history</a> page, and the July change is explained in <a href="/mileage-log-2026-irs-rate">2026 IRS mileage rate: 72.5¢, then 76¢</a>.</p>
+
+  <h2 id="employer">Employer rate or IRS rate</h2>
+  <p>An employer can pay its own rate per mile; IRS Publication 463 describes allowances below, at and above the IRS rate. The IRS rate matters for tax, because Publication 463 uses the standard mileage rate as the federal rate for car allowances. Under an accountable plan (business miles, accounted for, any excess returned) the reimbursement stays out of box 1 of your Form W-2. If the allowance is higher than the federal rate, the part above it is reported as wages.</p>
+
+  <h2 id="states">State rules: California and Texas</h2>
+  <h3>California</h3>
+  <p>Labor Code section 2802(a) says an employer "shall indemnify his or her employee for all necessary expenditures or losses incurred by the employee in direct consequence of the discharge of his or her duties". Driving your own car for work is such a cost. The section sets no rate per mile and does not mention the IRS rate, so a per-mile figure (the IRS rate or another) is only a way of pricing the miles: the duty is to cover the necessary costs. Section 2802(b) adds interest to awards for unpaid reimbursement.</p>
+  <h3>Texas</h3>
+  <p>The Texas Workforce Commission's guidebook for employers says "Employers do not have to reimburse an employee's out-of-pocket business-related expenses", and warns employers not to make employees pay business costs that take their pay below the minimum wage. Texas state employees are a separate case: Government Code sections 660.041 and 660.042 entitle them to mileage at up to the maximum rate, which the Comptroller lists as <%= c(h1.business) %> for January 1 to June 30, 2026 and <%= c(h2.business) %> for July 1 to December 31, 2026. An agency may set a lower rate if it tells employees in writing first.</p>
+  <p class="source-note">Other states are not covered here. Check your state labor department before relying on a state rule.</p>
+
+  <h2 id="excel">Mileage reimbursement in Excel</h2>
+  <p>The <strong>Download CSV for Excel</strong> button saves your trips with the rate and amount for each one and a summary by rate period; Excel and Google Sheets open it directly. To keep a log all year, use the free <a href="/free-mileage-log-template">Excel mileage log template</a>, which applies 72.5¢ or 76¢ to each 2026 row by date.</p>
+
+  <div class="sources">
+    <h2>Sources</h2>
+    <ul>
+      <% ['irsRates', 'irsNews2026', 'irsNotice', 'irsMidyear', 'pub463ch6', 'caLabor2802', 'txTwc', 'txCpaMileage', 'txCpaRates'].forEach(function (k) { var s = S[k]; %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% }) %>
+    </ul>
+    <p class="checked">IRS rates and rules, California Labor Code 2802 and the Texas Comptroller pages last checked <%= checked %>. The Texas Workforce Commission site does not open outside the United States; its text was read from the Internet Archive copy of May 25, 2025.</p>
+  </div>
+</article>
+
+<section class="faq-section">
+  <h2>Frequently asked questions</h2>
+  <% faqs.forEach(function (f) { %><details class="faq-item"><summary><%= f[0] %></summary><div class="faq-a"><p><%= f[1] %></p></div></details>
+  <% }) %>
+</section>
+
+<section class="related">
+  <h2>Related guides</h2>
+  <div class="related-grid">
+    <a href="/mileage-log-2026-irs-rate" class="related-card"><strong>2026 IRS mileage rate</strong><span>72.5¢, then 76¢ from July 1</span></a>
+    <a href="/irs-mileage-rate-history" class="related-card"><strong>IRS mileage rate history</strong><span>Every rate from 2011 to 2026</span></a>
+    <a href="/irs-mileage-log-requirements" class="related-card"><strong>IRS mileage log requirements</strong><span>What each trip record needs</span></a>
+    <a href="/free-mileage-log-template" class="related-card"><strong>Free mileage log template</strong><span>Excel and printable PDF</span></a>
+    <a href="/mileage-log-self-employed" class="related-card"><strong>Self-employed mileage log</strong><span>Schedule C and home office trips</span></a>
+    <a href="/" class="related-card"><strong>Mileage log generator</strong><span>PDF log with rates by date</span></a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/reimburse.js?v=1" defer></script>
+<script src="/reimburse-page.js?v=1" defer></script>
+</body>
+</html>

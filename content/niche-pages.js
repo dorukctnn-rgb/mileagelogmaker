@@ -30,7 +30,7 @@ const NICHE_PAGES = {
         p: [
           'Total your business miles for January 1 to June 30 and multiply by $0.725. Total your business miles from July 1 onward and multiply by $0.76. Add the two results. Example: 6,000 miles before July 1 = $4,350, plus 7,000 miles after = $5,320, for a total deduction of <strong>$9,670</strong>.',
           'Medical miles work the same way at 20.5¢ and 23.5¢. Charity miles are 14¢ for the whole year.',
-          'Employers reimbursing at the IRS rate typically switch to 76¢ for travel on or after July 1. Reimbursements up to the IRS rate are generally tax-free under an accountable plan.'
+          'For employer reimbursements at the IRS rate, Announcement 2026-11 applies 76¢ to travel on or after July 1, 2026; earlier trips keep 72.5¢ even when they are paid later. The <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a> splits a list of trips at that date and also takes an employer\'s own rate. Reimbursements up to the IRS rate are generally tax-free under an accountable plan.'
         ]
       }
     ],
@@ -72,7 +72,8 @@ const NICHE_PAGES = {
         id: 'table',
         html: '<div class="table-wrap"><table class="data"><thead><tr><th>Period</th><th class="num">Business</th><th class="num">Medical or moving</th><th class="num">Charity</th></tr></thead><tbody>' +
           RATES.IRS_HISTORY.map(r => '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td><td class="num">' + r[3] + '</td></tr>').join('') +
-          '</tbody></table></div><p>Moving rates apply only to active-duty members of the Armed Forces moving under orders and, from 2026, certain members of the intelligence community. The charity rate is fixed by law at 14 cents.</p>'
+          '</tbody></table></div><p>Moving rates apply only to active-duty members of the Armed Forces moving under orders and, from 2026, certain members of the intelligence community. The charity rate is fixed by law at 14 cents.</p>' +
+          '<p>To price trips from 2024 to 2026 at the rate for each trip date, use the <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a>.</p>'
       }
     ],
     tips: [
