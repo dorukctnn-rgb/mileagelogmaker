@@ -92,8 +92,10 @@
   <div class="sources">
     <h2>Sources</h2>
     <ul>
+      <% (page.extraSources || []).forEach(function (s) { %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% }); %>
       <% srcKeys.forEach(function (k) { var s = R.SOURCES[k]; if (s) { %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% } }); %>
     </ul>
+    <% if (page.checkedNote) { %><p class="checked"><%= page.checkedNote %></p><% } %>
     <p class="checked">Rates and rules on this page last checked against these sources on <%= R.LAST_CHECKED_TEXT %>.</p>
   </div>
 </article>
