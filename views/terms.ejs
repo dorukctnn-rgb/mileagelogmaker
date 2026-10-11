@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head', { title: 'Terms of Use | MileageLogMaker', description: 'Terms for MileageLogMaker: what the free mileage log generator does, checking your log, the $9 one-time Pro license sold through Gumroad, refunds and liability.', canonical: SITE + '/terms' }) %>
+</head>
+<body>
+<%- include('partials/nav') %>
+<section class="hero">
+  <h1>Terms of use</h1>
+  <p class="lead">These terms cover your use of MileageLogMaker and the Pro license. By using the site, you agree to them.</p>
+  <p class="lead">Last updated: 11 October 2026</p>
+</section>
+<article class="content">
+  <h2>Who we are</h2>
+  <p>MileageLogMaker (www.mileagelogmaker.com) is run by Peak Apps Studio. You can reach us at <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>.</p>
+
+  <h2>What the site does</h2>
+  <p>MileageLogMaker lets you record trips, see the mileage deduction or allowance at the published IRS, CRA or HMRC rates, and download the log as a PDF, free and without an account. The site also has a mileage reimbursement calculator, log templates and guides. It is an independent tool and is not affiliated with the IRS, the CRA or HMRC.</p>
+
+  <h2>Check your log</h2>
+  <p>You are responsible for your mileage records and for what you claim. A log is only as accurate as the trips you enter, so record trips at or near the time you make them and check the dates, distances, purposes and totals before you rely on a log. Rates and rules on the site are checked against the official sources cited on each page, but they can change. The calculators, templates and guides are general information. They are not tax, legal or accounting advice, so ask a tax professional if you are unsure what you can claim.</p>
+
+  <h2>Pro</h2>
+  <ul>
+    <li>Pro costs $9 (US dollars), paid once. It is not a subscription.</li>
+    <li>Pro removes the "Free version" watermark from your PDF logs, lets you export your trips to Excel and CSV, and adds your business logo to the PDF, for IRS, CRA and HMRC logs.</li>
+    <li>After you buy, Gumroad emails you a license key. Enter it in the Get Pro window to turn Pro on in that browser; you can enter the same key on your other devices. Please keep the key to yourself and your business, and do not post it publicly.</li>
+    <li>Payments are processed by Gumroad, which acts as the merchant of record for the sale and collects any sales tax or VAT. Gumroad's own terms also apply to your purchase.</li>
+  </ul>
+
+  <h2>Refunds</h2>
+  <p>If Pro does not work for you, email us within 14 days of purchase and we will refund you. Refunds are paid back through Gumroad, and the license key stops working once a purchase is refunded.</p>
+
+  <h2>Acceptable use</h2>
+  <p>Please do not:</p>
+  <ul>
+    <li>use the site to create mileage records for trips that did not happen, or any other false record;</li>
+    <li>try to get around the Pro license check, or share license keys publicly;</li>
+    <li>attack, overload or probe the site, or send it large numbers of automated requests;</li>
+    <li>use the site for anything that breaks the law.</li>
+  </ul>
+  <p>We may block access for anyone who does.</p>
+
+  <h2>Keep a copy of your log</h2>
+  <p>Your trips are saved only in your browser. Clearing your browser data, switching browsers or losing your device can delete them, and we cannot recover them. Download your log regularly and keep a copy.</p>
+
+  <h2>No warranty</h2>
+  <p>We work to keep the site accurate and running, but it is provided as it is and as available, without warranties of any kind. We do not promise that it will be free of errors, always available or suitable for your particular purpose.</p>
+
+  <h2>Limitation of liability</h2>
+  <p>As far as the law allows, we are not liable for indirect or consequential losses, such as lost profit, lost data, a refused deduction or a tax penalty, that come from using the site. Our total liability to you is limited to the amount you paid for Pro. Nothing in these terms limits any liability that cannot be limited by law, or takes away your rights as a consumer.</p>
+
+  <h2>Changes to these terms</h2>
+  <p>We may update these terms when the site or Pro changes. The date at the top shows the current version. If you keep using the site after a change, the updated terms apply.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about these terms: <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>. How we handle your data is explained in our <a href="/privacy">privacy policy</a>.</p>
+</article>
+<%- include('partials/footer') %>
+<%- include('partials/pro-modal') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/calc.js?v=3"></script>
+<script src="/app.js?v=4"></script>
+</body>
+</html>
