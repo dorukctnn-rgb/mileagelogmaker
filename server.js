@@ -14,6 +14,7 @@ const { buildCsv, buildXlsx } = require('./lib/export.js');
 const SITE = 'https://www.mileagelogmaker.com';
 const SITE_UPDATED = '2026-10-07';
 const LEGAL_UPDATED = '2026-10-11';
+const PRIVACY_UPDATED = '2026-10-15'; // the buy link note on the privacy page
 const GUMROAD_URL = 'https://dorukctn.gumroad.com/l/agbyxg';
 const INDEXNOW_KEY = 'aa6a5d532ea7f04d9077914e370757fd';
 
@@ -214,7 +215,7 @@ app.get('/:slug', (req, res, next) => {
 
 // ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', R.REIMBURSE_CHECKED], ['/blog', SITE_UPDATED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
+  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', R.REIMBURSE_CHECKED], ['/blog', SITE_UPDATED], ['/privacy', PRIVACY_UPDATED], ['/terms', LEGAL_UPDATED]]
     .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
     .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
   const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');
