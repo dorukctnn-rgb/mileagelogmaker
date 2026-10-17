@@ -1,0 +1,273 @@
+<%
+  var c = Reimburse.cents, m = Reimburse.money;
+  var p2026 = periods.filter(function (p) { return p.year === '2026'; });
+  var h1 = p2026[0], h2 = p2026[1];
+  var rateRows = periods.filter(function (p) { return p.year >= '2025'; }).reverse();
+  var SRC = {
+    rates: { label: 'IRS: Standard mileage rates, all years (page updated July 28, 2026)', url: 'https://www.irs.gov/tax-professionals/standard-mileage-rates' },
+    ir2025: { label: 'IRS news release IR-2025-128, December 29, 2025 (rates from January 1, 2026)', url: 'https://www.irs.gov/newsroom/irs-sets-2026-business-standard-mileage-rate-at-725-cents-per-mile-up-25-cents' },
+    ann: { label: 'IRS Announcement 2026-11, Internal Revenue Bulletin 2026-29, July 13, 2026 (rates from July 1, 2026)', url: 'https://www.irs.gov/irb/2026-29_irb' },
+    p463: { label: 'IRS Publication 463 (2025), chapters 5 and 6: records, accountable plans, allowances and Form 2106', url: 'https://www.irs.gov/publications/p463' },
+    p502: { label: 'IRS Publication 502 (2025): medical transportation and car expenses', url: 'https://www.irs.gov/publications/p502' },
+    p969: { label: 'IRS Publication 969 (2025): HSA and health FSA qualified medical expenses', url: 'https://www.irs.gov/publications/p969' },
+    ir2024: { label: 'IR-2024-312, December 19, 2024 (2025 rates)', url: 'https://www.irs.gov/newsroom/irs-increases-the-standard-mileage-rate-for-business-use-in-2025-key-rate-increases-3-cents-to-70-cents-per-mile' },
+    ir2023: { label: 'IR-2023-239, December 14, 2023 (2024 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2024-mileage-rate-increases-to-67-cents-a-mile-up-1-point-5-cents-from-2023' },
+    ir2022: { label: 'IR-2022-234, December 29, 2022 (2023 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2023-business-use-increases-3-cents-per-mile' },
+    ir2021: { label: 'IR-2021-251, December 17, 2021 (2022 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2022' }
+  };
+  var faqs = [
+    ['What should a mileage reimbursement form include?', 'For each trip: the date, the destination, the business purpose and the miles. IRS Publication 463 lists those as the details that prove car use. Add your name, the period the claim covers, the rate per mile, the total, your signature and the approver\'s signature.'],
+    ['What mileage rate goes on a 2026 reimbursement form?', 'The IRS rate for the date of each trip: ' + c(h1.business) + ' a business mile from January 1 to June 30, 2026 and ' + c(h2.business) + ' from July 1. Medical and military moving miles are ' + c(h1.medical) + ', then ' + c(h2.medical) + '. Charity miles are 14¢ all year. Your employer can pay its own rate instead.'],
+    ['My June trips are paid in August. Which rate applies?', c(h1.business) + ' a mile. Announcement 2026-11 keeps the earlier rates for allowances paid for driving before July 1, 2026, even when the payment comes later. The ' + c(h2.business) + ' rate is for driving on or after July 1, paid on or after July 1.'],
+    ['How soon should I hand in my mileage form?', 'Your employer\'s policy sets the deadline. For the tax rules, IRS Publication 463 treats accounting for an expense within 60 days after it was paid or incurred as a reasonable period, and returning any excess within 120 days.'],
+    ['Is mileage reimbursement taxable?', 'Not when it is paid under an accountable plan at or below the federal rate (the IRS standard mileage rate): it stays out of box 1 of your Form W-2. If the allowance is above the federal rate, the excess goes in box 1 and is taxed as wages.'],
+    ['Does the IRS have an official mileage reimbursement form?', 'No. Employers use their own form. The sample mileage log in IRS Publication 463 (Table 5-2) is marked as not an official Internal Revenue form. A form like this one, with the trips, the rate, the total and the signatures, is what an employer needs to check the claim.'],
+    ['Can I use this form for medical mileage?', 'Yes. Choose Medical as the trip type and the form uses the IRS medical rate for the date: ' + c(h1.medical) + ' to June 30, 2026 and ' + c(h2.medical) + ' from July 1. HSA and health FSA plans set their own claim paperwork, so attach what your plan asks for.']
+  ];
+%><!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head', { title: title, description: description, canonical: canonical }) %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebApplication', name: 'Mileage reimbursement form 2026', url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'Any (web browser)', isAccessibleForFree: true,
+      description: 'Fills in a printable mileage reimbursement form from your trips, with each trip priced at the IRS standard mileage rate for its date (72.5 cents to June 30, 2026, 76 cents from July 1) or at an employer rate, and signature lines for the claimant and the approver.',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, dateModified: checkedIso },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Mileage reimbursement form', item: canonical } ] },
+    { '@type': 'FAQPage', mainEntity: faqs.map(function (f) { return { '@type': 'Question', name: f[0], acceptedAnswer: { '@type': 'Answer', text: f[1] } }; }) }
+  ]
+}).replace(/</g, '\\u003c') %>
+</script>
+<style>
+.hero h1{text-wrap:balance}
+.rf{max-width:1240px;margin:8px auto 0;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px);gap:20px;align-items:start}
+.rf .panel h2{margin-bottom:4px}
+.rf .sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+.rf .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rf .field small{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.rf .field input{min-height:42px}
+.seg{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:4px;margin:6px 0 12px}
+.seg label{flex:1;position:relative;cursor:pointer;margin:0}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;text-align:center;padding:8px;border-radius:6px;font-size:14px;font-weight:600;color:#425466}
+.seg input:checked + span{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(10,37,64,.12),0 0 0 1px var(--line)}
+.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+.emp{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.emp[hidden]{display:none}
+.emp input{width:110px;padding:9px 10px;border:1px solid #d5dce6;border-radius:6px;font-size:16px;font-family:inherit}
+.emp label{font-size:14px;color:#425466}
+.trip-row{display:grid;grid-template-columns:150px 92px minmax(0,1fr) 40px;gap:8px 10px;align-items:end;padding:12px 0;border-bottom:1px solid #eef2f6}
+.trip-row .f-dest{grid-column:1 / 3}
+.trip-row .f-purpose{grid-column:3 / 5}
+.trip-row .del{grid-row:1;grid-column:4}
+.trip-row input,.trip-row select{width:100%;min-width:0;padding:9px 8px;border:1px solid #d5dce6;border-radius:6px;font-size:15px;font-family:inherit;background:#fff;color:var(--navy);min-height:42px}
+.trip-row input:focus,.trip-row select:focus,.emp input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,91,255,.12)}
+.trip-row input[aria-invalid=true]{border-color:var(--warn)}
+.trip-row .del{background:#fff;border:1px solid #f3cfd0;color:#c4282d;border-radius:6px;height:42px;cursor:pointer;font-size:18px;line-height:1}
+.trip-row .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+.trip-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.trip-actions .hint{font-size:13px;color:var(--muted)}
+.rf-problems{margin:10px 0 0 18px;font-size:13.5px;color:var(--warn)}
+.rf-problems[hidden]{display:none}
+.rf-out{position:sticky;top:12px}
+.rf-sheet{background:#fff;border:1px solid #cfd8e3;border-radius:6px;padding:22px;font-size:13px;color:#1d3048;box-shadow:0 1px 0 #e3e8ef,0 8px 24px rgba(10,37,64,.06)}
+.rf-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:2px solid var(--navy);padding-bottom:12px;margin-bottom:12px}
+.rf-title{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.2px;margin:0}
+.rf-period{font-size:13px;color:#425466;margin:3px 0 0}
+.rf-claim{text-align:right;white-space:nowrap}
+.rf-claim span{display:block;font-size:11.5px;color:var(--muted)}
+.rf-claim strong{font-size:22px;font-variant-numeric:tabular-nums;color:var(--navy)}
+.rf-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin:0 0 12px}
+.rf-meta dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.rf-meta dd{margin:2px 0 0;font-weight:600;min-height:18px;overflow-wrap:anywhere}
+.rf-blank{display:block;border-bottom:1px solid #aab6c5;height:16px}
+.rf-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 10px}
+.rf-sheet table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rf-sheet th{text-align:left;font-size:11px;font-weight:700;color:#425466;border-bottom:1px solid #cfd8e3;padding:6px 6px 5px;white-space:nowrap}
+.rf-sheet td{padding:6px;border-bottom:1px solid #eef2f6;vertical-align:top;overflow-wrap:anywhere}
+.rf-sheet td.rf-date,.rf-sheet td.rf-type{white-space:nowrap;overflow-wrap:normal}
+.rf-sheet .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rf-sheet tfoot td{font-weight:700;border-top:1px solid #cfd8e3;border-bottom:0}
+.rf-sheet caption{caption-side:top;text-align:left;font-size:11px;font-weight:700;color:#425466;padding:4px 0}
+.rf-trips{min-width:480px}
+.rf-none{color:var(--muted);text-align:center;padding:14px 6px}
+.rf-basis,.rf-cert{font-size:12.5px;margin:8px 0;color:#1d3048}
+.rf-sign{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:18px 16px;margin-top:22px}
+.rf-line{display:block;border-bottom:1px solid #1d3048;height:26px}
+.rf-cap{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.rf-foot{font-size:10.5px;color:#7a8aa0;margin:16px 0 0}
+.rf-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.rf-tools .btn{font-size:15px}
+.rf-tools a[aria-disabled=true]{opacity:.5;pointer-events:none}
+.rf-note{font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.5}
+.rf > *{min-width:0}
+@media(max-width:1100px){.rf{grid-template-columns:minmax(0,1fr)}.rf-out{position:static}}
+@media(max-width:760px){
+  .trip-row{grid-template-columns:1fr 1fr}
+  .trip-row > div:nth-child(3){grid-row:2;grid-column:1}
+  .trip-row .f-dest,.trip-row .f-purpose{grid-column:1 / -1}
+  .trip-row .del{grid-row:2;grid-column:2;align-self:end;justify-self:end;width:auto;padding:0 12px;font-size:13px}
+  .rf .grid2{grid-template-columns:1fr}
+  .rf-sheet{padding:16px}
+  .rf-meta{grid-template-columns:1fr}
+}
+@media(min-width:761px){.trip-row .del span{display:none}}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff}
+  body *{visibility:hidden}
+  #rfSheet,#rfSheet *{visibility:visible}
+  #rfSheet{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none;padding:0;font-size:11.5pt}
+  .rf-wrap{overflow:visible}
+  .rf-trips{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<%- include('partials/nav', { hidePro: true }) %>
+
+<section class="hero">
+  <span class="badge">IRS 2026: <%= c(h1.business) %> a mile to June 30, <%= c(h2.business) %> from July 1</span>
+  <h1>Mileage reimbursement form 2026</h1>
+  <p class="lead">Enter your trips and the form fills itself in: every business trip is priced at the IRS rate for its date, or at your employer's rate if you pick that. Print it or save it as a PDF, sign it and hand it in. Nothing you type leaves this browser.</p>
+</section>
+
+<section class="rf" id="form" aria-label="Mileage reimbursement form">
+  <form class="panel" id="rfForm" novalidate>
+    <h2>Claim details</h2>
+    <p class="sub">Leave a box empty and the form prints a blank line there to fill in by hand.</p>
+    <div class="grid2">
+      <div class="field"><label for="rf_name">Employee or claimant</label><input type="text" id="rf_name" maxlength="80" autocomplete="name"></div>
+      <div class="field"><label for="rf_staffId">Employee ID or department</label><input type="text" id="rf_staffId" maxlength="60"></div>
+      <div class="field"><label for="rf_org">Employer or organization</label><input type="text" id="rf_org" maxlength="100" autocomplete="organization"></div>
+      <div class="field"><label for="rf_approver">Approver</label><input type="text" id="rf_approver" maxlength="80"></div>
+      <div class="field"><label for="rf_periodFrom">Claim period from</label><input type="date" id="rf_periodFrom"></div>
+      <div class="field"><label for="rf_periodTo">Claim period to</label><input type="date" id="rf_periodTo"><small>Empty dates use the first and last trip.</small></div>
+    </div>
+    <div class="field"><label for="rf_vehicle">Vehicle</label><input type="text" id="rf_vehicle" maxlength="80" placeholder="Make, model and plate"></div>
+
+    <h2 style="margin-top:18px">Trips</h2>
+    <p class="sub">The three trips below are an example that crosses July 1. Replace them with yours.</p>
+    <div class="seg" role="radiogroup" aria-label="Rate per mile">
+      <label><input type="radio" name="rateMode" value="irs" checked><span>IRS standard rates</span></label>
+      <label><input type="radio" name="rateMode" value="employer"><span>My employer's rate</span></label>
+    </div>
+    <div class="emp" id="empWrap" hidden>
+      <input type="number" id="empCents" min="0" max="500" step="0.1" inputmode="decimal" placeholder="65" aria-describedby="empHelp">
+      <label for="empCents" id="empHelp">cents per business mile (medical, moving and charity trips keep the IRS rate)</label>
+    </div>
+    <div id="tripRows">
+      <% exampleTrips.forEach(function (t, i) { %>
+      <div class="trip-row" data-i="<%= i %>">
+        <div><span class="lbl">Date</span><input type="date" name="date" aria-label="Date" value="<%= t.date %>"></div>
+        <div><span class="lbl">Miles</span><input type="number" name="miles" aria-label="Miles" min="0" step="0.1" inputmode="decimal" value="<%= t.miles %>"></div>
+        <div><span class="lbl">Type</span><select name="type" aria-label="Type"><% Reimburse.TYPES.forEach(function (k) { %><option value="<%= k %>"<%= k === t.type ? ' selected' : '' %>><%= Reimburse.LABELS[k] %></option><% }) %></select></div>
+        <div class="f-dest"><span class="lbl">Destination</span><input type="text" name="dest" aria-label="Destination" maxlength="120" value="<%= t.dest %>"></div>
+        <div class="f-purpose"><span class="lbl">Business purpose</span><input type="text" name="purpose" aria-label="Business purpose" maxlength="200" value="<%= t.purpose %>"></div>
+        <button type="button" class="del" aria-label="Remove trip">&times;<span> Remove</span></button>
+      </div>
+      <% }) %>
+    </div>
+    <div class="trip-actions">
+      <button type="button" class="btn btn-ghost" id="addTrip">Add a trip</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="clearTrips">Start a blank list</button>
+      <span class="hint">Up to <%= Reimburse.MAX_TRIPS %> trips. A round trip can be one row.</span>
+    </div>
+    <ul class="rf-problems" id="rfProblems" hidden></ul>
+  </form>
+
+  <div class="rf-out">
+    <div class="rf-sheet" id="rfSheet" data-footer="<%= footer %>" data-rate-note="<%= rateNote %>"><%- sheet %></div>
+    <div class="rf-tools">
+      <button type="button" class="btn" id="rfPrint">Print or save as PDF</button>
+      <button type="button" class="btn btn-ghost" id="rfCsv">Download CSV for Excel</button>
+      <a class="btn btn-ghost" id="rfLog" href="/<%= Reimburse.prefillHash(example) %>">Keep these trips in the IRS log</a>
+    </div>
+    <p class="rf-note">To get a PDF, choose Save as PDF in the print dialog. The CSV has one row per trip and a summary by rate period.</p>
+  </div>
+</section>
+
+<article class="content">
+  <h2 id="what">What goes on a mileage reimbursement form</h2>
+  <div class="answer"><p>For each trip: the date, the destination, the business purpose and the miles. Those are the details IRS Publication 463 uses to prove car use (Table 5-1 asks for the mileage of each business use, the date, the business destination and the business purpose). Then the claim itself: who is claiming, for which period, at what rate per mile, the total, and two signatures.</p></div>
+  <ul>
+    <li><strong>One row per trip,</strong> or one row for a round trip or an uninterrupted run of business stops. Publication 463 lets you record a round trip with a single entry.</li>
+    <li><strong>The rate for each row.</strong> In 2026 the IRS business rate depends on the date, so a form that covers June and July has two rates on it.</li>
+    <li><strong>A total by rate period,</strong> so the person approving it can check the arithmetic in one line per rate.</li>
+    <li><strong>A statement that the trips are accurate</strong> and that no one else paid for them, signed and dated by you and by the approver.</li>
+  </ul>
+  <p>The IRS has no official reimbursement form. The sample daily mileage log in Publication 463 (Table 5-2) is labeled "This is not an official Internal Revenue form", so employers use their own layout or one like the form above.</p>
+
+  <h2 id="rates">Which rate goes on the form in 2026</h2>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Trips driven</th><th class="num">Business</th><th class="num">Medical or military moving</th><th class="num">Charity</th></tr></thead>
+    <tbody>
+      <% rateRows.forEach(function (p) { %><tr><td><%= p.label %></td><td class="num"><%= c(p.business) %></td><td class="num"><%= c(p.medical) %></td><td class="num"><%= c(p.charity) %></td></tr>
+      <% }) %>
+    </tbody>
+    <caption>Cents per mile. Sources: IRS standard mileage rates table; IR-2025-128 (December 29, 2025); Announcement 2026-11 in Internal Revenue Bulletin 2026-29 (July 13, 2026). Checked <%= checkedText %>.</caption>
+  </table></div>
+  <p>Use the rate for the date you drove. Announcement 2026-11 applies <%= c(h2.business) %> to mileage allowances paid on or after July 1, 2026 for driving on or after July 1, 2026. Allowances for driving before July 1 stay at the earlier rates even when they are paid later, so June trips on a form paid in August are still <%= c(h1.business) %> a mile.</p>
+  <p>Your employer can pay its own rate instead; choose <em>My employer's rate</em> above. Publication 463 treats the standard mileage rate as the federal rate for car allowances. If the allowance is at or below it and you account for the trips, it stays out of box 1 of your Form W-2. If it is above the federal rate, the part up to the federal rate goes in box 12 under code L and the excess is added to box 1 as wages.</p>
+
+  <h2 id="deadline">Hand it in within 60 days</h2>
+  <p>A reimbursement stays out of your wages when your employer pays it under an accountable plan: the trips are for work, you account for them within a reasonable period, and you give back anything paid in excess. Publication 463 treats these as a reasonable period whatever the circumstances:</p>
+  <ul>
+    <li>an advance paid within 30 days of the expense;</li>
+    <li>the expense accounted for within 60 days after it was paid or incurred;</li>
+    <li>any excess returned within 120 days after the expense was paid or incurred;</li>
+    <li>a periodic statement, at least quarterly, that you answer within 120 days.</li>
+  </ul>
+  <p>Payments that miss these rules are treated as paid under a nonaccountable plan and reported as wages. Your employer's own policy may set a shorter deadline.</p>
+
+  <h2 id="medical">Medical mileage claims</h2>
+  <p>A claim for driving to medical care uses the medical rate: <%= c(h1.medical) %> a mile to June 30, 2026 and <%= c(h2.medical) %> from July 1. Choose <em>Medical</em> as the trip type and the form prices the row that way. Publication 502 counts transportation primarily for and essential to medical care as a medical expense, and HSA payouts are tax-free for medical care as section 213(d) of the tax code defines it (Publication 969). A health FSA pays the expenses its plan covers and needs a written statement from an independent third party that the expense was incurred, so attach the record of the appointment. The tax side, including the 7.5% floor, is on the <a href="/medical-mileage-deduction">medical mileage deduction</a> page.</p>
+
+  <h2 id="irs-form">Is there an IRS mileage form?</h2>
+  <p>Not for reimbursement. On a tax return, a self-employed person reports car expenses on Schedule C (Schedule F for farmers), and medical driving goes on Schedule A with other medical expenses. Form 2106 is only for Armed Forces reservists, qualified performing artists, fee-basis state or local government officials and employees with impairment-related work expenses. Publication 463 (2025) says other employees may not use it, so most employees recover work mileage only through reimbursement.</p>
+
+  <h2 id="copies">Do you need to keep a copy?</h2>
+  <p>Publication 463 says employees who give their records to their employer and are reimbursed generally don't have to keep copies. You may still have to prove the expenses if you claim more than you were paid, if the plan is nonaccountable, if your employer doesn't check expense accounts properly, or if you are related to your employer. Save the PDF anyway: it is the record of what you were paid for.</p>
+
+  <h2 id="2027">Rates for 2027</h2>
+  <p>The IRS has not published the 2027 standard mileage rates (checked <%= checkedText %>). In each of the last five years it announced the next year's rates between December 14 and December 29: December 17, 2021 (IR-2021-251), December 29, 2022 (IR-2022-234), December 14, 2023 (IR-2023-239), December 19, 2024 (IR-2024-312) and December 29, 2025 (IR-2025-128). Until the 2027 rates are out, the form prices 2027 trips only at an employer rate.</p>
+
+  <div class="sources">
+    <h2>Sources</h2>
+    <ul>
+      <% ['rates', 'ir2025', 'ann', 'p463', 'p502', 'p969', 'ir2024', 'ir2023', 'ir2022', 'ir2021'].forEach(function (k) { var s = SRC[k]; %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% }) %>
+    </ul>
+    <p class="checked">Every rate, date and rule on this page was read on irs.gov on <%= checkedText %>. General information, not tax advice; your employer's policy decides what it pays.</p>
+  </div>
+</article>
+
+<section class="faq-section">
+  <h2>Frequently asked questions</h2>
+  <% faqs.forEach(function (f) { %><details class="faq-item"><summary><%= f[0] %></summary><div class="faq-a"><p><%= f[1] %></p></div></details>
+  <% }) %>
+</section>
+
+<section class="related">
+  <h2>Related</h2>
+  <div class="related-grid">
+    <a href="/mileage-reimbursement-calculator" class="related-card"><strong>Mileage reimbursement calculator</strong><span>The total only, with a CSV</span></a>
+    <a href="/medical-mileage-deduction" class="related-card"><strong>Medical mileage deduction</strong><span><%= c(h1.medical) %>, then <%= c(h2.medical) %> a mile in 2026</span></a>
+    <a href="/irs-mileage-log-requirements" class="related-card"><strong>IRS mileage log requirements</strong><span>What each trip record needs</span></a>
+    <a href="/free-mileage-log-template" class="related-card"><strong>Free mileage log template</strong><span>Excel and printable PDF</span></a>
+    <a href="/mileage-log-2026-irs-rate" class="related-card"><strong>2026 IRS mileage rate</strong><span>Why it changed on July 1</span></a>
+    <a href="/" class="related-card"><strong>Mileage log generator</strong><span>PDF log with rates by date</span></a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/reimburse.js?v=1" defer></script>
+<script src="/reimburse-sheet.js?v=1" defer></script>
+<script src="/reimburse-form.js?v=1" defer></script>
+</body>
+</html>

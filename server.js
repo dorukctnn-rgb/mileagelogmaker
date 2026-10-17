@@ -6,6 +6,8 @@ const NICHE_PAGES = require('./content/niche-pages.js');
 const R = require('./lib/rates.js');
 const MLMCalc = require('./public/calc.js');
 const Reimburse = require('./public/reimburse.js');
+const ReimburseSheet = require('./public/reimburse-sheet.js');
+const Medical = require('./public/medical-mileage.js');
 const { verifyLicense } = require('./lib/license.js');
 const { buildLogPdf } = require('./lib/pdf.js');
 const { buildCsv, buildXlsx } = require('./lib/export.js');
@@ -166,6 +168,48 @@ app.get('/mileage-reimbursement-calculator', (req, res) => {
   });
 });
 
+// Pages added on 17 Oct 2026. Every rate and rule on them was read on irs.gov that day.
+const NEW_PAGES_CHECKED = '2026-10-17';
+const NEW_PAGES_CHECKED_TEXT = 'October 17, 2026';
+
+// Printable mileage reimbursement form, built on the same engine and example trips as the calculator.
+app.get('/mileage-reimbursement-form', (req, res) => {
+  const rates = R.clientRates();
+  const example = Reimburse.compute({ trips: REIMBURSE_EXAMPLE, rates, employerCents: null });
+  const half = Reimburse.periods(rates).filter(p => p.year === '2026');
+  const rateNote = `IRS business rates for 2026: ${Reimburse.cents(half[0].business)} for January 1 to June 30 (Notice 2026-10) and ${Reimburse.cents(half[1].business)} from July 1 (Announcement 2026-11).`;
+  const footer = 'Prepared with the free form at www.mileagelogmaker.com/mileage-reimbursement-form';
+  res.render('mileage-reimbursement-form', {
+    title: 'Mileage Reimbursement Form 2026: Free Printable PDF',
+    description: 'Free mileage reimbursement form: enter trips, each priced at the IRS rate for its date (72.5¢ to June 30, 76¢ from July 1, 2026), then print or save a PDF.',
+    canonical: SITE + '/mileage-reimbursement-form',
+    Reimburse,
+    exampleTrips: REIMBURSE_EXAMPLE,
+    example,
+    periods: Reimburse.periods(rates),
+    sheet: ReimburseSheet.sheetHTML(example, {}, Reimburse, { footer, rateNote }),
+    footer,
+    rateNote,
+    checkedIso: NEW_PAGES_CHECKED,
+    checkedText: NEW_PAGES_CHECKED_TEXT
+  });
+});
+
+// Medical mileage: the 2026 medical rates by date, Publication 502's rules and the 7.5% floor, with a calculator.
+app.get('/medical-mileage-deduction', (req, res) => {
+  const rates = R.clientRates();
+  res.render('medical-mileage-deduction', {
+    title: 'Medical Mileage Rate 2026: 20.5¢, Then 23.5¢ a Mile',
+    description: 'The IRS medical mileage rate is 20.5¢ a mile for January to June 2026 and 23.5¢ from July 1. What counts, parking and tolls, the 7.5% floor, HSA and FSA claims.',
+    canonical: SITE + '/medical-mileage-deduction',
+    Medical,
+    RATES: rates,
+    example: Medical.compute({ year: '2026', miles: [1400, 1400], parking: 100, agi: 60000, other: 4000 }, rates),
+    checkedIso: NEW_PAGES_CHECKED,
+    checkedText: NEW_PAGES_CHECKED_TEXT
+  });
+});
+
 app.get('/blog', (req, res) => {
   res.render('blog-index', {
     canonical: SITE + '/blog',
@@ -214,7 +258,7 @@ app.get('/:slug', (req, res, next) => {
 
 // ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', R.REIMBURSE_CHECKED], ['/blog', SITE_UPDATED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
+  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', NEW_PAGES_CHECKED], ['/mileage-reimbursement-form', NEW_PAGES_CHECKED], ['/medical-mileage-deduction', NEW_PAGES_CHECKED], ['/blog', NEW_PAGES_CHECKED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
     .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
     .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
   const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');

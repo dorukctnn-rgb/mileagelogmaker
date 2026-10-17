@@ -1,0 +1,199 @@
+<%
+  var c = Medical.cents, m = Medical.money;
+  var p26 = Medical.periods(RATES, '2026');
+  var r1 = p26[0].rate, r2 = p26[1].rate;
+  var rateRows = [];
+  Medical.years(RATES).forEach(function (y) { if (y >= '2024') Medical.periods(RATES, y).slice().reverse().forEach(function (p) { rateRows.push(p); }); });
+  var pubEx = Medical.compute({ year: '2025', miles: [2800], parking: 100, actual: 430 }, RATES);
+  var ex26 = Medical.compute({ year: '2026', miles: [1400, 1400], parking: 100 }, RATES);
+  var SRC = {
+    rates: { label: 'IRS: Standard mileage rates, all years (page updated July 28, 2026)', url: 'https://www.irs.gov/tax-professionals/standard-mileage-rates' },
+    ir2025: { label: 'IRS news release IR-2025-128, December 29, 2025 (rates from January 1, 2026)', url: 'https://www.irs.gov/newsroom/irs-sets-2026-business-standard-mileage-rate-at-725-cents-per-mile-up-25-cents' },
+    ann: { label: 'IRS Announcement 2026-11, Internal Revenue Bulletin 2026-29, July 13, 2026 (rates from July 1, 2026)', url: 'https://www.irs.gov/irb/2026-29_irb' },
+    p502: { label: 'IRS Publication 502 (2025), Medical and Dental Expenses: Transportation, car expenses, the 7.5% limit, recordkeeping', url: 'https://www.irs.gov/publications/p502' },
+    p969: { label: 'IRS Publication 969 (2025), Health Savings Accounts and Other Tax-Favored Health Plans', url: 'https://www.irs.gov/publications/p969' },
+    ir2024: { label: 'IR-2024-312, December 19, 2024 (2025 rates)', url: 'https://www.irs.gov/newsroom/irs-increases-the-standard-mileage-rate-for-business-use-in-2025-key-rate-increases-3-cents-to-70-cents-per-mile' },
+    ir2023: { label: 'IR-2023-239, December 14, 2023 (2024 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2024-mileage-rate-increases-to-67-cents-a-mile-up-1-point-5-cents-from-2023' },
+    ir2022: { label: 'IR-2022-234, December 29, 2022 (2023 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2023-business-use-increases-3-cents-per-mile' },
+    ir2021: { label: 'IR-2021-251, December 17, 2021 (2022 rates)', url: 'https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2022' }
+  };
+  var faqs = [
+    ['What is the IRS medical mileage rate for 2026?', c(r1) + ' a mile for driving from January 1 to June 30, 2026 (Notice 2026-10) and ' + c(r2) + ' a mile from July 1, 2026 (Announcement 2026-11). The 2025 rate was 21¢ for the whole year.'],
+    ['Can I deduct mileage to doctor appointments?', 'Yes, when the trip is primarily for and essential to medical care. The miles at the medical rate, or your actual gas and oil, go in with your other medical expenses on Schedule A, and only the part of the total above 7.5% of your adjusted gross income is deductible.'],
+    ['Are parking and tolls deductible on top of the medical mileage rate?', 'Yes. IRS Publication 502 lets you add parking fees and tolls whether you use the standard medical rate or your actual expenses.'],
+    ['Do I have to itemize to deduct medical mileage?', 'Yes. Medical expenses, including medical driving, are an itemized deduction claimed on Schedule A. If you take the standard deduction, medical mileage does not reduce your federal tax.'],
+    ['Can my HSA pay me back for medical mileage?', 'An HSA can pay you back tax-free for medical care as section 213(d) of the tax code defines it (Publication 969), and Publication 502 counts transportation primarily for medical care. Keep the trip log with your HSA records, and do not deduct on Schedule A the expenses your HSA paid tax-free.'],
+    ['Why did the medical mileage rate go up in July 2026?', 'Announcement 2026-11 raised the business rate to 76¢ and the medical and moving rate to 23.5¢ from July 1, 2026, and says the change results from recent increases in the price of fuel.'],
+    ['Does my commute count if I have a medical condition?', 'No. Publication 502 excludes going to and from work, even if your condition requires an unusual means of transportation.']
+  ];
+%><!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head', { title: title, description: description, canonical: canonical }) %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebApplication', name: 'Medical mileage calculator 2026', url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'Any (web browser)', isAccessibleForFree: true,
+      description: 'Prices medical miles at the IRS standard medical rate for their date (20.5 cents to June 30, 2026, 23.5 cents from July 1), adds parking and tolls, compares actual gas and oil, and shows the part above 7.5% of AGI that Schedule A allows.',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, dateModified: checkedIso },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Medical mileage deduction', item: canonical } ] },
+    { '@type': 'FAQPage', mainEntity: faqs.map(function (f) { return { '@type': 'Question', name: f[0], acceptedAnswer: { '@type': 'Answer', text: f[1] } }; }) }
+  ]
+}).replace(/</g, '\\u003c') %>
+</script>
+<style>
+.hero h1{text-wrap:balance}
+.md{max-width:1100px;margin:8px auto 0;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start}
+.md .panel h2{margin-bottom:4px}
+.md .sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+.md .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.md .field input,.md .field select{min-height:44px;font-size:16px}
+.md .field small{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.md .field[hidden]{display:none}
+.md .optional{border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+.md .optional h3{margin:0 0 4px}
+.md-out{position:sticky;top:12px}
+.rb-eyebrow{font-size:13px;font-weight:600;color:var(--muted);margin:0}
+.rb-big{font-size:40px;font-weight:800;letter-spacing:-.5px;line-height:1.1;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.rb-sub{font-size:14px;color:#425466;margin:0 0 12px}
+.rb-lines{border-top:1px solid var(--line)}
+.rb-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eef2f6;font-size:14.5px}
+.rb-line strong{display:block;font-weight:600}
+.rb-line span{display:block;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rb-line b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rb-total{font-size:16px;border-bottom:0}
+.md-floor{background:var(--bg);border-radius:9px;padding:4px 12px;margin-top:12px}
+.md-floor .rb-line:last-child{border-bottom:0}
+.md-cta{display:block;width:100%;margin-top:16px;font-size:15.5px;padding:13px 16px}
+.rate-line{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5}
+.content .formula{background:var(--navy);color:#e6ecf5;border-radius:8px;padding:12px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.8;margin:10px 0 16px;overflow-x:auto}
+.md > *{min-width:0}
+@media(max-width:960px){.md{grid-template-columns:minmax(0,1fr)}.md-out{position:static}}
+@media(max-width:600px){.md .grid2{grid-template-columns:1fr}.rb-big{font-size:34px}}
+</style>
+</head>
+<body>
+
+<%- include('partials/nav', { hidePro: true }) %>
+
+<section class="hero">
+  <span class="badge">IRS medical rate 2026: <%= c(r1) %> to June 30, <%= c(r2) %> from July 1</span>
+  <h1>Medical mileage rate 2026 and how to deduct it</h1>
+  <p class="lead">Driving to medical care is a medical expense. For 2026 the IRS standard medical mileage rate is <%= c(r1) %> a mile for trips from January 1 to June 30 and <%= c(r2) %> from July 1, and parking fees and tolls are added on top. The total joins your other medical expenses on Schedule A, where only the part above 7.5% of your adjusted gross income is deductible.</p>
+</section>
+
+<section class="md" id="calculator" aria-label="Medical mileage calculator">
+  <form class="panel" id="mdForm" novalidate>
+    <h2>Medical mileage calculator</h2>
+    <p class="sub">The figures below are an example. Replace them with yours; the result updates as you type and stays in this browser.</p>
+    <div class="field"><label for="mdYear">Tax year</label>
+      <select id="mdYear"><% Medical.years(RATES).filter(function (y) { return y >= '2024'; }).forEach(function (y) { %><option value="<%= y %>"<%= y === example.year ? ' selected' : '' %>><%= y %></option><% }) %></select>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="mdMiles0" id="mdMilesLabel0">Medical miles, <%= p26[0].label %></label><input type="number" id="mdMiles0" min="0" step="0.1" inputmode="decimal" value="1400"></div>
+      <div class="field" id="mdMilesWrap1"><label for="mdMiles1" id="mdMilesLabel1">Medical miles, <%= p26[1].label %></label><input type="number" id="mdMiles1" min="0" step="0.1" inputmode="decimal" value="1400"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="mdParking">Parking and tolls ($)</label><input type="number" id="mdParking" min="0" step="0.01" inputmode="decimal" value="100"></div>
+      <div class="field"><label for="mdActual">Actual gas and oil ($)</label><input type="number" id="mdActual" min="0" step="0.01" inputmode="decimal" placeholder="Optional"><small>To compare with the standard rate, as Publication 502 does.</small></div>
+    </div>
+    <div class="optional">
+      <h3>Optional: the 7.5% floor</h3>
+      <p class="sub">Add your adjusted gross income and your other medical costs for the year to see what Schedule A allows.</p>
+      <div class="grid2">
+        <div class="field"><label for="mdAgi">Adjusted gross income ($)</label><input type="number" id="mdAgi" min="0" step="1" inputmode="decimal" value="60000"></div>
+        <div class="field"><label for="mdOther">Other medical expenses ($)</label><input type="number" id="mdOther" min="0" step="0.01" inputmode="decimal" value="4000"></div>
+      </div>
+    </div>
+  </form>
+
+  <div class="panel md-out" id="mdOut">
+    <div id="mdResult" aria-live="polite"><%- Medical.resultHTML(example) %></div>
+    <a class="btn md-cta" href="/">Log each medical trip with its date</a>
+    <p class="rate-line">IRS medical rates: <%= c(r1) %> (January 1 to June 30, 2026, Notice 2026-10) and <%= c(r2) %> (from July 1, Announcement 2026-11). Checked <%= checkedText %> on irs.gov. The log generator applies the right rate to each trip by date.</p>
+  </div>
+</section>
+
+<article class="content">
+  <h2 id="rates">Medical mileage rates by year</h2>
+  <div class="table-wrap"><table class="data fit">
+    <thead><tr><th>Trips driven</th><th class="num">Medical rate</th></tr></thead>
+    <tbody>
+      <% rateRows.forEach(function (p) { %><tr><td><%= p.label %></td><td class="num"><%= c(p.rate) %></td></tr>
+      <% }) %>
+    </tbody>
+    <caption>Cents per mile. The same rate applies to moving by active-duty members of the Armed Forces and, from 2026, certain members of the intelligence community. Sources: IRS standard mileage rates table, IR-2025-128, Announcement 2026-11. Checked <%= checkedText %>.</caption>
+  </table></div>
+  <p>The rate follows the date of the trip. Announcement 2026-11 raised the medical rate from <%= c(r1) %> to <%= c(r2) %> for driving on or after July 1, 2026, and gives the reason as recent increases in the price of fuel. Trips before July 1 keep <%= c(r1) %>. Older business rates are on the <a href="/irs-mileage-rate-history">IRS mileage rate history</a> page.</p>
+
+  <h2 id="counts">What counts as medical travel</h2>
+  <div class="answer"><p>IRS Publication 502: you can include in medical expenses "amounts paid for transportation primarily for and essential to medical care".</p></div>
+  <p>That covers driving yourself, your spouse or a dependent to medical care, and Publication 502 also lists:</p>
+  <ul>
+    <li>bus, taxi, train or plane fares and ambulance service;</li>
+    <li>the travel of a parent who must go with a child who needs medical care;</li>
+    <li>the travel of a nurse or other person who can give injections, medications or other treatment a patient needs while traveling to get medical care, when the patient can't travel alone;</li>
+    <li>regular visits to a mentally ill dependent, if the visits are recommended as part of treatment.</li>
+  </ul>
+  <p>It does not cover:</p>
+  <ul>
+    <li>going to and from work, even if your condition requires an unusual means of transportation;</li>
+    <li>travel for purely personal reasons to another city for an operation or other medical care;</li>
+    <li>travel that is merely for the general improvement of your health;</li>
+    <li>the costs of running a specially equipped car for other than medical reasons.</li>
+  </ul>
+
+  <h2 id="method">Standard rate or actual gas and oil</h2>
+  <p>For a car you can count either your out-of-pocket costs, such as gas and oil, or the standard medical rate. Depreciation, insurance, general repair and maintenance are not included. Parking fees and tolls are added under either method, so work it out both ways and use the larger figure. Publication 502's own example, with 2025's rate of 21¢:</p>
+  <div class="formula">Actual: $400 gas + $30 oil + $100 tolls and parking = <%= m(pubEx.actual) %><br>Standard: 2,800 mi × 21¢ = <%= m(pubEx.mileage) %>, + $100 tolls and parking = <%= m(pubEx.standard) %><br>Use the larger: <%= m(pubEx.car) %></div>
+  <p>The same 2,800 miles driven in 2026, half before July 1 and half after: 1,400 × <%= c(r1) %> = <%= m(ex26.lines[0].amount) %> and 1,400 × <%= c(r2) %> = <%= m(ex26.lines[1].amount) %>, plus $100 of tolls and parking, comes to <%= m(ex26.standard) %>.</p>
+
+  <h2 id="floor">The 7.5% floor and Schedule A</h2>
+  <p>Medical expenses are an itemized deduction on Schedule A, and Publication 502 says you can deduct only the part of your medical and dental expenses that is more than 7.5% of your adjusted gross income. With an AGI of $60,000 the first $4,500 of medical costs gives no deduction. If the medical driving above (<%= m(ex26.standard) %>) and $4,000 of other medical bills make <%= m(example.total) %>, then <%= m(example.deductible) %> is deductible. If you take the standard deduction instead of itemizing, medical mileage does not reduce your federal tax.</p>
+
+  <h2 id="hsa">HSA, FSA and HRA reimbursements</h2>
+  <p>An HSA can pay you back tax-free for qualified medical expenses, which Publication 969 defines as medical care under section 213(d) of the tax code, the same definition behind the medical expense deduction. A health FSA pays the expenses its plan covers, and Publication 969 says the FSA needs a written statement from an independent third party that the expense was incurred, so keep the appointment record with the trip log. To hand in a claim, the <a href="/mileage-reimbursement-form">mileage reimbursement form</a> prices medical trips at the medical rate for their dates.</p>
+  <p>Count each mile once. Publication 969 says you can't deduct on Schedule A the expenses your HSA paid tax-free, and Publication 502 says expenses reimbursed by a health reimbursement arrangement can't be included in your medical expenses.</p>
+
+  <h2 id="records">Records to keep</h2>
+  <p>Publication 502 tells you to keep records of your medical expenses to support the deduction and not to send them with a paper return. For driving, write down each trip: the date, the provider you went to and the miles, and keep parking and toll receipts. The free <a href="/">mileage log generator</a> takes medical trips and applies <%= c(r1) %> or <%= c(r2) %> by date.</p>
+
+  <h2 id="2027">Rates for 2027</h2>
+  <p>The IRS has not published the 2027 standard mileage rates (checked <%= checkedText %>). In each of the last five years it announced the next year's rates between December 14 and December 29: December 17, 2021 (IR-2021-251), December 29, 2022 (IR-2022-234), December 14, 2023 (IR-2023-239), December 19, 2024 (IR-2024-312) and December 29, 2025 (IR-2025-128).</p>
+
+  <div class="sources">
+    <h2>Sources</h2>
+    <ul>
+      <% ['rates', 'ir2025', 'ann', 'p502', 'p969', 'ir2024', 'ir2023', 'ir2022', 'ir2021'].forEach(function (k) { var s = SRC[k]; %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% }) %>
+    </ul>
+    <p class="checked">Every rate, date and rule on this page was read on irs.gov on <%= checkedText %>. Publications 502 and 969 are the 2025 editions, for 2025 returns; the 2026 rates come from Notice 2026-10 and Announcement 2026-11. General information, not tax advice.</p>
+  </div>
+</article>
+
+<section class="faq-section">
+  <h2>Frequently asked questions</h2>
+  <% faqs.forEach(function (f) { %><details class="faq-item"><summary><%= f[0] %></summary><div class="faq-a"><p><%= f[1] %></p></div></details>
+  <% }) %>
+</section>
+
+<section class="related">
+  <h2>Related</h2>
+  <div class="related-grid">
+    <a href="/mileage-reimbursement-form" class="related-card"><strong>Mileage reimbursement form</strong><span>Print a claim with every trip priced</span></a>
+    <a href="/mileage-reimbursement-calculator" class="related-card"><strong>Mileage reimbursement calculator</strong><span>Business, medical and charity trips by date</span></a>
+    <a href="/mileage-log-2026-irs-rate" class="related-card"><strong>2026 IRS mileage rate</strong><span>The July 1 change for every trip type</span></a>
+    <a href="/irs-mileage-rate-history" class="related-card"><strong>IRS mileage rate history</strong><span>Every rate from 2011 to 2026</span></a>
+    <a href="/irs-mileage-log-requirements" class="related-card"><strong>IRS mileage log requirements</strong><span>What each trip record needs</span></a>
+    <a href="/" class="related-card"><strong>Mileage log generator</strong><span>PDF log with rates by date</span></a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/medical-mileage.js?v=1" defer></script>
+<script src="/medical-page.js?v=1" defer></script>
+</body>
+</html>
