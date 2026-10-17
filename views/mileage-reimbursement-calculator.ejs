@@ -143,7 +143,7 @@
     <div id="rbResult" aria-live="polite"><%- Reimburse.resultHTML(example) %></div>
     <a class="btn rb-cta" id="rbCta" href="/<%= Reimburse.prefillHash(example) %>">Keep the IRS-ready log for these miles</a>
     <p class="cta-note">Opens the free mileage log generator with these trips filled in. Add a destination and business purpose to each business trip there, then download the PDF log.</p>
-    <div class="rb-tools"><button type="button" class="btn btn-ghost btn-sm" id="rbCsv">Download CSV for Excel</button></div>
+    <div class="rb-tools"><button type="button" class="btn btn-ghost btn-sm" id="rbCsv">Download CSV for Excel</button><a class="btn btn-ghost btn-sm" href="/mileage-reimbursement-form?from=calculator">Print as a reimbursement form</a></div>
     <p class="rate-line">IRS rates by trip date: <%= c(h1.business) %> (Jan 1 to Jun 30, 2026, Notice 2026-10) and <%= c(h2.business) %> (from Jul 1, Announcement 2026-11). Checked <%= checked %> on irs.gov.</p>
   </div>
 </section>
@@ -163,7 +163,7 @@
     </tbody>
     <caption>Cents per mile. The moving rate is only for active-duty members of the Armed Forces moving under orders and, from 2026, certain members of the intelligence community. Sources: IRS standard mileage rates table; Notice 2026-10 (news release IR-2025-128, December 29, 2025); Announcement 2026-11 in Internal Revenue Bulletin 2026-29 (July 13, 2026). Checked <%= checked %>.</caption>
   </table></div>
-  <p>Older years are on the <a href="/irs-mileage-rate-history">IRS mileage rate history</a> page, and the July change is explained in <a href="/mileage-log-2026-irs-rate">2026 IRS mileage rate: 72.5¢, then 76¢</a>.</p>
+  <p>Older years are on the <a href="/irs-mileage-rate-history">IRS mileage rate history</a> page, and the July change is explained in <a href="/mileage-log-2026-irs-rate">2026 IRS mileage rate: 72.5¢, then 76¢</a>. Medical trips use the medical rate; how they count on a tax return, including the 7.5% floor, is on the <a href="/medical-mileage-deduction">medical mileage deduction</a> page.</p>
 
   <h2 id="employer">Employer rate or IRS rate</h2>
   <p>An employer can pay its own rate per mile; IRS Publication 463 describes allowances below, at and above the IRS rate. The IRS rate matters for tax, because Publication 463 uses the standard mileage rate as the federal rate for car allowances. Under an accountable plan (business miles, accounted for, any excess returned) the reimbursement stays out of box 1 of your Form W-2. If the allowance is higher than the federal rate, the part above it is reported as wages.</p>
@@ -176,7 +176,7 @@
   <p class="source-note">Other states are not covered here. Check your state labor department before relying on a state rule.</p>
 
   <h2 id="excel">Mileage reimbursement in Excel</h2>
-  <p>The <strong>Download CSV for Excel</strong> button saves your trips with the rate and amount for each one and a summary by rate period; Excel and Google Sheets open it directly. To keep a log all year, use the free <a href="/free-mileage-log-template">Excel mileage log template</a>, which applies 72.5¢ or 76¢ to each 2026 row by date.</p>
+  <p>The <strong>Download CSV for Excel</strong> button saves your trips with the rate and amount for each one and a summary by rate period; Excel and Google Sheets open it directly. To keep a log all year, use the free <a href="/free-mileage-log-template">Excel mileage log template</a>, which applies 72.5¢ or 76¢ to each 2026 row by date. To hand the claim in on paper, the <a href="/mileage-reimbursement-form?from=calculator">mileage reimbursement form</a> opens with these trips and adds your details and signature lines.</p>
 
   <div class="sources">
     <h2>Sources</h2>
