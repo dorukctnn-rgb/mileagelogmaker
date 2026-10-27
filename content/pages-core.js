@@ -440,7 +440,7 @@ module.exports = {
     title: 'CRA Mileage Log Book Template 2026 (Free PDF & Excel)',
     h1: 'CRA Mileage Log Book Template',
     blurb: 'Free kilometre logbook: Excel, PDF or online',
-    description: 'Free CRA mileage log book template in Excel and printable PDF: date, destination, purpose, kilometres, odometer, business-use % and a simplified logbook calculator.',
+    description: 'Free CRA mileage log book template (vehicle logbook) in Excel and printable PDF, with every field the CRA lists: date, destination, purpose, km, odometer.',
     keyword: 'cra mileage log book template',
     region: 'ca',
     badge: 'Matches the CRA logbook rules, checked October 2026',

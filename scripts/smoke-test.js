@@ -54,6 +54,11 @@ const assert = require('assert');
   }
   console.log(`checked ${links.size} internal links`);
 
+  // 27 Oct 2026 (Search Console): the CRA template description fits a search result and names the vehicle logbook
+  const craHtml = await (await fetch(base + '/cra-mileage-log-template')).text();
+  const craDesc = (/<meta name="description" content="([^"]*)"/.exec(craHtml) || [])[1] || '';
+  check(craDesc.length <= 155 && /vehicle logbook/.test(craDesc), 'CRA template description length ' + craDesc.length + ': ' + craDesc);
+
   // Unknown page is a real 404
   check((await fetch(base + '/no-such-page')).status === 404, '404 status');
 
