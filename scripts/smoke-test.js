@@ -59,6 +59,14 @@ const assert = require('assert');
   const craDesc = (/<meta name="description" content="([^"]*)"/.exec(craHtml) || [])[1] || '';
   check(craDesc.length <= 155 && /vehicle logbook/.test(craDesc), 'CRA template description length ' + craDesc.length + ': ' + craDesc);
 
+  // 28 Oct 2026 (Search Console): Grubhub queries reached the DoorDash page, and the MileIQ page had one body link
+  const dd = await (await fetch(base + '/mileage-log-doordash-drivers')).text();
+  check(dd.includes('href="/mileage-log-grubhub-drivers">Grubhub mileage tracker and log</a>'), 'DoorDash page links the Grubhub page in its text');
+  for (const p of ['/mileage-log-doordash-drivers', '/mileage-log-uber-drivers', '/mileage-log-self-employed']) {
+    const h = await (await fetch(base + p)).text();
+    check(h.includes('href="/mileiq-alternative">MileIQ alternatives</a>'), p + ' links the MileIQ alternatives page in its text');
+  }
+
   // Unknown page is a real 404
   check((await fetch(base + '/no-such-page')).status === 404, '404 status');
 

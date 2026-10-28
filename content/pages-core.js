@@ -194,7 +194,7 @@ module.exports = {
       { q: 'Do self-employed people need a mileage log?', a: 'Yes. To deduct car expenses on Schedule C you need records showing the date, destination, business purpose and miles of each business trip, plus total miles for the year. Schedule C Part IV asks whether you have written evidence.' },
       { q: 'Can self-employed people claim mileage from home to work?', a: 'Not to a regular office or shop: that is commuting. If your home office is your principal place of business, trips from home to other work locations in the same business are deductible.' },
       { q: 'Is there a printable mileage log template for self-employed people?', a: 'Yes. The free PDF on this page prints on letter paper with date, start, destination, purpose, odometer and miles columns. The Excel version calculates miles and the 2026 deduction by date.' },
-      { q: 'What is the best mileage tracker for self-employed people?', a: 'The one you will keep up to date. GPS apps capture distance automatically but usually charge a subscription and still need a business purpose for each trip. A weekly log in a template or this free generator works if you note trips in your calendar as you go.' },
+      { q: 'What is the best mileage tracker for self-employed people?', a: 'The one you will keep up to date. GPS apps capture distance automatically but usually charge a subscription and still need a business purpose for each trip. A weekly log in a template or this free generator works if you note trips in your calendar as you go. The prices and free-plan limits of the main apps are in <a href="/mileiq-alternative">MileIQ alternatives</a>.' },
       { q: 'Where does the mileage deduction go on my tax return?', a: 'On Schedule C (Form 1040), line 9, car and truck expenses. You also complete Part IV with the date the vehicle was placed in service and your business, commuting and other miles.' }
     ]
   },
@@ -327,7 +327,7 @@ module.exports = {
     ],
     faq: [
       { q: 'Is Uber\'s tax summary a mileage log?', a: 'No. It is a useful record of your online miles (waiting, en route to pickups and on trip), but it does not list dates, destinations and purposes per trip, and it does not include miles you drive with the app off. Keep your own log and use the summary as backup.' },
-      { q: 'What is the best way to keep a rideshare mileage log?', a: 'One row per shift: date, odometer out, odometer in, area and purpose. Publication 463 allows a single record for uninterrupted business use. Add separate rows for business errands with the app off.' },
+      { q: 'What is the best way to keep a rideshare mileage log?', a: 'One row per shift: date, odometer out, odometer in, area and purpose. Publication 463 allows a single record for uninterrupted business use. Add separate rows for business errands with the app off. If you would rather have an app log the drives, <a href="/mileiq-alternative">MileIQ alternatives</a> compares the prices and free-plan limits of MileIQ, TripLog, Everlance and Driversnote.' },
       { q: 'Can I deduct the miles from home to my first ride?', a: 'It depends on the commuting rules. If you have no regular place of business, trips from home within your metro area are generally not deductible; if your home is your principal place of business, they are. Log them separately and decide with your preparer.' },
       { q: 'What mileage rate do Uber and Lyft drivers use for 2026?', a: 'The IRS standard mileage rate: 72.5 cents per mile for miles driven January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026.' },
       { q: 'Can I deduct gas and the standard mileage rate?', a: 'No. The standard mileage rate replaces gas, maintenance, insurance and depreciation. You can deduct business parking and tolls on top of it.' }
@@ -375,6 +375,7 @@ module.exports = {
         h: 'Does DoorDash or Grubhub track mileage for you?',
         p: [
           'Do not rely on any delivery app\'s mileage figure as your log. Whatever number an app shows covers only time it knows you were working, and it is not a record with dates, destinations and purposes. A one-line-per-dash log with odometer readings takes a minute and covers everything.',
+          'Grubhub drivers have a page of their own: the <a href="/mileage-log-grubhub-drivers">Grubhub mileage tracker and log</a> lists the miles to track and gives a log for each block.',
           'If you drive for more than one app in a shift, one row for the shift is fine; note both platforms. Publication 463 lets you record an uninterrupted stretch of business driving as a single entry.'
         ]
       },
@@ -391,7 +392,7 @@ module.exports = {
       { q: 'How much tax does the mileage deduction save a Dasher?', a: 'Roughly the deduction x 92.35% x 15.3% in self-employment tax, plus the deduction x your income tax bracket. In the 12% bracket that is about 26 cents of tax for every dollar of deduction, before state tax. The calculator above does the math.' },
       { q: 'Can I deduct miles driven to my first delivery?', a: 'It depends on the commuting rules. If you have no regular place of business, trips from home within your metro area are generally treated as commuting; if your home office is your principal place of business, trips from home are business. Log them separately.' },
       { q: 'What should a DoorDash mileage log include?', a: 'For each dash: the date, the area you worked, the purpose (deliveries for DoorDash), odometer readings or miles, and any business errands. Keep your earnings summaries as backup.' },
-      { q: 'Is there a free mileage tracker for DoorDash?', a: 'Yes. This generator is free with no signup: enter each dash and download a PDF. The free PDF has a light watermark; Pro ($9 one-time) removes it.' }
+      { q: 'Is there a free mileage tracker for DoorDash?', a: 'Yes. This generator is free with no signup: enter each dash and download a PDF. The free PDF has a light watermark; Pro ($9 one-time) removes it. If you want a phone app that logs drives for you, <a href="/mileiq-alternative">MileIQ alternatives</a> lists what MileIQ, TripLog, Everlance and Driversnote charge and what their free plans include.' }
     ]
   },
 
