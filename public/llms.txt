@@ -1,0 +1,49 @@
+# MileageLogMaker
+
+> MileageLogMaker is a free web tool that builds a mileage log for tax records as a PDF. You enter business, medical and charity trips and each trip is priced at the IRS standard mileage rate for its date, with no signup. A one-time Pro upgrade ($9) removes the PDF watermark and adds Excel and CSV export and your logo. Canadian (CRA) and UK (HMRC) logs are also supported.
+
+IRS standard mileage rates for 2026, as read on irs.gov on November 10, 2026: business 72.5 cents a mile for January 1 to June 30 and 76 cents from July 1; medical and moving 20.5 cents, then 23.5 cents from July 1; charity 14 cents. Every guide names its official source (irs.gov, canada.ca, gov.uk) and the date it was last checked. This is general information, not tax advice.
+
+## Tools
+
+- [Free IRS mileage log generator](https://www.mileagelogmaker.com/): Enter trips, get a PDF log with the IRS rate applied by date. Free, no signup.
+- [Mileage reimbursement calculator](https://www.mileagelogmaker.com/mileage-reimbursement-calculator): Price a list of trips at the IRS rate for each trip date or at an employer's own rate, and download a CSV for Excel.
+- [Mileage reimbursement form](https://www.mileagelogmaker.com/mileage-reimbursement-form): A printable claim with every trip priced, totals and signature lines.
+- [Medical mileage rate and calculator](https://www.mileagelogmaker.com/medical-mileage-deduction): The 2026 medical rate by date, what counts as medical travel, parking and tolls, the 7.5% floor, HSA and FSA claims.
+
+## Rates and rules
+
+- [2026 IRS mileage rate](https://www.mileagelogmaker.com/mileage-log-2026-irs-rate): 72.5 cents to June 30 and 76 cents from July 1, 2026, with medical, moving and charity rates.
+- [IRS mileage rate history](https://www.mileagelogmaker.com/irs-mileage-rate-history): Every business, medical or moving, and charity rate from 2011 to 2026.
+- [IRS mileage log requirements](https://www.mileagelogmaker.com/irs-mileage-log-requirements): What each trip record must show and how the IRS treats a log.
+- [How to deduct mileage on taxes](https://www.mileagelogmaker.com/how-to-deduct-mileage-on-taxes): Standard rate, what counts as a business mile, records and Schedule C.
+- [Standard mileage rate or actual expenses](https://www.mileagelogmaker.com/mileage-deduction-vs-actual-expenses): How each method works, when each wins and the first-year rule.
+- [Forgot to track mileage](https://www.mileagelogmaker.com/forgot-to-track-mileage): What the IRS accepts when a log is missing and how to rebuild one.
+
+## Templates and logs by job
+
+- [Free mileage log templates](https://www.mileagelogmaker.com/free-mileage-log-template): Excel and printable PDF logs, what each row needs.
+- [Self-employed mileage log](https://www.mileagelogmaker.com/mileage-log-self-employed)
+- [Real estate agent mileage log](https://www.mileagelogmaker.com/mileage-log-real-estate-agents)
+- [Rideshare (Uber and Lyft) mileage log](https://www.mileagelogmaker.com/mileage-log-uber-drivers)
+- [Uber and Lyft driver tax deductions](https://www.mileagelogmaker.com/tax-deductions-for-uber-lyft-drivers)
+- [DoorDash mileage log](https://www.mileagelogmaker.com/mileage-log-doordash-drivers)
+- [Grubhub mileage log](https://www.mileagelogmaker.com/mileage-log-grubhub-drivers)
+
+## Canada and the UK
+
+- [CRA mileage log book template](https://www.mileagelogmaker.com/cra-mileage-log-template): Kilometre logbook, business-use percentage and the simplified logbook.
+- [CRA mileage log rules](https://www.mileagelogmaker.com/mileage-log-canada): What to record and the 2026 allowance rates.
+- [HMRC mileage log](https://www.mileagelogmaker.com/mileage-log-uk): 55p a mile for the first 10,000 business miles from 6 April 2026, then 25p.
+
+## Compared with other apps
+
+- [MileIQ alternatives](https://www.mileagelogmaker.com/mileiq-alternative): MileIQ, TripLog, Everlance and Driversnote prices, each read on the vendor's own page on October 9, 2026.
+- [Everlance alternatives](https://www.mileagelogmaker.com/everlance-alternative)
+
+## Optional
+
+- [Mileage tax guides (blog)](https://www.mileagelogmaker.com/blog)
+- [Privacy policy](https://www.mileagelogmaker.com/privacy)
+- [Terms](https://www.mileagelogmaker.com/terms)
+- Contact: info@peakappsstudio.com

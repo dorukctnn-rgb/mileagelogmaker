@@ -107,6 +107,8 @@ table.data tfoot td{font-weight:700;background:#fafbfd}
 .sources ul{margin:0 0 6px 18px}
 .sources li{font-size:14px!important;margin-bottom:4px}
 .sources .checked{color:var(--muted);font-size:13px}
+.updated-line{color:var(--muted);font-size:13.5px;margin:0 auto 14px;max-width:760px;text-align:center}
+.post .updated-line{text-align:left;margin:0 0 14px}
 .callout{background:#fff8e6;border:1px solid #f3dca2;border-radius:10px;padding:14px 16px;margin:16px 0;font-size:15px}
 
 /* Calculators */

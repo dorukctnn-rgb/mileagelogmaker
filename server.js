@@ -135,7 +135,7 @@ function relatedFor(slug, page) {
   for (const s of wanted) {
     if (seen.has(s) || !NICHE_PAGES[s]) continue;
     seen.add(s);
-    out.push({ slug: s, h1: NICHE_PAGES[s].h1, blurb: NICHE_PAGES[s].blurb || '' });
+    out.push({ slug: s, h1: NICHE_PAGES[s].cardTitle || NICHE_PAGES[s].h1, blurb: NICHE_PAGES[s].blurb || '' });
     if (out.length === 6) break;
   }
   return out;
@@ -206,7 +206,9 @@ app.get('/medical-mileage-deduction', (req, res) => {
     RATES: rates,
     example: Medical.compute({ year: '2026', miles: [1400, 1400], parking: 100, agi: 60000, other: 4000 }, rates),
     checkedIso: NEW_PAGES_CHECKED,
-    checkedText: NEW_PAGES_CHECKED_TEXT
+    checkedText: NEW_PAGES_CHECKED_TEXT,
+    reviewedIso: R.REVIEWED,
+    reviewedText: R.REVIEWED_TEXT
   });
 });
 
@@ -258,7 +260,7 @@ app.get('/:slug', (req, res, next) => {
 
 // ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', NEW_PAGES_CHECKED], ['/mileage-reimbursement-form', NEW_PAGES_CHECKED], ['/medical-mileage-deduction', NEW_PAGES_CHECKED], ['/blog', NEW_PAGES_CHECKED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
+  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', NEW_PAGES_CHECKED], ['/mileage-reimbursement-form', NEW_PAGES_CHECKED], ['/medical-mileage-deduction', R.REVIEWED], ['/blog', R.REVIEWED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
     .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
     .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
   const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');

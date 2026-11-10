@@ -14,7 +14,7 @@
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE + '/blog' },
       { '@type': 'ListItem', position: 3, name: post.title, item: canonical } ] }
-  ]
+  ].concat(post.faq && post.faq.length ? [{ '@type': 'FAQPage', mainEntity: post.faq.map(function (f) { return { '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }; }) }] : [])
 }) %></script>
 <style>
 .post{max-width:760px;margin:40px auto 50px;padding:0 16px}
@@ -34,6 +34,8 @@
 <article class="post">
   <div class="meta"><%= post.date %>, <%= post.read %> read</div>
   <h1><%= post.title %></h1>
+  <% if (post.updatedText) { %><p class="updated-line">Updated <time datetime="<%= post.updated %>"><%= post.updatedText %></time><%= post.updatedNote ? '. ' + post.updatedNote : '' %></p><% } %>
+  <% if (post.answer) { %><div class="answer"><p><strong>Short answer:</strong> <%= post.answer %></p></div><% } %>
   <% post.content.forEach(function(block, idx){ %>
     <% if(block.type === 'h2'){ %><h2><%= block.text %></h2><% } else { %><p><%= block.text %></p><% } %>
     <% if(idx === 3){ %>
@@ -44,13 +46,18 @@
       </div>
     <% } %>
   <% }); %>
+  <% if (post.faq && post.faq.length) { %>
+  <h2>Frequently asked questions</h2>
+  <% post.faq.forEach(function (f) { %><details class="faq-item"><summary><%= f.q %></summary><div class="faq-a"><p><%= f.a %></p></div></details>
+  <% }); %>
+  <% } %>
   <div class="sources" style="margin-top:30px">
     <h2>Sources</h2>
     <ul>
       <li><a href="<%= R.SOURCES.irsRates.url %>" target="_blank" rel="noopener"><%= R.SOURCES.irsRates.label %></a></li>
       <li><a href="<%= R.SOURCES.pub463.url %>" target="_blank" rel="noopener"><%= R.SOURCES.pub463.label %></a></li>
     </ul>
-    <p class="checked">Rates last checked on <%= R.LAST_CHECKED_TEXT %>.</p>
+    <p class="checked"><%= post.checkedNote || ('Rates last checked on ' + R.LAST_CHECKED_TEXT + '.') %></p>
   </div>
 </article>
 <section class="related">

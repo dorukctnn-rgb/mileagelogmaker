@@ -13,6 +13,7 @@ const T = {
 };
 
 const UPDATED = '2026-10-07';
+const { REVIEWED, REVIEWED_TEXT } = require('../lib/rates.js');
 
 module.exports = {
   'irs-mileage-log-requirements': {
@@ -397,7 +398,7 @@ module.exports = {
   },
 
   'mileage-log-grubhub-drivers': {
-    updated: UPDATED,
+    updated: REVIEWED,
     title: 'Grubhub Mileage Tracker & Log for Taxes (Free, 2026)',
     h1: 'Grubhub Mileage Tracker and Log',
     blurb: 'Track delivery miles and estimate the deduction',
@@ -420,7 +421,33 @@ module.exports = {
       'Separately: home to your delivery zone and back (commuting rules decide these)',
       'Keep weekly earnings statements as backup for the dates'
     ],
+    sample: {
+      h: 'Sample Grubhub mileage log',
+      intro: 'One line per block, with the odometer at the start and the end. The miles between blocks stay out of the log.',
+      head: ['Date', 'Block', 'Odometer out', 'Odometer in', 'Miles'],
+      rows: [
+        ['Nov 3', '5-8 pm, north zone', '48,210', '48,263', '53'],
+        ['Nov 5', '11 am-2 pm, downtown', '48,301', '48,338', '37'],
+        ['Nov 7', '5-9 pm, north zone', '48,395', '48,466', '71']
+      ],
+      foot: ['Total', '', '', '', '161'],
+      num: [2, 3, 4],
+      caption: 'Example figures. Parking and tolls from a block are kept as separate receipts and added on top of the mileage deduction.'
+    },
     sections: [
+      {
+        h: 'How much is the Grubhub mileage deduction worth?',
+        p: [
+          'Multiply the business miles by the IRS rate for the date you drove. A driver with 3,000 business miles from January to June 2026 and 3,500 from July to December deducts 3,000 x $0.725 = $2,175 plus 3,500 x $0.76 = $2,660, which is <strong>$4,835</strong> for 6,500 miles. The rate you use depends on the date of each block, so a block on June 30 and a block on July 1 are priced differently. Earlier years are in the <a href="/irs-mileage-rate-history">IRS mileage rate history</a>.'
+        ]
+      },
+      {
+        h: 'Which miles go in the log, and what about the drive to your zone?',
+        p: [
+          'Log the miles from the moment a block starts, or you go available for orders, until it ends: to restaurants, to customers and between orders. The drive from home to your delivery zone is where the commuting rules decide; keep it on its own line so it can be left out, and ask a tax professional before you deduct it.',
+          'One log can hold every delivery app you work for. Each line needs the date, the block or app, the miles and a purpose; the IRS wants your business miles for the year and your total miles for the year, not a separate log per app. The <a href="/free-mileage-log-template">free mileage log templates</a> have a shift-by-shift sheet, and <a href="/forgot-to-track-mileage">forgot to track mileage</a> covers a log you have to rebuild.'
+        ]
+      },
       {
         h: 'Does Grubhub track mileage?',
         p: [
@@ -431,6 +458,8 @@ module.exports = {
     faq: [
       { q: 'Does Grubhub give drivers a mileage report?', a: 'Treat any app figure as backup only. The IRS wants a log with dates, destinations, purposes and miles, which you keep yourself.' },
       { q: 'What mileage rate do Grubhub drivers use?', a: 'The IRS standard mileage rate: 72.5 cents per mile from January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026 (70 cents for 2025).' },
+      { q: 'How much can a Grubhub driver deduct for mileage?', a: 'Business miles times the IRS rate for the date driven. For example, 3,000 miles from January to June 2026 at 72.5 cents and 3,500 miles from July to December at 76 cents come to $4,835. Parking and tolls are added on top.' },
+      { q: 'Can I use one log for Grubhub and other delivery apps?', a: 'Yes. One log works if every line shows the date, the app or block, the miles and the purpose, and you can show your total miles for the year with odometer readings.' },
       { q: 'Can I deduct gas as a Grubhub driver?', a: 'Not if you use the standard mileage rate, which already includes fuel. With the actual expense method you deduct the business share of gas, repairs and insurance instead.' }
     ]
   },
@@ -518,7 +547,7 @@ module.exports = {
     title: 'CRA Mileage Log 2026: Rules, Rates and How to Claim',
     h1: 'CRA Mileage Log: What to Record and How to Claim',
     blurb: '2026 rates, T2125 vs T777, allowances',
-    description: 'How the CRA mileage log works in 2026: what to record, how self-employed people and employees claim vehicle expenses, the 73¢/67¢ allowance rates and a free online logbook.',
+    description: 'CRA mileage log in 2026: what to record, how self-employed people and employees claim vehicle costs, the 73¢/67¢ allowance rates and a free online logbook.',
     keyword: 'cra mileage log',
     region: 'ca',
     leadHtml: 'Whether you are self-employed or an employee using your own car, the CRA bases your vehicle claim on a <strong>logbook</strong> of business trips. Here is what to record, how the log turns into a deduction, and the 2026 allowance rates. Log trips below and download a PDF with your business-use percentage, or get the <a href="/cra-mileage-log-template">printable CRA template</a>.',
@@ -614,14 +643,18 @@ module.exports = {
   },
 
   'free-mileage-log-template': {
-    updated: UPDATED,
+    updated: REVIEWED,
+    updatedText: REVIEWED_TEXT,
+    updatedNote: 'IRS rates and the Publication 463 record-keeping rules were re-read on irs.gov that day',
+    checkedNote: 'The IRS rate table and Publication 463 chapter 5 were re-read on irs.gov on ' + REVIEWED_TEXT + '. The Canadian logbook facts date from October 7, 2026.',
     title: 'Free Mileage Log Template 2026 (Excel & Printable PDF)',
     h1: 'Free Mileage Log Template',
     blurb: 'Excel and printable PDF templates',
-    description: 'Free mileage log templates: Excel with formulas for the 2026 IRS rates and printable PDFs for general business, real estate, rideshare and delivery, and CRA logbooks.',
+    description: 'Free mileage log templates: Excel with the 2026 IRS rates, printable PDFs for business, real estate, rideshare and delivery, and CRA logbooks.',
     keyword: 'free mileage log template',
     layout: 'article',
     leadHtml: 'Download a blank mileage log in Excel or as a printable PDF. Every template has the columns the IRS asks for (date, destination, business purpose, miles) plus odometer readings. Rather type than print? The free generator builds the same log as a PDF.',
+    answerHtml: '<p><strong>Each business trip needs a date, a destination, a business purpose and the miles driven, plus your total miles for the year.</strong> The IRS accepts any format (paper, Excel, Google Sheets or an app) if you fill it in at or near the time of the trip. A log kept weekly counts as timely (Publication 463, chapter 5).</p>',
     ctaLabel: 'Use the online generator',
     sources: ['pub463', 'irsRates', 'irsMidyear', 'craRecords'],
     related: ['irs-mileage-log-requirements', 'mileage-log-self-employed', 'mileage-log-real-estate-agents', 'mileage-log-uber-drivers', 'cra-mileage-log-template', 'mileage-log-doordash-drivers'],
@@ -633,8 +666,30 @@ module.exports = {
         html: '<ul><li><strong>General / self-employed:</strong> one row per trip with odometer columns. The Excel version applies 72.5¢ or 76¢ by date for 2026.</li>' +
           '<li><strong>Real estate agents:</strong> adds property address and client or MLS number.</li>' +
           '<li><strong>Rideshare and delivery:</strong> one row per shift with odometer out and in, plus the app\'s mileage figure.</li>' +
-          '<li><strong>Canada:</strong> a CRA kilometre logbook with business-use %, an expense sheet and the simplified logbook formula.</li></ul>' +
-          '<p>Only need the reimbursement figure for a list of trips? The <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a> prices each trip at the IRS rate for its date (or your employer\'s rate) and downloads a CSV that opens in Excel.</p>'
+          '<li><strong>Canada:</strong> a CRA kilometre logbook with business-use %, an expense sheet and the simplified logbook formula (<a href="/cra-mileage-log-template">CRA mileage log template</a>, <a href="/mileage-log-canada">how the CRA rules work</a>).</li></ul>' +
+          '<p>Only need the reimbursement figure for a list of trips? The <a href="/mileage-reimbursement-calculator">mileage reimbursement calculator</a> prices each trip at the IRS rate for its date (or your employer\'s rate) and downloads a CSV that opens in Excel. For a printable claim sheet with totals and signature lines, use the <a href="/mileage-reimbursement-form">mileage reimbursement form</a>.</p>'
+      },
+      {
+        h: 'Excel, printable PDF or the online generator?',
+        id: 'formats',
+        html: '<div class="table-wrap"><table class="data"><thead><tr><th>Format</th><th>Best for</th><th>Opens in</th><th>IRS rate</th></tr></thead><tbody>' +
+          '<tr><td><strong>Excel (.xlsx)</strong></td><td>Anyone who wants the totals worked out</td><td>Excel, or Google Sheets after you upload the file to Drive</td><td>Formulas apply 72.5¢ or 76¢ by trip date for 2026</td></tr>' +
+          '<tr><td><strong>Printable PDF</strong></td><td>A paper log kept in the car and filled in by hand</td><td>Any PDF viewer and any printer (Letter size)</td><td>You multiply the total yourself, using the rate for each period</td></tr>' +
+          '<tr><td><strong>Online generator</strong></td><td>Typing trips once and getting a finished PDF</td><td>A browser; nothing to install, no signup</td><td>Applied to each trip by its date</td></tr>' +
+          '</tbody><caption>The free PDF from the generator carries a light watermark; Pro ($9 once) removes it and adds Excel and CSV export.</caption></table></div>'
+      },
+      {
+        h: 'What does the IRS want in each row of a mileage log?',
+        id: 'fields',
+        html: '<div class="table-wrap"><table class="data"><thead><tr><th>Column</th><th>In the IRS list?</th><th>Why</th></tr></thead><tbody>' +
+          '<tr><td><strong>Date of the trip</strong></td><td>Yes</td><td>Publication 463, Table 5-1: "the date of the use of the car"</td></tr>' +
+          '<tr><td><strong>Destination</strong></td><td>Yes</td><td>"Your business destination"</td></tr>' +
+          '<tr><td><strong>Business purpose</strong></td><td>Yes</td><td>Write what the trip was for ("walkthrough, 410 Pine St"), not just "work"</td></tr>' +
+          '<tr><td><strong>Miles for each business use</strong></td><td>Yes</td><td>"The mileage for each business use"</td></tr>' +
+          '<tr><td><strong>Total miles for the year</strong></td><td>Yes</td><td>Odometer readings on January 1 and December 31 show it</td></tr>' +
+          '<tr><td><strong>Odometer at start and end of each trip</strong></td><td>No, but useful</td><td>Lets anyone check the miles against the odometer</td></tr>' +
+          '<tr><td><strong>Starting address</strong></td><td>No, but useful</td><td>Makes the route easy to verify</td></tr>' +
+          '</tbody><caption>Source: IRS Publication 463, chapter 5, Table 5-1 (How To Prove Certain Business Expenses), page updated April 30, 2026; read on ' + REVIEWED_TEXT + '.</caption></table></div>'
       }
     ],
     tipsHeading: 'Fill it in so it holds up',
@@ -645,10 +700,20 @@ module.exports = {
       'Keep parking and toll receipts with the log',
       'Keep the log for at least 3 years after you file'
     ],
-    sections: [],
+    sections: [
+      {
+        h: 'More mileage guides',
+        p: [
+          'Filing: <a href="/how-to-deduct-mileage-on-taxes">how to deduct mileage on taxes</a>, <a href="/mileage-deduction-vs-actual-expenses">standard mileage rate or actual expenses</a>, the <a href="/medical-mileage-deduction">medical mileage rate</a> and the <a href="/mileage-log-2026-irs-rate">2026 IRS rate</a>, with every earlier year in the <a href="/irs-mileage-rate-history">rate history</a>.',
+          'Drivers: <a href="/tax-deductions-for-uber-lyft-drivers">Uber and Lyft deductions</a>, the <a href="/mileage-log-grubhub-drivers">Grubhub mileage log</a> and the <a href="/mileage-log-doordash-drivers">DoorDash mileage log</a>. Missed a few weeks? <a href="/forgot-to-track-mileage">Forgot to track mileage</a> explains how to rebuild the log.'
+        ]
+      }
+    ],
     faq: [
+      { q: 'What should a mileage log include?', a: 'For each business trip: the date, the destination, the business purpose and the miles driven. Add your odometer readings at the start and end of the year to show total miles. Publication 463 (Table 5-1) lists these elements for car expenses.' },
       { q: 'Is a printed mileage log acceptable to the IRS?', a: 'Yes. The IRS does not require any particular format. A handwritten log is fine if it records the date, destination, business purpose and miles for each trip, kept at or near the time.' },
       { q: 'Does the Excel template work in Google Sheets?', a: 'Yes. Upload the .xlsx file to Google Drive and open it with Google Sheets; the formulas carry over.' },
+      { q: 'Is there a printable mileage reimbursement sheet?', a: 'Yes. The <a href="/mileage-reimbursement-form">mileage reimbursement form</a> prices each trip at the IRS rate for its date, or at your employer\'s rate, and prints or saves as a PDF with totals and signature lines. The templates on this page are for keeping the log itself.' },
       { q: 'Do the templates cost anything?', a: 'No. The templates and the online generator are free. Pro ($9 one-time) only adds a watermark-free PDF, Excel/CSV export of your logged trips and your logo.' }
     ]
   }

@@ -28,6 +28,7 @@
   <span class="badge"><%= badge %></span>
   <h1><%= page.h1 %></h1>
   <p class="lead"><%- page.leadHtml || page.intro %></p>
+  <% if (page.updatedText) { %><p class="updated-line">Updated <time datetime="<%= page.updated %>"><%= page.updatedText %></time><%= page.updatedNote ? '. ' + page.updatedNote : '' %></p><% } %>
   <div class="hero-ctas">
     <a href="#generator" class="btn"><%= page.ctaLabel || (region === 'ca' ? 'Fill in the logbook online' : 'Create your mileage log') %></a>
     <% if (page.templates && page.templates.length) { %><a href="#templates" class="btn btn-ghost">Download the template</a><% } %>
