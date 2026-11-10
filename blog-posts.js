@@ -1,12 +1,25 @@
 // Blog posts — long-form SEO content (1500+ words each)
 // Each post targets a specific high-volume keyword cluster
 
+const RATES = require('./lib/rates.js');
+
 const BLOG_POSTS = {
 
 'how-to-deduct-mileage-on-taxes': {
   title: 'How to Deduct Mileage on Taxes in 2026 (Step-by-Step Guide)',
-  description: 'Complete 2026 guide to deducting business mileage on your taxes. Learn the IRS standard mileage rate, what counts as business miles, and how to file Schedule C correctly.',
+  description: 'How to deduct business mileage in 2026: IRS rates (72.5¢, then 76¢ from July 1), what counts as a business mile, records to keep and Schedule C, line 9.',
   keyword: 'how to deduct mileage on taxes',
+  updated: RATES.REVIEWED,
+  updatedText: RATES.REVIEWED_TEXT,
+  updatedNote: 'The IRS rates and the Publication 463 record rules were re-read that day',
+  checkedNote: 'Rates and record-keeping rules last checked on irs.gov on ' + RATES.REVIEWED_TEXT + '.',
+  answer: 'Multiply your business miles by the IRS standard rate for the date you drove (72.5 cents a mile through June 30, 2026 and 76 cents from July 1) and enter the total on Schedule C, line 9. You need a log with the date, destination, business purpose and miles for each trip, kept at or near the time.',
+  faq: [
+    { q: 'How do I claim mileage on my tax return?', a: 'Self-employed people claim it on Schedule C, line 9 (car and truck expenses): business miles multiplied by the IRS rate for when they were driven, plus parking and tolls. Part IV of the schedule asks for total, business and personal miles.' },
+    { q: 'What is the IRS mileage rate for 2026?', a: '72.5 cents per business mile from January 1 to June 30, 2026 and 76 cents from July 1, 2026. The 2025 rate was 70 cents. See the rate history for every year since 2011.' },
+    { q: 'Can employees deduct mileage?', a: 'Generally not. Since the Tax Cuts and Jobs Act, W-2 employees cannot deduct unreimbursed business mileage on their federal return, with exceptions for armed forces reservists, qualifying performing artists and fee-basis state or local government officials.' },
+    { q: 'Do I need a mileage log to deduct mileage?', a: 'Yes. Publication 463 asks for the date, destination, business purpose and miles of each trip, plus total miles for the year, recorded at or near the time. A log kept weekly counts as timely.' }
+  ],
   date: 'May 2026',
   read: '8 min',
   content: [
@@ -24,7 +37,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'h2',
-      text: 'The two methods: standard mileage vs. actual expenses'
+      text: 'Standard mileage or actual expenses: which method should you use?'
     },
     {
       type: 'p',
@@ -48,7 +61,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'h2',
-      text: 'How to file the deduction (Schedule C, line 9)'
+      text: 'How do you file the mileage deduction on Schedule C?'
     },
     {
       type: 'p',
@@ -56,7 +69,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'h2',
-      text: 'Common mistakes that trigger audits'
+      text: 'Which mileage mistakes get a deduction questioned?'
     },
     {
       type: 'p',
@@ -74,8 +87,13 @@ const BLOG_POSTS = {
 },
 
 'mileage-deduction-vs-actual-expenses': {
-  title: 'Standard Mileage Rate vs. Actual Expenses: Which Saves More on Taxes?',
-  description: 'Compare the IRS standard mileage rate (76¢/mile from July 2026, 72.5¢ before) to the actual expenses method. Calculate which deduction method puts more money in your pocket.',
+  title: 'Standard Mileage Rate vs. Actual Expenses: Which Saves More?',
+  description: 'Standard mileage rate (76¢ from July 2026, 72.5¢ before) or actual vehicle expenses: how each is worked out, when each wins and the first-year rule.',
+  updated: RATES.REVIEWED,
+  updatedText: RATES.REVIEWED_TEXT,
+  updatedNote: 'The IRS rates used in the examples were re-read that day',
+  checkedNote: 'Rates last checked on irs.gov on ' + RATES.REVIEWED_TEXT + '.',
+  answer: 'The standard mileage rate multiplies business miles by the IRS rate (72.5 cents through June 2026, 76 cents from July 1) and is usually better for cheap-to-run cars and high mileage. Actual expenses multiply your total vehicle costs by your business-use percentage and tend to win for expensive vehicles driven fewer miles.',
   keyword: 'standard mileage vs actual expenses',
   date: 'May 2026',
   read: '7 min',
@@ -118,7 +136,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'h2',
-      text: 'The lock-in rule you must know'
+      text: 'What is the first-year lock-in rule?'
     },
     {
       type: 'p',
@@ -126,7 +144,7 @@ const BLOG_POSTS = {
     },
     {
       type: 'h2',
-      text: 'How to actually decide'
+      text: 'How do you decide which method to use?'
     },
     {
       type: 'p',
@@ -136,8 +154,13 @@ const BLOG_POSTS = {
 },
 
 'tax-deductions-for-uber-lyft-drivers': {
-  title: 'Tax Deductions for Uber and Lyft Drivers: The 2026 Complete List',
-  description: 'Every tax deduction available to Uber and Lyft drivers in 2026: mileage, phone bills, snacks for passengers, car washes, and more. Save thousands at tax time.',
+  title: 'Uber and Lyft Driver Tax Deductions: The 2026 Complete List',
+  description: 'Uber and Lyft driver tax deductions for 2026: mileage at 72.5¢, then 76¢, phone, tolls, car washes, insurance and more, with the proof to keep.',
+  updated: RATES.REVIEWED,
+  updatedText: RATES.REVIEWED_TEXT,
+  updatedNote: 'The mileage rates were re-read on irs.gov that day',
+  checkedNote: 'Mileage rates last checked on irs.gov on ' + RATES.REVIEWED_TEXT + '.',
+  answer: 'Uber and Lyft drivers are independent contractors, so mileage is the largest deduction: 72.5 cents per business mile through June 30, 2026 and 76 cents from July 1, counted from going online to going offline. Phone, tolls, parking, car washes and health insurance premiums are deducted on top, with records to back each one.',
   keyword: 'uber lyft driver tax deductions',
   date: 'May 2026',
   read: '8 min',

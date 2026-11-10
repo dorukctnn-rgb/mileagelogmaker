@@ -2,6 +2,25 @@
 <html lang="en">
 <head>
 <%- include('partials/head', { title: 'Mileage Tax Guides: IRS Rules, Rates and Deductions', description: 'Plain-English guides to IRS mileage rules, the 2026 rate change, standard mileage vs actual expenses and deductions for rideshare drivers.', canonical: canonical }) %>
+<%
+  var guideCards = [
+    { href: '/mileage-log-2026-irs-rate', label: 'Rates, updated November 2026', h: '2026 IRS mileage rate: 72.5¢, then 76¢ from July 1', p: 'Business, medical, moving and charity rates for each part of 2026, with the worked example.' },
+    { href: '/irs-mileage-rate-history', label: 'Rates, updated November 2026', h: 'IRS mileage rate history, 2011 to 2026', p: 'Every business, medical or moving, and charity rate by year, including the mid-year changes.' },
+    { href: '/free-mileage-log-template', label: 'Templates, updated November 2026', h: 'Free mileage log templates in Excel and PDF', p: 'What each row of a mileage log needs, and which template fits a general, real estate or delivery log.' },
+    { href: '/forgot-to-track-mileage', label: 'Guide, updated November 2026', h: 'Forgot to track mileage? What to do now', p: 'What the IRS accepts when a log is missing and how to rebuild one from calendars, invoices and app histories.' }
+  ];
+  var itemList = posts.map(function (p) { return { url: SITE + '/' + p.slug, name: p.title }; })
+    .concat([{ url: SITE + '/mileage-reimbursement-form', name: 'Mileage reimbursement form 2026' }, { url: SITE + '/medical-mileage-deduction', name: 'Medical mileage rate 2026 and how to deduct it' }])
+    .concat(guideCards.map(function (g) { return { url: SITE + g.href, name: g.h }; }));
+%>
+<script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'CollectionPage', '@id': canonical + '#page', url: canonical, name: 'Mileage Tax Guides', inLanguage: 'en', dateModified: R.REVIEWED, isPartOf: { '@type': 'WebSite', name: 'MileageLogMaker', url: SITE + '/' } },
+    { '@type': 'ItemList', itemListElement: itemList.map(function (it, i) { return { '@type': 'ListItem', position: i + 1, url: it.url, name: it.name }; }) },
+    { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' }, { '@type': 'ListItem', position: 2, name: 'Blog', item: canonical }] }
+  ]
+}) %></script>
 <style>
 .posts{max-width:900px;margin:30px auto 50px;padding:0 16px;display:grid;gap:14px}
 .post-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;text-decoration:none;color:var(--navy);display:block}
@@ -37,6 +56,14 @@
     <h2>Medical mileage rate 2026 and how to deduct it</h2>
     <p>20.5¢ a mile to June 30 and 23.5¢ from July 1, what counts as medical travel, parking and tolls, and the 7.5% floor on Schedule A.</p>
   </a>
+  <h2 class="posts-h">Rates, templates and rebuilding a log</h2>
+  <% guideCards.forEach(function (g) { %>
+  <a href="<%= g.href %>" class="post-card">
+    <div class="meta"><%= g.label %></div>
+    <h2><%= g.h %></h2>
+    <p><%= g.p %></p>
+  </a>
+  <% }); %>
 </div>
 <%- include('partials/footer') %>
 <%- include('partials/pro-modal') %>
