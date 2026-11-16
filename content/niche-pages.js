@@ -173,7 +173,7 @@ const NICHE_PAGES = {
     title: 'MileIQ Alternatives 2026: Current Prices and Free Options',
     h1: 'MileIQ alternatives: what MileIQ costs now, and what to use instead',
     badge: 'Prices checked on each vendor\'s own site on October 9, 2026',
-    description: 'MileIQ Unlimited is $13.99 a month or $11.66 billed annually; the free plan stops at 40 drives. TripLog, Everlance and Driversnote prices, checked October 9, 2026.',
+    description: 'MileIQ Unlimited is $13.99 a month or $11.66 billed annually; the free plan stops at 40 drives. TripLog, Everlance and Driversnote prices, Oct 9, 2026.',
     keyword: 'mileiq alternative',
     ctaLabel: 'Create a free mileage log',
     leadHtml: 'MileIQ Unlimited costs <strong>$13.99 a month</strong>, or <strong>$11.66 a month billed annually</strong> ($139.92 a year), and the free plan stops at <strong>40 drives a month</strong> (<a href="https://mileiq.com/pricing" target="_blank" rel="noopener">mileiq.com/pricing</a>, checked October 9, 2026). Below are the prices and free-plan limits of the main alternatives, read from each vendor\'s own pricing page on the same day, and a plain answer to whether you need an app at all.',
