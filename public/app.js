@@ -161,7 +161,7 @@
         var wasPro = r.headers.get('X-MLM-Pro') === '1';
         return r.blob().then(function (b) {
           download(b, fileName('pdf'));
-          if (license && !wasPro) alert('Your Pro key could not be confirmed with Gumroad just now, so this PDF has the free watermark. Try again in a minute, or re-enter the key under Get Pro.');
+          if (license && !wasPro) alert('Your Pro key could not be confirmed just now, so this PDF has the free watermark. Try again in a minute, or re-enter the key under Get Pro.');
           return wasPro || !!license;
         });
       })
@@ -177,7 +177,7 @@
       .then(function (r) {
         if (r.status === 402) {
           return r.json().then(function (d) {
-            if (d.reason === 'unavailable') alert('Gumroad could not confirm your key just now. Please try again in a minute.');
+            if (d.reason === 'unavailable') alert('Your key could not be confirmed just now. Please try again in a minute.');
             else { license = ''; store('mlm_license', ''); updateProUI(); openPro(); }
             throw new Error('license');
           });
@@ -204,8 +204,8 @@
 
   function verifyLicense() {
     var key = val('licenseKey').trim(), status = $('licenseStatus');
-    if (!key) { status.textContent = 'Paste the license key from your Gumroad receipt.'; status.className = 'modal-status error'; return; }
-    status.textContent = 'Checking with Gumroad...'; status.className = 'modal-status';
+    if (!key) { status.textContent = 'Paste the license key from your receipt.'; status.className = 'modal-status error'; return; }
+    status.textContent = 'Checking your key...'; status.className = 'modal-status';
     fetch('/verify-pro', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ license_key: key }) })
       .then(function (r) { return r.json(); })
       .then(function (d) {
@@ -216,7 +216,7 @@
         } else {
           status.className = 'modal-status error';
           status.textContent = d.reason === 'refunded' ? 'This purchase was refunded, so the key is no longer active.'
-            : d.reason === 'unavailable' ? 'Gumroad could not be reached. Please try again in a minute.'
+            : d.reason === 'unavailable' ? 'The key check could not be reached. Please try again in a minute.'
             : 'That key was not found for MileageLogMaker Pro. Check for typos or copy it again from your receipt.';
         }
       })

@@ -9,6 +9,8 @@ const Reimburse = require('./public/reimburse.js');
 const ReimburseSheet = require('./public/reimburse-sheet.js');
 const Medical = require('./public/medical-mileage.js');
 const { verifyLicense } = require('./lib/license.js');
+// The Paddle checkout switch (off: every page renders as before; see lib/paddle.js).
+const paddle = require('./lib/paddle.js');
 const { buildLogPdf } = require('./lib/pdf.js');
 const { buildCsv, buildXlsx } = require('./lib/export.js');
 
@@ -42,6 +44,13 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1h' }));
 app.use(express.json({ limit: '2mb' }));
+
+// The Paddle checkout switch (off: every page renders as before; see lib/paddle.js).
+app.use((req, res, next) => {
+  res.locals.paddleCheckout = paddle.enabled();
+  if (res.locals.paddleCheckout) res.set('Content-Security-Policy', paddle.CSP);
+  next();
+});
 
 app.locals.SITE = SITE;
 app.locals.GUMROAD_URL = GUMROAD_URL;

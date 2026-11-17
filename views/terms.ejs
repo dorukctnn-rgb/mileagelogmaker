@@ -24,7 +24,7 @@
   <ul>
     <li>Pro costs $9 (US dollars), paid once. It is not a subscription.</li>
     <li>Pro removes the "Free version" watermark from your PDF logs, lets you export your trips to Excel and CSV, and adds your business logo to the PDF, for IRS, CRA and HMRC logs.</li>
-    <li>After you buy, you receive a license key by email. Enter it in the Get Pro window to turn Pro on in that browser; you can enter the same key on your other devices. Please keep the key to yourself and your business, and do not post it publicly.</li>
+    <% if (locals.paddleCheckout) { %><li>After you pay, Pro turns on in your browser, and we e-mail you a Pro link that turns it on on your other devices. Please keep the link to yourself and your business, and do not post it publicly. If you bought Pro on Gumroad, enter the license key from your Gumroad receipt in the Get Pro window instead.</li><% } else { %><li>After you buy, you receive a license key by email. Enter it in the Get Pro window to turn Pro on in that browser; you can enter the same key on your other devices. Please keep the key to yourself and your business, and do not post it publicly.</li><% } %>
     <li>Our order process is conducted by our online resellers Paddle.com and Gumroad. They are the Merchant of Record for all our orders, handle payment, sales tax/VAT and refunds, and their own terms also apply to your purchase.</li>
   </ul>
 

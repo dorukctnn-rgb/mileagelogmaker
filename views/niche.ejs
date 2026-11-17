@@ -9,7 +9,7 @@
       dateModified: page.updated || '2026-10-07', isPartOf: { '@type': 'WebSite', name: 'MileageLogMaker', url: SITE + '/' } },
     { '@type': 'BreadcrumbList', itemListElement: crumbs },
     { '@type': 'WebApplication', name: 'MileageLogMaker', url: SITE + '/', applicationCategory: 'FinanceApplication', operatingSystem: 'Any (web browser)',
-      offers: [{ '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' }, { '@type': 'Offer', name: 'Pro (one-time)', price: '9', priceCurrency: 'USD', url: GUMROAD_URL }] }
+      offers: [{ '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' }, { '@type': 'Offer', name: 'Pro (one-time)', price: '9', priceCurrency: 'USD', url: locals.paddleCheckout ? SITE + '/#pricing' : GUMROAD_URL }] }
   ];
   if (page.faq && page.faq.length) {
     graph.push({ '@type': 'FAQPage', mainEntity: page.faq.map(function (f) { return { '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]*>/g, '') } }; }) });
