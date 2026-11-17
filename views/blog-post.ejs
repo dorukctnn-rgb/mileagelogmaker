@@ -37,7 +37,7 @@
   <% if (post.updatedText) { %><p class="updated-line">Updated <time datetime="<%= post.updated %>"><%= post.updatedText %></time><%= post.updatedNote ? '. ' + post.updatedNote : '' %></p><% } %>
   <% if (post.answer) { %><div class="answer"><p><strong>Short answer:</strong> <%= post.answer %></p></div><% } %>
   <% post.content.forEach(function(block, idx){ %>
-    <% if(block.type === 'h2'){ %><h2><%= block.text %></h2><% } else { %><p><%= block.text %></p><% } %>
+    <% if(block.type === 'h2'){ %><h2><%= block.text %></h2><% } else if(block.type === 'html'){ %><p><%- block.html %></p><% } else { %><p><%= block.text %></p><% } %>
     <% if(idx === 3){ %>
       <div class="cta">
         <h3>Make your mileage log in a few minutes</h3>

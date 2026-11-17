@@ -1,5 +1,5 @@
 <h2 id="calculator"><%= page.calcHeading || 'DoorDash mileage deduction calculator' %></h2>
-<p>Enter your business miles to see the standard mileage deduction and a rough idea of the tax it saves. The deduction lowers both self-employment tax and income tax, so it is worth more than your income tax bracket alone.</p>
+<% if (page.calcIntroHtml) { %><p><%- page.calcIntroHtml %></p><% } else { %><p>Enter your business miles to see the standard mileage deduction and a rough idea of the tax it saves. The deduction lowers both self-employment tax and income tax, so it is worth more than your income tax bracket alone.</p><% } %>
 <div class="calc" id="dcalc">
   <div class="grid">
     <div class="field"><label for="dcYear">Tax year</label>
@@ -11,7 +11,7 @@
   </div>
   <div class="calc-out" id="dcOut"></div>
 </div>
-<p style="font-size:14px;color:#56657a">How it is calculated: deduction = miles x IRS rate for the date driven. Self-employment tax saved is about deduction x 92.35% x 15.3% (Schedule SE). Income tax saved is about deduction x your bracket. This ignores state tax, the QBI deduction and the deduction for half of self-employment tax, so treat it as an estimate, not tax advice.</p>
+<p style="font-size:14px;color:#56657a"><% if (page.calcNoteHtml) { %><%- page.calcNoteHtml %><% } else { %>How it is calculated: deduction = miles x IRS rate for the date driven. Self-employment tax saved is about deduction x 92.35% x 15.3% (Schedule SE). Income tax saved is about deduction x your bracket. This ignores state tax, the QBI deduction and the deduction for half of self-employment tax, so treat it as an estimate, not tax advice.<% } %></p>
 <script>
 (function () {
   function g(id) { return document.getElementById(id); }

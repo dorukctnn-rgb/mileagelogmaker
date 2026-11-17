@@ -235,14 +235,13 @@ app.get('/refund', (req, res) => res.render('refund'));
 // Pages retired in October 2026 because Search Console reported them "Crawled - currently not indexed",
 // "Discovered - currently not indexed" or unknown: each was a short duplicate of a stronger page.
 // Each one now 301s to the page that answers the same search better.
+// 17 Nov 2026: the Lyft and Instacart slugs came back as full guides (content/pages-core.js), so they are no longer in this list.
 const RETIRED = {
   'mileage-log-generator': '/',
   'mileage-log-2026': '/free-mileage-log-template',
   'irs-mileage-rate-2026-explained': '/mileage-log-2026-irs-rate',
   'forgot-to-track-mileage-what-now': '/forgot-to-track-mileage',
-  'mileage-log-lyft-drivers': '/mileage-log-uber-drivers',
   'mileage-log-amazon-flex': '/mileage-log-doordash-drivers',
-  'mileage-log-instacart-shoppers': '/mileage-log-doordash-drivers',
   'mileage-log-nurses': '/mileage-log-self-employed',
   'mileage-log-construction-contractors': '/mileage-log-self-employed',
   'mileage-log-therapists': '/mileage-log-self-employed'
