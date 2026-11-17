@@ -46,4 +46,5 @@ IRS standard mileage rates for 2026, as read on irs.gov on November 10, 2026: bu
 - [Mileage tax guides (blog)](https://www.mileagelogmaker.com/blog)
 - [Privacy policy](https://www.mileagelogmaker.com/privacy)
 - [Terms](https://www.mileagelogmaker.com/terms)
+- [Refund policy](https://www.mileagelogmaker.com/refund)
 - Contact: info@peakappsstudio.com

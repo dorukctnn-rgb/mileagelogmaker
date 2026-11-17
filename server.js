@@ -15,7 +15,7 @@ const { buildCsv, buildXlsx } = require('./lib/export.js');
 // The live host is www (the apex redirects there). Canonicals, og:url, JSON-LD and the sitemap all use it.
 const SITE = 'https://www.mileagelogmaker.com';
 const SITE_UPDATED = '2026-10-07';
-const LEGAL_UPDATED = '2026-10-11';
+const LEGAL_UPDATED = '2026-11-17';
 const GUMROAD_URL = 'https://dorukctn.gumroad.com/l/agbyxg';
 const INDEXNOW_KEY = 'aa6a5d532ea7f04d9077914e370757fd';
 
@@ -221,6 +221,7 @@ app.get('/blog', (req, res) => {
 
 app.get('/privacy', (req, res) => res.render('privacy'));
 app.get('/terms', (req, res) => res.render('terms'));
+app.get('/refund', (req, res) => res.render('refund'));
 
 // Pages retired in October 2026 because Search Console reported them "Crawled - currently not indexed",
 // "Discovered - currently not indexed" or unknown: each was a short duplicate of a stronger page.
@@ -260,7 +261,7 @@ app.get('/:slug', (req, res, next) => {
 
 // ===== Sitemap / robots =====
 app.get('/sitemap.xml', (req, res) => {
-  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', NEW_PAGES_CHECKED], ['/mileage-reimbursement-form', NEW_PAGES_CHECKED], ['/medical-mileage-deduction', R.REVIEWED], ['/blog', R.REVIEWED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED]]
+  const entries = [['/', SITE_UPDATED], ['/mileage-reimbursement-calculator', NEW_PAGES_CHECKED], ['/mileage-reimbursement-form', NEW_PAGES_CHECKED], ['/medical-mileage-deduction', R.REVIEWED], ['/blog', R.REVIEWED], ['/privacy', LEGAL_UPDATED], ['/terms', LEGAL_UPDATED], ['/refund', LEGAL_UPDATED]]
     .concat(Object.keys(NICHE_PAGES).map(s => ['/' + s, NICHE_PAGES[s].updated || SITE_UPDATED]))
     .concat(Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITE_UPDATED]));
   const urls = entries.map(([p, d]) => `  <url><loc>${SITE}${p}</loc><lastmod>${d}</lastmod></url>`).join('\n');
