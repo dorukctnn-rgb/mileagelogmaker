@@ -24,7 +24,8 @@ const GIG_SOURCES = [
   { label: 'IRS Publication 463, chapter 4: Transportation (commuting, standard mileage rate, parking and tolls)', url: 'https://www.irs.gov/publications/p463' },
   { label: 'IRS Topic no. 510: Business use of car', url: 'https://www.irs.gov/taxtopics/tc510' },
   { label: 'IRS: Instructions for Schedule C (Form 1040), line 9 and Part IV', url: 'https://www.irs.gov/instructions/i1040sc' },
-  { label: 'IRS: Manage taxes for your gig work', url: 'https://www.irs.gov/businesses/small-businesses-self-employed/manage-taxes-for-your-gig-work' }
+  { label: 'IRS: Manage taxes for your gig work', url: 'https://www.irs.gov/businesses/small-businesses-self-employed/manage-taxes-for-your-gig-work' },
+  { label: 'IRS Topic no. 554: Self-employment tax (92.35% of net earnings)', url: 'https://www.irs.gov/taxtopics/tc554' }
 ];
 const GIG_CHECKED_NOTE = 'The IRS pages above were read on irs.gov on ' + GIG_CHECKED_TEXT + '. The mileage rates were compared with the IRS rate table on ' + REVIEWED_TEXT + '.';
 
@@ -482,29 +483,30 @@ module.exports = {
     updatedText: GIG_CHECKED_TEXT,
     updatedNote: 'The IRS pages cited below were read that day',
     checkedNote: GIG_CHECKED_NOTE,
+    hideDefaultChecked: true,
     title: 'Lyft Mileage Tracker and Deduction: Free Log (2026)',
     h1: 'Lyft mileage tracker and deduction',
     blurb: 'Rides, waiting miles and a session log',
     description: 'Free Lyft mileage tracker and log: which miles count, an example session log, the 2026 IRS deduction by date and a free PDF or printable template.',
     keyword: 'lyft mileage tracker',
-    leadHtml: 'If you drive for Lyft and file as self-employed, your ride miles are a Schedule C deduction at the IRS rate: 72.5¢ a mile before July 1, 2026 and 76¢ from July 1. A Lyft mileage tracker only helps if it also counts the miles between rides. Log each session below, or print the template and keep it in the car.',
+    leadHtml: 'Lyft drivers who file as self-employed can deduct their business miles on Schedule C. The IRS rate is 72.5¢ a mile before July 1, 2026 and 76¢ from July 1. A Lyft mileage tracker or log should count the drive to each pickup and the driving between requests, as well as the rides. Log each session below, or print the template and keep it in the car.',
     calculator: 'delivery',
     calcFirst: true,
     calcHeading: 'Lyft mileage deduction calculator',
     calcNoteHtml: 'How the figures are worked out: each mile is priced at the rate for the half of 2026 it was driven in. Self-employment tax saved is about 15.3% of 92.35% of the deduction, and income tax saved is the deduction times the bracket you pick. State tax, the QBI deduction and the deduction for half of self-employment tax are left out, so read the result as a rough guide and not as tax advice.',
-    calcIntroHtml: 'Add up the Miles column of your session log, once for the lines before July 1 and once for the lines from July 1, and enter the two totals. The calculator prices them at the two 2026 rates and gives a rough idea of the tax saved. The deduction also reduces self-employment tax, so each logged mile is worth more than your income tax bracket suggests.',
+    calcIntroHtml: 'Add up the Miles column of your session log twice: once for the lines before July 1 and once for the lines from July 1. Enter the two totals. The calculator prices them at the two 2026 rates and gives a rough idea of the tax saved. The deduction also cuts self-employment tax, so each logged mile is worth more than your income tax bracket suggests.',
     purposePlaceholder: 'Lyft: rides and waiting for requests, downtown and airport',
     sources: ['irsRates', 'irsMidyear', 'irsSE', 'pub463'],
     extraSources: GIG_SOURCES,
     related: ['mileage-log-uber-drivers', 'tax-deductions-for-uber-lyft-drivers', 'mileage-log-grubhub-drivers', 'mileage-log-doordash-drivers', 'irs-mileage-log-requirements', 'forgot-to-track-mileage'],
     templates: [T.rsXlsx, T.rsPdf],
     templatesHeading: 'Printable Lyft session log',
-    templatesIntro: 'One row per session: date, platform, odometer out and in, total miles and notes. The same sheet works for Uber and delivery apps.',
+    templatesIntro: 'One row per session: date, platform, area and purpose, odometer out and in, and miles. The same sheet works for Uber and delivery apps.',
     tipsHeading: 'Lyft miles to track',
     tips: [
       'Miles while you are available for rides: to each pickup, with a rider on board and waiting between requests',
-      'The drive back after a long ride, such as an airport drop-off, even with no rider',
-      'Business errands for the car you drive for Lyft: car wash, oil change, inspection',
+      'The drive back after a long ride, such as an airport drop-off, while the app is still on',
+      'Separately: trips with the app off for the car itself, such as an oil change or inspection',
       'Separately: home to the area where you go online and back (the commuting rules decide these)',
       'Keep your earnings statements and ride records as backup for the dates'
     ],
@@ -522,7 +524,7 @@ module.exports = {
       ],
       foot: ['Total', '', '40', '', '', '448'],
       num: [2, 3, 4, 5],
-      caption: 'Example figures. 448 miles x 76¢ = $340.48 of deduction for these six lines, all after July 1, 2026. Parking and tolls are kept as receipts and added on top.'
+      caption: 'Example figures. 448 miles x 76¢ = $340.48 of deduction for these six lines, all after July 1, 2026, if the Nov 12 oil change trip counts. Parking and tolls are kept as receipts and added on top.'
     },
     sections: [
       {
@@ -542,7 +544,7 @@ module.exports = {
       {
         h: 'Which Lyft miles count, and which do not',
         p: [
-          'Count the miles from the moment you go online until you go offline: the drive to each pickup, the rides, the waiting and the drive back after a long ride. Count business errands with the app off too, such as a car wash or an oil change for the car you drive for Lyft.',
+          'Count the miles from the moment you go online until you go offline: the drive to each pickup, the rides, the waiting and the drive back after a long ride. Trips with the app off for the car itself, such as an oil change, are not listed in the IRS pages cited here. Give each its own line, like the Nov 12 row, and decide with your preparer whether it counts.',
           'The drive from home to the area where you start taking rides is where the rules get strict. Publication 463 says you cannot deduct commuting between your home and a regular place of work. If you have no regular place of work, you also cannot deduct the daily drive from home to temporary work sites in your metropolitan area. If your home is your principal place of business, you can deduct the daily drive between your home and another work location in the same trade or business. Which case fits you is a question for a tax professional.',
           'Whatever you decide, keep this drive on its own line. Schedule C, Part IV asks for your commuting miles (line 44b), and the instructions say that in most cases commuting is travel between your home and a work location.',
           'Long rides raise one more question. If a ride ends far from your usual area and you keep working on the way back, the drive back counts. If you go offline and drive straight home, treat it like any other drive from home and keep it on its own line.',
@@ -575,7 +577,7 @@ module.exports = {
         ],
         html: '<ul>' +
           '<li>&ldquo;Lyft: rides and waiting for requests, downtown and airport&rdquo;</li>' +
-          '<li>&ldquo;Lyft: drive back from airport drop-off, no rider&rdquo;</li>' +
+          '<li>&ldquo;Lyft: drive back from airport drop-off, app on, no rider&rdquo;</li>' +
           '<li>&ldquo;Lyft and Uber both on: rides and waiting, east side&rdquo;</li>' +
           '<li>&ldquo;Car wash for the car I drive for Lyft&rdquo;</li>' +
           '<li>&ldquo;Home to downtown, before going online (kept separate)&rdquo;</li></ul>' +
@@ -597,7 +599,7 @@ module.exports = {
       {
         h: 'Do you need an app to track Lyft miles?',
         p: [
-          'No. Publication 463 accepts an account book, diary, log, statement of expense, trip sheets or a similar record, and there is no official form. A paper log, a spreadsheet or the PDF from this page all work if each line has the date, destination, purpose and miles. A simple habit is to photograph the odometer when you go online and offline and copy the numbers once a week. A log kept weekly counts as timely kept.',
+          'No. Publication 463 accepts an account book, diary, log, statement of expense, trip sheets or a similar record, and its sample log is marked as not an official IRS form. A paper log, a spreadsheet or the PDF from this page all work if each line has the date, destination, purpose and miles. A simple habit is to photograph the odometer when you go online and offline and copy the numbers once a week. A log kept weekly counts as timely kept.',
           'Plan to keep the log for at least 3 years from the date you file the return that claims the deduction. The IRS also says to keep records of the money you receive from gig work and to save receipts for your expenses. If you missed some weeks, <a href="/forgot-to-track-mileage">forgot to track mileage</a> shows how to rebuild a log from your ride records.',
           'If you would rather have a phone app do the typing, <a href="/mileiq-alternative">MileIQ alternatives</a> compares what each one charges. The free PDF here has a light watermark, and Pro ($9 one-time) removes it.'
         ]
@@ -618,12 +620,12 @@ module.exports = {
       {
         h: 'Driving for Lyft and another app in the same session',
         p: [
-          'If you keep more than one app on in the same session, one line for the session is fine as long as it names every app. The IRS wants your business miles and your total miles for the year, not a separate log per app. The <a href="/mileage-log-uber-drivers">Uber and Lyft shift log</a> has a column for the platform, and the <a href="/mileage-log-grubhub-drivers">Grubhub</a> and <a href="/mileage-log-doordash-drivers">DoorDash</a> pages cover delivery blocks. The <a href="/free-mileage-log-template">free mileage log templates</a> have a shift-by-shift sheet you can print.'
+          'If you keep more than one app on in the same session, one line for the session is fine as long as it names every app. The IRS wants your business miles and your total miles for the year, not a separate log per app. The <a href="/mileage-log-uber-drivers">Uber shift log</a> has a column for the platform, and the <a href="/mileage-log-grubhub-drivers">Grubhub</a> and <a href="/mileage-log-doordash-drivers">DoorDash</a> pages cover delivery blocks. The <a href="/free-mileage-log-template">free mileage log templates</a> have a shift-by-shift sheet you can print.'
         ]
       }
     ],
     faq: [
-      { q: 'What is the Lyft mileage deduction rate for 2026?', a: 'The IRS standard mileage rate: 72.5 cents per mile for miles driven January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026. It was 70 cents for 2025. For example, 100 business miles driven after July 1 are worth $76.00. Parking and tolls are added on top.' },
+      { q: 'What is the Lyft mileage deduction rate for 2026?', a: 'The IRS standard mileage rate: 72.5 cents per mile for miles driven January 1 to June 30, 2026, and 76 cents per mile from July 1, 2026. It was 70 cents for 2025. For example, 100 business miles driven from July 1 are worth $76.00. Parking and tolls are added on top.' },
       { q: 'Do the miles between Lyft rides count?', a: 'Yes. Driving to a pickup, carrying a rider and waiting or driving around for the next request are all business use of the car, and Publication 463 allows one record for an uninterrupted stretch of business use. Log the odometer when you go online and when you go offline. A long personal detour is the exception: end the line there and start a new one after.' },
       { q: 'Can I deduct the drive from home to where I start taking rides?', a: 'It depends on the commuting rules. Daily drives from home to a regular workplace are commuting, and so are daily drives to work sites in your own metro area if you have no regular place of work. If your home is your principal place of business, the drive from home to another work location in the same business can be deducted. Keep it on its own line, as in the section above, and decide with a tax professional.' },
       { q: 'Do I need a mileage log if I got no tax form for my Lyft income?', a: 'Yes. The IRS says to report all income even if you do not receive a Form 1099, and a deduction needs records. For car use that means the date, destination, purpose and miles of each business use, plus your total miles for the year (Publication 463).' },
@@ -636,24 +638,25 @@ module.exports = {
     updatedText: GIG_CHECKED_TEXT,
     updatedNote: 'The IRS pages cited below were read that day',
     checkedNote: GIG_CHECKED_NOTE,
+    hideDefaultChecked: true,
     title: 'Instacart Mileage Tracker and Log for Shoppers (2026)',
     h1: 'Instacart mileage log and deduction for shoppers',
     blurb: 'Batches, store to customer and return trips',
     description: 'Free Instacart shopper mileage log: how to log batches, store-to-store and return trips, with the 2026 IRS deduction by date and a free PDF or template.',
     keyword: 'instacart mileage tracker',
-    leadHtml: 'If you shop and deliver for Instacart with your own car and file as self-employed, your driving is a Schedule C deduction at the IRS rate: 72.5¢ a mile before July 1, 2026 and 76¢ from July 1. An Instacart mileage log needs a line for each trip, because the miles come in pieces: to the store, between stores, to each customer and back for returns.',
+    leadHtml: 'Instacart shoppers who use their own car and file as self-employed can deduct their business miles on Schedule C. The IRS rate is 72.5¢ a mile before July 1, 2026 and 76¢ from July 1. Shopper miles come in pieces: to the store, between stores, to each customer and back for returns. A line for each trip keeps every piece in the log.',
     calculator: 'delivery',
     calcFirst: true,
     calcHeading: 'Instacart mileage deduction calculator',
     calcNoteHtml: 'How the figures are worked out: the first box covers trips before July 1 and the second covers trips from July 1, each at its own IRS rate. The tax estimate adds self-employment tax (15.3% of 92.35% of the deduction) and income tax at the bracket you pick. It skips state tax, the QBI deduction and the deduction for half of self-employment tax, so read it as a rough guide and not as tax advice.',
-    calcIntroHtml: 'Total the Miles column of your trip lines, once for trips before July 1 and once for trips from July 1, and enter both numbers. Store, customer, second-store and return trips all go in the same total. The calculator prices each half at its 2026 rate and gives a rough idea of the tax saved, including the self-employment tax the deduction reduces.',
+    calcIntroHtml: 'Add up the Miles column of your trip lines twice: once for trips before July 1 and once for trips from July 1. Enter both numbers. Store, customer, second-store and return trips all go in the same total. The calculator prices each half at its 2026 rate and gives a rough idea of the tax saved, including self-employment tax.',
     purposePlaceholder: 'Instacart: batch, store to customer, east side',
     sources: ['irsRates', 'irsMidyear', 'irsSE', 'pub463'],
     extraSources: GIG_SOURCES,
     related: ['mileage-log-doordash-drivers', 'mileage-log-grubhub-drivers', 'mileage-log-uber-drivers', 'mileage-log-lyft-drivers', 'irs-mileage-log-requirements', 'forgot-to-track-mileage'],
     templates: [T.rsXlsx, T.rsPdf],
-    templatesHeading: 'Printable shopper mileage log',
-    templatesIntro: 'One row per trip or per batch: date, platform, odometer out and in, total miles and notes.',
+    templatesHeading: 'Printable mileage log for Instacart trips',
+    templatesIntro: 'The rideshare and delivery sheet works for shopping trips. Use one row per trip or per batch: date, platform, area and purpose, odometer out and in, and miles.',
     tipsHeading: 'Instacart miles to track',
     tips: [
       'Driving to the store after you accept a batch, and from the store to the customer',
@@ -664,13 +667,14 @@ module.exports = {
     ],
     sample: {
       h: 'Sample Instacart mileage log',
-      intro: 'One line per trip, with the odometer when you leave and when you arrive. Time spent shopping inside a store adds no miles, so it needs no line.',
+      intro: 'One line per trip, with the odometer when you leave and when you arrive. Time spent shopping adds no miles, so it needs no line. Publication 463 also allows one record for an uninterrupted stretch of business driving, so a single line from your first store to your last customer works too. Lines per trip show where each mile went.',
       head: ['Date', 'Trip', 'Odometer out', 'Odometer in', 'Miles'],
       rows: [
         ['Nov 10', 'Batch 1: store to customer, 1 order', '22,410', '22,418', '8'],
         ['Nov 10', 'Customer to the next store, batch 2', '22,418', '22,424', '6'],
         ['Nov 10', 'Batch 2: store to 2 customers', '22,424', '22,441', '17'],
-        ['Nov 10', 'Batch 3: store to second store, then customer', '22,441', '22,459', '18'],
+        ['Nov 10', 'Customer to the next store, batch 3', '22,441', '22,445', '4'],
+        ['Nov 10', 'Batch 3: store to second store, then customer', '22,445', '22,459', '14'],
         ['Nov 10', 'Return: took items back to the store', '22,459', '22,463', '4'],
         ['Nov 12', 'Batch 4: store to 3 customers', '22,502', '22,531', '29'],
         ['Nov 12', 'Customer to the next store, batch 5', '22,531', '22,537', '6'],
@@ -687,7 +691,7 @@ module.exports = {
           'Most of a batch is one of two things: driving or standing still. Only the driving goes in the log, and the odometer does the counting. Here is how a batch breaks down.'
         ],
         html: '<div class="table-wrap"><table class="data fit"><thead><tr><th>Part of the batch</th><th>Odometer moves</th><th>In the log</th></tr></thead><tbody>' +
-          '<tr><td>Driving to the store after you accept</td><td>Yes</td><td>Yes</td></tr>' +
+          '<tr><td>Home to your first store</td><td>Yes</td><td>Separate line (commuting rules)</td></tr><tr><td>Driving to the next store after you accept a batch</td><td>Yes</td><td>Yes</td></tr>' +
           '<tr><td>Shopping inside the store</td><td>No</td><td>Nothing to log</td></tr>' +
           '<tr><td>Waiting in the lot or at the curb</td><td>No</td><td>Nothing to log</td></tr>' +
           '<tr><td>Store to customer, or customer to customer</td><td>Yes</td><td>Yes</td></tr>' +
@@ -725,7 +729,7 @@ module.exports = {
         ],
         html: '<div class="table-wrap"><table class="data fit"><thead><tr><th>Time</th><th>What happens</th><th class="num">Odometer</th><th>In the log</th></tr></thead><tbody>' +
           '<tr><td>10:40</td><td>Park at the store</td><td class="num">22,424</td><td>The line starts here</td></tr>' +
-          '<tr><td>10:40 to 11:15</td><td>Shop, check out, bag the order and load the car</td><td class="num">22,424</td><td>Nothing to log, the odometer has not moved</td></tr>' +
+          '<tr><td>10:40 to 11:05</td><td>Shop, check out, bag the order and load the car</td><td class="num">22,424</td><td>Nothing to log, the odometer has not moved</td></tr>' +
           '<tr><td>11:20</td><td>Arrive at customer 1 and hand over the bags</td><td class="num">22,432</td><td>8 miles so far</td></tr>' +
           '<tr><td>11:42</td><td>Arrive at customer 2 and hand over the bags</td><td class="num">22,441</td><td>9 more miles, 17 for the batch</td></tr>' +
           '</tbody><caption>Example figures. The reading you take when you park is also your reading when you drive off, because the car does not move while you shop.</caption></table></div>' +

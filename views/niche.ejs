@@ -97,7 +97,7 @@
       <% srcKeys.forEach(function (k) { var s = R.SOURCES[k]; if (s) { %><li><a href="<%= s.url %>" target="_blank" rel="noopener"><%= s.label %></a></li><% } }); %>
     </ul>
     <% if (page.checkedNote) { %><p class="checked"><%= page.checkedNote %></p><% } %>
-    <p class="checked">Rates and rules on this page last checked against these sources on <%= R.LAST_CHECKED_TEXT %>.</p>
+    <% if (!page.hideDefaultChecked) { %><p class="checked">Rates and rules on this page last checked against these sources on <%= R.LAST_CHECKED_TEXT %>.</p><% } %>
   </div>
 </article>
 
