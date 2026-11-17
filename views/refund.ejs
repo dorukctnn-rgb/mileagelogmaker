@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head', { title: 'Refund Policy | MileageLogMaker', description: 'Refund policy for MileageLogMaker Pro: a 14-day refund on the $9 one-time purchase, how to ask for it, and how the money is paid back.', canonical: SITE + '/refund' }) %>
+</head>
+<body>
+<%- include('partials/nav') %>
+<section class="hero">
+  <h1>Refund policy</h1>
+  <p class="lead">How refunds work for MileageLogMaker Pro. It says the same as the refunds section of our <a href="/terms">terms of use</a>.</p>
+  <p class="lead">Last updated: 17 November 2026</p>
+</section>
+<article class="content">
+  <h2>What Pro costs</h2>
+  <p>Pro costs $9 (US dollars), paid once. It is not a subscription, so nothing renews and there is nothing to cancel. The free mileage log generator needs no payment.</p>
+
+  <h2>14-day refund</h2>
+  <p>If Pro does not work for you, email us within 14 days of purchase and we will refund you.</p>
+
+  <h2>How to ask for a refund</h2>
+  <p>Write to <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a> from the email address you used for the purchase and say that you would like a refund. MileageLogMaker is run by Peak Apps Studio.</p>
+
+  <h2>How you are paid back</h2>
+  <p>Our order process is conducted by our online resellers Paddle.com and Gumroad. They are the Merchant of Record for all our orders, handle payment, sales tax/VAT and refunds, and their own terms also apply to your purchase. Refunds are paid back through the reseller you paid.</p>
+
+  <h2>After a refund</h2>
+  <p>The license key stops working once a purchase is refunded.</p>
+
+  <h2>Your rights under the law</h2>
+  <p>Nothing on this page takes away a right to a refund or to cancel that the law of your country gives you as a consumer.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about refunds: <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>. How we handle your data is explained in our <a href="/privacy">privacy policy</a>.</p>
+</article>
+<%- include('partials/footer') %>
+<%- include('partials/pro-modal') %>
+<script>window.MLM_RATES = <%- CLIENT_RATES %>;</script>
+<script src="/calc.js?v=3"></script>
+<script src="/app.js?v=4"></script>
+</body>
+</html>
