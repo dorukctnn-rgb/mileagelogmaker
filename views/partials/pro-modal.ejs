@@ -2,7 +2,7 @@
   <div class="modal">
     <button type="button" class="modal-close" onclick="MLM.closePro()" aria-label="Close">&times;</button>
     <h2 id="proTitle">MileageLogMaker Pro</h2>
-    <p class="modal-sub">One payment. No subscription. Sold through our online resellers Paddle.com and Gumroad.</p>
+    <p class="modal-sub"><%= locals.paddleCheckout ? 'One payment. No subscription. Paddle.com is the seller of record.' : 'One payment. No subscription. Sold through our online resellers Paddle.com and Gumroad.' %></p>
     <div class="price"><span class="amt">$9</span><span class="desc">one-time</span></div>
     <ul>
       <li>PDF logs without the "Free version" watermark</li>
@@ -10,12 +10,18 @@
       <li>Your business logo on the PDF</li>
       <li>Works for IRS, CRA and HMRC logs</li>
     </ul>
-    <a href="<%= GUMROAD_URL %>" target="_blank" rel="noopener" class="btn">Buy Pro, $9</a>
+    <a href="<%= GUMROAD_URL %>" target="_blank" rel="noopener" class="btn"<% if (locals.paddleCheckout) { %> data-buy-pro<% } %>>Buy Pro, $9</a>
     <p class="fine">The free generator stays free: unlimited trips, all rates and the PDF are included without paying.</p>
     <div class="or">Already bought Pro?</div>
-    <label for="licenseKey" style="font-size:13px;color:#425466;display:block;margin-bottom:6px">Enter the license key from your receipt email</label>
+    <% if (locals.paddleCheckout) { %><div class="pp-restore" id="ppRestore" style="margin-bottom:12px">
+      <p>Bought Pro on another device? We can e-mail your Pro link to the address you paid with.</p>
+      <div class="pp-row"><input type="email" id="ppEmail" autocomplete="email" placeholder="you@example.com" aria-label="Your e-mail address"><button type="button" id="ppSend">E-mail my Pro link</button></div>
+      <p data-pp-note id="ppNote" role="status"></p>
+    </div>
+    <% } %><label for="licenseKey" style="font-size:13px;color:#425466;display:block;margin-bottom:6px"><%= locals.paddleCheckout ? 'Bought Pro on Gumroad? Enter the license key from your Gumroad receipt' : 'Enter the license key from your receipt email' %></label>
     <input type="text" id="licenseKey" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" autocomplete="off" spellcheck="false">
     <button type="button" class="btn btn-dark" onclick="MLM.verifyLicense()">Activate Pro</button>
     <div class="modal-status" id="licenseStatus"></div>
   </div>
-</div>
+</div><% if (locals.paddleCheckout) { %>
+<script src="/mlm-pay.js?v=20261117" defer></script><% } %>
