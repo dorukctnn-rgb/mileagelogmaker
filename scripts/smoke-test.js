@@ -67,13 +67,34 @@ const assert = require('assert');
     check(h.includes('href="/mileiq-alternative">MileIQ alternatives</a>'), p + ' links the MileIQ alternatives page in its text');
   }
 
+  // 17 Nov 2026 (Search Console): Lyft queries landed on the Uber page. The Lyft and Instacart slugs are full pages again (they were
+  // retired redirects), sit in the sitemap, carry FAQ data and the key links, and the older driver pages link to them in running text.
+  const driverPages = {
+    '/mileage-log-lyft-drivers': ['/mileage-log-uber-drivers', '/mileage-log-grubhub-drivers', '/mileage-log-doordash-drivers', '/irs-mileage-log-requirements', '/forgot-to-track-mileage', '/free-mileage-log-template', '/tax-deductions-for-uber-lyft-drivers'],
+    '/mileage-log-instacart-shoppers': ['/mileage-log-uber-drivers', '/mileage-log-grubhub-drivers', '/mileage-log-doordash-drivers', '/irs-mileage-log-requirements', '/forgot-to-track-mileage', '/free-mileage-log-template']
+  };
+  for (const [p, wanted] of Object.entries(driverPages)) {
+    const r = await fetch(base + p, { redirect: 'manual' });
+    check(r.status === 200, `${p} should answer 200, got ${r.status}`);
+    check(locs.includes(SITE + p), `${p} missing from the sitemap`);
+    const h = await r.text();
+    const main = h.slice(h.indexOf('id="sample"'), h.indexOf('class="sources"'));
+    for (const l of wanted) check(main.includes(`href="${l}"`), `${p} does not link ${l} in its text`);
+    check(/"@type":"FAQPage"/.test(h), `${p} has no FAQPage data`);
+    check(!/\bAI\b/.test(h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ')), `${p} mentions AI`);
+  }
+  for (const p of ['/mileage-log-grubhub-drivers', '/mileage-log-doordash-drivers', '/mileage-log-uber-drivers', '/tax-deductions-for-uber-lyft-drivers', '/free-mileage-log-template']) {
+    const h = await (await fetch(base + p)).text();
+    for (const l of Object.keys(driverPages)) check(h.includes(`href="${l}">`), `${p} does not link ${l} in its text`);
+  }
+
   // Unknown page is a real 404
   check((await fetch(base + '/no-such-page')).status === 404, '404 status');
 
   // One URL per page: retired duplicates and trailing-slash variants 301 to the canonical path
   const redirects = {
     '/mileage-log-generator': '/', '/mileage-log-2026': '/free-mileage-log-template',
-    '/mileage-log-lyft-drivers': '/mileage-log-uber-drivers', '/forgot-to-track-mileage-what-now': '/forgot-to-track-mileage',
+    '/mileage-log-nurses': '/mileage-log-self-employed', '/forgot-to-track-mileage-what-now': '/forgot-to-track-mileage',
     '/irs-mileage-log-requirements/': '/irs-mileage-log-requirements', '/blog/?utm_source=x': '/blog?utm_source=x',
     '//example.com/': '/example.com'
   };

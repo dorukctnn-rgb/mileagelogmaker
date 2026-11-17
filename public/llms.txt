@@ -29,6 +29,8 @@ IRS standard mileage rates for 2026, as read on irs.gov on November 10, 2026: bu
 - [Uber and Lyft driver tax deductions](https://www.mileagelogmaker.com/tax-deductions-for-uber-lyft-drivers)
 - [DoorDash mileage log](https://www.mileagelogmaker.com/mileage-log-doordash-drivers)
 - [Grubhub mileage log](https://www.mileagelogmaker.com/mileage-log-grubhub-drivers)
+- [Lyft mileage log](https://www.mileagelogmaker.com/mileage-log-lyft-drivers)
+- [Instacart shopper mileage log](https://www.mileagelogmaker.com/mileage-log-instacart-shoppers)
 
 ## Canada and the UK
 

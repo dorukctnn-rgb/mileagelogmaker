@@ -272,6 +272,10 @@ const BLOG_POSTS = {
     {
       type: 'p',
       text: 'The biggest mistake drivers make is trying to reconstruct deductions in April. By then, half your evidence is gone. Start a folder for receipts, log every mile contemporaneously, and treat tax tracking like part of the job. The drivers who do this consistently save $5,000-$15,000 per year compared to drivers who do not.'
+    },
+    {
+      type: 'html',
+      html: 'For mileage, the <a href="/mileage-log-lyft-drivers">Lyft mileage tracker and log</a> shows a session log with the miles between rides and a worked 2026 deduction, and the <a href="/mileage-log-uber-drivers">rideshare mileage log</a> covers Uber. If you also deliver, the <a href="/mileage-log-grubhub-drivers">Grubhub</a> and <a href="/mileage-log-instacart-shoppers">Instacart</a> pages show how to log delivery miles.'
     }
   ]
 }
